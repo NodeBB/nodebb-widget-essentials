@@ -40,6 +40,8 @@
 	Widget.renderRecentRepliesWidget = function(widget, callback) {
 		var html = Widget.templates['recentreplies.tpl'];
 
+		html = templates.prepare(html).parse({cid: widget.data.cid || false});
+
 		callback(null, {
 			title: widget.data.title || "Recent Replies",
 			html: html

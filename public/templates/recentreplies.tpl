@@ -17,7 +17,7 @@
 </div>
 
 <script>
-var cid = templates.get('category_id');
+var cid = {cid} || templates.get('category_id') || 1;
 
 function renderRecentReplies(err, posts) {
 	if (err || !posts || posts.length === 0) {
