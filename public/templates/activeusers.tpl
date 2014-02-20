@@ -1,0 +1,24 @@
+<div class="active-users">
+	<!-- BEGIN active_users -->
+	<a data-uid="{active_users.uid}" href="../../user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="img-rounded user-img" /></a>
+	<!-- END active_users -->
+</div>
+
+<script type="text/javascript">
+function addActiveUser(data) {
+	var activeUser = $('.active-users').find('a[data-uid="' + data.uid + '"]');
+	if(!activeUser.length) {
+		var newUser = templates.prepare(templates['category'].blocks['active_users']).parse({
+			active_users: [{
+				uid: data.uid,
+				username: data.username,
+				userslug: data.userslug,
+				picture: data.teaser_userpicture
+			}]
+		});
+		$(newUser).appendTo($('.active-users'));
+	}
+}
+
+socket.on('event:new_topic', addActiveUser);
+</script>

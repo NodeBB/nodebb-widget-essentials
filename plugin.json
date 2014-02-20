@@ -1,0 +1,31 @@
+{
+	"id": "nodebb-widget-essentials",
+	"name": "NodeBB Essential Widgets",
+	"description": "Several basic widgets bundled together in one package including 'HTML', 'Markdown'",
+	"url": "https://github.com/psychobunny/nodebb-widget-essentials",
+	"library": "./library.js",
+	"hooks": [
+		{
+			"hook": "filter:widgets.getWidgets", "method": "defineWidgets", "callbacked": true
+		},
+		{
+			"hook": "filter:server.create_routes", "method": "addRoutes", "callbacked": true
+		},
+		{
+			"hook": "filter:widget.render:text", "method": "renderTextWidget", "callbacked": true
+		},
+		{
+			"hook": "filter:widget.render:html", "method": "renderHTMLWidget", "callbacked": true
+		},
+		{
+			"hook": "filter:widget.render:recentreplies", "method": "renderRecentRepliesWidget", "callbacked": true
+		},
+		{
+			"hook": "filter:widget.render:activeusers", "method": "renderActiveUsersWidget", "callbacked": true
+		},
+		{
+			"hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget", "callbacked": true
+		}
+	],
+	"staticDir": "./public"
+}
