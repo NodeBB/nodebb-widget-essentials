@@ -1,0 +1,1 @@
+<textarea class="form-control" rows="6" name="html" placeholder="Enter HTML"></textarea>
