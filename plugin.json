@@ -27,5 +27,8 @@
 			"hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget", "callbacked": true
 		}
 	],
-	"staticDir": "./public"
+	"staticDir": "./public",
+	"css": [
+    	"css/widget.css"
+    ]
 }
