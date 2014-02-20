@@ -18,10 +18,7 @@
 	Widget.renderHTMLWidget = function(widget, callback) {
 		var html = widget.data.html;
 
-		callback(null, {
-			title: "HTML",
-			html: html
-		});
+		callback(null, html);
 	};
 
 	Widget.renderTextWidget = function(widget, callback) {
@@ -34,21 +31,7 @@
 			text = text.replace(/\r\n/g, "<br />");
 		}
 
-		callback(null, {
-			title: "Text",
-			html: text
-		});
-	};
-
-	Widget.renderForumStatsWidget = function(widget, callback) {
-		var html = Widget.templates['forumstats.tpl'];
-
-		translator.translate(html, function(translatedHTML) {
-			callback(null, {
-				title: widget.data.title || "Forum Stats",
-				html: translatedHTML
-			});
-		});
+		callback(null, text);
 	};
 
 	Widget.renderRecentRepliesWidget = function(widget, callback) {
@@ -56,10 +39,7 @@
 
 		html = templates.prepare(html).parse({cid: widget.data.cid || false});
 
-		callback(null, {
-			title: widget.data.title || "Recent Replies",
-			html: html
-		});
+		callback(null, html);
 	};
 
 	Widget.renderActiveUsersWidget = function(widget, callback) {
@@ -76,10 +56,7 @@
 			user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
 				html = templates.prepare(html).parse({active_users: users});
 
-				callback(err, {
-					title: widget.data.title || "Active Participants",
-					html: html
-				});
+				callback(err, html);
 			});
 		});
 	};
@@ -97,10 +74,15 @@
 		categories.getModerators(cid, function(err, moderators) {
 			html = templates.prepare(html).parse({moderators: moderators});
 
-			callback(err, {
-				title: widget.data.title || "Moderators",
-				html: html
-			});
+			callback(err, html);
+		});
+	};
+
+	Widget.renderForumStatsWidget = function(widget, callback) {
+		var html = Widget.templates['forumstats.tpl'];
+
+		translator.translate(html, function(translatedHTML) {
+			callback(null, translatedHTML);
 		});
 	};
 
@@ -112,41 +94,37 @@
 				widget: "html",
 				name: "HTML",
 				description: "Any text, html, or embedded script.",
-				content: "<textarea class=\"form-control\" rows=\"6\" name=\"html\" placeholder=\"Enter HTML\"></textarea>"
+				content: Widget.templates['admin/html.tpl']
 			},
 			{
 				widget: "text",
 				name: "Text",
 				description: "Markdown formatted text.",
-				content: "<textarea class=\"form-control\" rows=\"6\" name=\"text\" placeholder=\"Enter Text / Markdown\"></textarea>"
-							+ "<hr />"
-							+ "<div class=\"checkbox\">"
-							+ 	"<label><input type=\"checkbox\" name=\"markdown\" checked /> Parse as Markdown?</label>"
-							+ "</div>"
+				content: Widget.templates['admin/text.tpl']
 			},
 			{
 				widget: "recentreplies",
 				name: "Recent Replies",
 				description: "List of recent replies in a category.",
-				content: "<label>Custom Category:<br /><small>Leave blank to to dynamically pull from current category</small></label><input type=\"text\" class=\"form-control\" name=\"cid\" placeholder=\"0\" /><br /><label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Recent Replies\" />"
+				content: Widget.templates['admin/categorywidget.tpl']
 			},
 			{
 				widget: "activeusers",
 				name: "Active Users",
 				description: "List of active users in a category.",
-				content: "<label>Custom Category:<br /><small>Leave blank to to dynamically pull from current category</small></label><input type=\"text\" class=\"form-control\" name=\"cid\" placeholder=\"0\" /><br /><label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Active Users\" />"
+				content: Widget.templates['admin/categorywidget.tpl']
 			},
 			{
 				widget: "moderators",
 				name: "Moderators",
 				description: "List of moderators in a category.",
-				content: "<label>Custom Category:<br /><small>Leave blank to to dynamically pull from current category</small></label><input type=\"text\" class=\"form-control\" name=\"cid\" placeholder=\"0\" /><br /><label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Moderators\" />"
+				content: Widget.templates['admin/categorywidget.tpl']
 			},
 			{
 				widget: "forumstats",
 				name: "Forum Stats",
 				description: "Lists user, topics, and post count.",
-				content: "<label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Forum Stats\" />"
+				content: Widget.templates['admin/forumstats.tpl']
 			}
 		]);
 
@@ -155,7 +133,10 @@
 
 
 	Widget.addRoutes = function(custom_routes, callback) {
-		var templatesToLoad = ["recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl"];
+		var templatesToLoad = [
+			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl",
+			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl"
+		];
 
 		function loadTemplate(template, next) {
 			fs.readFile(path.resolve(__dirname, './public/templates/' + template), function (err, data) {
