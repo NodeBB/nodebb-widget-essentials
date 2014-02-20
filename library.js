@@ -145,7 +145,7 @@
 			{
 				widget: "forumstats",
 				name: "Forum Stats",
-				description: "Lists user, topics, and post count information.",
+				description: "Lists user, topics, and post count.",
 				content: "<label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Forum Stats\" />"
 			}
 		]);

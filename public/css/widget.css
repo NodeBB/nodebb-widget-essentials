@@ -48,3 +48,11 @@
 	height: auto;
 	max-width: 48px;
 }
+
+.footer-stats .stats-card {
+	text-align: center;
+}
+
+.footer-stats .stats-card h2 {
+	line-height: 25px;
+}
