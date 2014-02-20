@@ -7,6 +7,7 @@
 		path = require('path'),
 		categories = require('../../src/categories'),
 		user = require('../../src/user'),
+		translator = require('../../public/src/translator'),
 		templates = require('../../public/src/templates');
 
 
@@ -18,6 +19,7 @@
 		var html = widget.data.html;
 
 		callback(null, {
+			title: "HTML",
 			html: html
 		});
 	};
@@ -33,7 +35,19 @@
 		}
 
 		callback(null, {
+			title: "Text",
 			html: text
+		});
+	};
+
+	Widget.renderForumStatsWidget = function(widget, callback) {
+		var html = Widget.templates['forumstats.tpl'];
+
+		translator.translate(html, function(translatedHTML) {
+			callback(null, {
+				title: widget.data.title || "Forum Stats",
+				html: translatedHTML
+			});
 		});
 	};
 
@@ -127,6 +141,12 @@
 				name: "Moderators",
 				description: "List of moderators in a category.",
 				content: "<label>Custom Category:<br /><small>Leave blank to to dynamically pull from current category</small></label><input type=\"text\" class=\"form-control\" name=\"cid\" placeholder=\"0\" /><br /><label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Moderators\" />"
+			},
+			{
+				widget: "forumstats",
+				name: "Forum Stats",
+				description: "Lists user, topics, and post count information.",
+				content: "<label>Custom Title:</label><input type=\"text\" class=\"form-control\" name=\"title\" placeholder=\"Forum Stats\" />"
 			}
 		]);
 
@@ -135,7 +155,7 @@
 
 
 	Widget.addRoutes = function(custom_routes, callback) {
-		var templatesToLoad = ["recentreplies.tpl", "activeusers.tpl", "moderators.tpl"];
+		var templatesToLoad = ["recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl"];
 
 		function loadTemplate(template, next) {
 			fs.readFile(path.resolve(__dirname, './public/templates/' + template), function (err, data) {

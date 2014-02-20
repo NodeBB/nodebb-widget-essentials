@@ -25,6 +25,9 @@
 		},
 		{
 			"hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget", "callbacked": true
+		},
+		{
+			"hook": "filter:widget.render:forumstats", "method": "renderForumStatsWidget", "callbacked": true
 		}
 	],
 	"staticDir": "./public",
