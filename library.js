@@ -75,7 +75,7 @@
 			cid = widget.data.cid;
 		} else {
 			var match = widget.area.url.match('[0-9]+');
-			cid = match[0] ? match[0] : 0;
+			cid = match ? match[0] : 1;
 		}
 
 		categories.getModerators(cid, function(err, moderators) {
