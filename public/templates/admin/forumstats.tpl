@@ -1,2 +1,2 @@
-<label>Custom Title:</label>
-<input type="text" class="form-control" name="title" placeholder="Forum Stats" />
+<label>Stats Class:</label>
+<input type="text" class="form-control" name="statsClass" placeholder="well" />

@@ -81,6 +81,8 @@
 	Widget.renderForumStatsWidget = function(widget, callback) {
 		var html = Widget.templates['forumstats.tpl'];
 
+		html = templates.prepare(html).parse({statsClass: widget.data.statsClass});
+
 		translator.translate(html, function(translatedHTML) {
 			callback(null, translatedHTML);
 		});
