@@ -88,9 +88,18 @@
 		});
 	};
 
-	Widget.defineWidgets = function(widgets, callback) {
-		// todo: move content into template files
+	Widget.renderRecentPostsWidget = function(widget, callback) {
+		var html = Widget.templates['recentposts.tpl'];
 
+		html = templates.prepare(html).parse({
+			numPosts: widget.data.numPosts || 8,
+			duration: widget.data.duration || 'day'
+		});
+
+		callback(null, html);
+	};
+
+	Widget.defineWidgets = function(widgets, callback) {
 		widgets = widgets.concat([
 			{
 				widget: "html",
@@ -127,6 +136,12 @@
 				name: "Forum Stats",
 				description: "Lists user, topics, and post count.",
 				content: Widget.templates['admin/forumstats.tpl']
+			},
+			{
+				widget: "recentposts",
+				name: "Recent Posts",
+				description: "Lists the latest posts on your forum.",
+				content: Widget.templates['admin/recentposts.tpl']
 			}
 		]);
 
@@ -136,8 +151,8 @@
 
 	Widget.addRoutes = function(custom_routes, callback) {
 		var templatesToLoad = [
-			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl",
-			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl"
+			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl",
+			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl"
 		];
 
 		function loadTemplate(template, next) {

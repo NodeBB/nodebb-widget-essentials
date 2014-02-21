@@ -28,6 +28,9 @@
 		},
 		{
 			"hook": "filter:widget.render:forumstats", "method": "renderForumStatsWidget", "callbacked": true
+		},
+		{
+			"hook": "filter:widget.render:recentposts", "method": "renderRecentPostsWidget", "callbacked": true
 		}
 	],
 	"staticDir": "./public",
