@@ -46,5 +46,5 @@ function renderRecentReplies(err, posts) {
 	});
 }
 socket.emit('categories.getRecentReplies', cid, renderRecentReplies);
-socket.on('event:new_topic', cid, renderRecentReplies);
+socket.on('event:new_topic', renderRecentReplies);
 </script>
