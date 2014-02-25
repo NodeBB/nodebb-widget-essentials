@@ -22,11 +22,11 @@ $.get(RELATIVE_PATH + '/api/recent/{duration}', {}, function(posts) {
 
 		// this would be better as a template, I copied this from Lavender.
 		replies += '<li data-pid="'+ posts[i].pid +'" class="clearfix">' +
-					'<a href="' + RELATIVE_PATH + '/user/' + posts[i].teaser_userslug + '"><img title="' + posts[i].teaser_username + '" class="img-rounded user-img" src="' + posts[i].teaser_userpicture + '"/></a>' +
+					'<a href="' + RELATIVE_PATH + '/user/' + posts[i].teaser.userslug + '"><img title="' + posts[i].teaser.username + '" class="img-rounded user-img" src="' + posts[i].teaser.picture + '"/></a>' +
 					'<p>' +
-						'<strong><span>'+ posts[i].teaser_username + '</span></strong>' +
+						'<strong><span>'+ posts[i].teaser.username + '</span></strong>' +
 						'<span> [[global:posted]] [[global:in]] </span>' +
-						'"<a href="' + RELATIVE_PATH + '/topic/' + posts[i].slug + '#' + posts[i].teaser_pid + '" >' + posts[i].title + '</a>"' +
+						'"<a href="' + RELATIVE_PATH + '/topic/' + posts[i].slug + '#' + posts[i].teaser.pid + '" >' + posts[i].title + '</a>"' +
 					'</p>'+
 					'<span class="pull-right">'+
 						'<span class="timeago" title="' + lastPostIsoTime + '"></span>' +
