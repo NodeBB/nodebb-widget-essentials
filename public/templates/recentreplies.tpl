@@ -8,7 +8,7 @@
 			<strong><span>{posts.username}</span></strong>
 			<p>{posts.content}</p>
 			<span class="pull-right">
-				<a href="{relative_path}/topic/{posts.topicSlug}#{posts.pid}">[[category:posted]]</a>
+				<a href="{relative_path}/topic/{posts.topic.slug}#{posts.pid}">[[category:posted]]</a>
 				<span class="timeago" title="{posts.relativeTime}"></span>
 			</span>
 		</li>

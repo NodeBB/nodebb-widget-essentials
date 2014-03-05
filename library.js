@@ -1,6 +1,6 @@
 (function(module) {
 	"use strict";
-	
+
 	var marked = require('marked'),
 		async = require('async'),
 		fs = require('fs'),
