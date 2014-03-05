@@ -99,6 +99,17 @@
 		callback(null, html);
 	};
 
+	Widget.renderRecentTopicsWidget = function(widget, callback) {
+		var html = Widget.templates['recenttopics.tpl'];
+
+		html = templates.prepare(html).parse({
+			numTopics: widget.data.numTopics || 8,
+			duration: widget.data.duration || 'day'
+		});
+
+		callback(null, html);
+	};
+
 	Widget.defineWidgets = function(widgets, callback) {
 		widgets = widgets.concat([
 			{
@@ -142,6 +153,12 @@
 				name: "Recent Posts",
 				description: "Lists the latest posts on your forum.",
 				content: Widget.templates['admin/recentposts.tpl']
+			},
+			{
+				widget: "recenttopics",
+				name: "Recent Topics",
+				description: "Lists the latest topics on your forum.",
+				content: Widget.templates['admin/recenttopics.tpl']
 			}
 		]);
 
@@ -151,8 +168,8 @@
 
 	Widget.addRoutes = function(custom_routes, callback) {
 		var templatesToLoad = [
-			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl",
-			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl"
+			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
+			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl", "admin/recenttopics.tpl"
 		];
 
 		function loadTemplate(template, next) {
@@ -172,7 +189,11 @@
 					{
 						"template": "recentreplies.tpl",
 						"content": Widget.templates['recentreplies.tpl']
-					}
+					},
+					{
+						"template": "recentposts.tpl",
+						"content": Widget.templates['recentposts.tpl']
+					},
 				]
 			);
 

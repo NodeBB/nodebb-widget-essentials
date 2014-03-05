@@ -1,44 +1,53 @@
 <div class="recent-replies">
 	<ul id="recent_posts">
 
+		<!-- BEGIN posts -->
+		<li data-pid="{posts.pid}" class="clearfix">
+			<a href="{relative_path}/user/{posts.userslug}">
+				<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}" />
+			</a>
+			<strong><span>{posts.username}</span></strong>
+			<p>{posts.content}</p>
+			<span class="pull-right">
+				<a href="{relative_path}/topic/{posts.topic.slug}#{posts.pid}">[[category:posted]]</a>
+				<span class="timeago" title="{posts.relativeTime}"></span>
+			</span>
+		</li>
+		<!-- END posts -->
+
 	</ul>
 </div>
 
-<script type="text/javascript">
-$.get(RELATIVE_PATH + '/api/recent/{duration}', {}, function(posts) {
+<script>
+$.get(RELATIVE_PATH + '/api/recent/posts/{duration}', {}, function(posts) {
 	var recentPosts = $('#recent_posts');
 
-	if(!posts || !posts.topics || !posts.topics.length) {
-		recentPosts.html('No topics have been posted in the past {duration}.');
+	if (!posts || !posts.length) {
+		recentPosts.html('No posts have been posted in the past {duration}.');
 		return;
 	}
+	var numPosts = parseInt('{numPosts}', 10);
+	numPosts = numPosts || 8;
 
-	posts = posts.topics.slice(0, 8);
+	posts = posts.slice(0, numPosts);
+	templates.preload_template('recentposts', function() {
 
-	var replies = '';
+		templates['recentposts'].parse({posts:[]});
 
-	for (var i = 0, numPosts = posts.length; i < numPosts; ++i) {
-		var lastPostIsoTime = utils.toISOString(posts[i].lastposttime);
+		var html = templates.prepare(templates['recentposts'].blocks['posts']).parse({
+			posts: posts
+		});
 
-		// this would be better as a template, I copied this from Lavender.
-		replies += '<li data-pid="'+ posts[i].pid +'" class="clearfix">' +
-					'<a href="' + RELATIVE_PATH + '/user/' + posts[i].teaser.userslug + '"><img title="' + posts[i].teaser.username + '" class="img-rounded user-img" src="' + posts[i].teaser.picture + '"/></a>' +
-					'<p>' +
-						'<strong><span>'+ posts[i].teaser.username + '</span></strong>' +
-						'<span> [[global:posted]] [[global:in]] </span>' +
-						'"<a href="' + RELATIVE_PATH + '/topic/' + posts[i].slug + '#' + posts[i].teaser.pid + '" >' + posts[i].title + '</a>"' +
-					'</p>'+
-					'<span class="pull-right">'+
-						'<span class="timeago" title="' + lastPostIsoTime + '"></span>' +
-					'</span>'+
-					'</li>';
-	}
 
-	translator.translate(replies, function(translatedHtml) {
-		recentPosts.html(translatedHtml);
+		translator.translate(html, function(translatedHTML) {
+			translatedHTML = $(translatedHTML);
+			translatedHTML.find('img').addClass('img-responsive');
 
-		$('#recent_posts span.timeago').timeago();
-		app.createUserTooltips();
+			recentPosts.html(translatedHTML);
+
+			translatedHTML.find('span.timeago').timeago();
+			app.createUserTooltips();
+		});
 	});
 });
 </script>

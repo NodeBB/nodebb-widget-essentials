@@ -31,6 +31,9 @@
 		},
 		{
 			"hook": "filter:widget.render:recentposts", "method": "renderRecentPostsWidget", "callbacked": true
+		},
+		{
+			"hook": "filter:widget.render:recenttopics", "method": "renderRecentTopicsWidget", "callbacked": true
 		}
 	],
 	"staticDir": "./public",
