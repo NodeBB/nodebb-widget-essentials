@@ -165,9 +165,7 @@
 		callback(null, widgets);
 	};
 
-
-
-	module.exports = function() {
+	Widget.init = function() {
 		var templatesToLoad = [
 			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl", "admin/recenttopics.tpl"
@@ -179,5 +177,9 @@
 				next(err);
 			});
 		}
-	}
+
+		async.each(templatesToLoad, loadTemplate);
+	};
+
+	module.exports = Widget;
 }(module));

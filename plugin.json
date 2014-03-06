@@ -6,6 +6,9 @@
 	"library": "./library.js",
 	"hooks": [
 		{
+			"hook": "action:app.load", "method": "init"
+		},
+		{
 			"hook": "filter:widgets.getWidgets", "method": "defineWidgets", "callbacked": true
 		},
 		{
