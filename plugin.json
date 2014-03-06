@@ -37,6 +37,7 @@
 		}
 	],
 	"staticDir": "./public",
+	"templates": "./public/templates",
 	"css": [
     	"css/widget.css"
     ]
