@@ -165,41 +165,5 @@
 		callback(null, widgets);
 	};
 
-
-	Widget.addRoutes = function(custom_routes, callback) {
-		var templatesToLoad = [
-			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
-			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl", "admin/recenttopics.tpl"
-		];
-
-		function loadTemplate(template, next) {
-			fs.readFile(path.resolve(__dirname, './public/templates/' + template), function (err, data) {
-				Widget.templates[template] = data.toString();
-				next(err);
-			});
-		}
-
-		async.each(templatesToLoad, loadTemplate, function(err) {
-			if (err) {
-				throw new Error("Error loading templates: "  + err);
-			}
-
-			custom_routes.templates = custom_routes.templates.concat(
-				[
-					{
-						"template": "recentreplies.tpl",
-						"content": Widget.templates['recentreplies.tpl']
-					},
-					{
-						"template": "recentposts.tpl",
-						"content": Widget.templates['recentposts.tpl']
-					},
-				]
-			);
-
-			callback(err, custom_routes);
-		});
-	};
-
 	module.exports = Widget;
 }(module));

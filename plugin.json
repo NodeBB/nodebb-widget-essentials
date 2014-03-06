@@ -9,9 +9,6 @@
 			"hook": "filter:widgets.getWidgets", "method": "defineWidgets", "callbacked": true
 		},
 		{
-			"hook": "filter:server.create_routes", "method": "addRoutes", "callbacked": true
-		},
-		{
 			"hook": "filter:widget.render:text", "method": "renderTextWidget", "callbacked": true
 		},
 		{
