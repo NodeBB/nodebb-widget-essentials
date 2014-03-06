@@ -165,5 +165,19 @@
 		callback(null, widgets);
 	};
 
-	module.exports = Widget;
+
+
+	module.exports = function() {
+		var templatesToLoad = [
+			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
+			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl", "admin/recenttopics.tpl"
+		];
+
+		function loadTemplate(template, next) {
+			fs.readFile(path.resolve(__dirname, './public/templates/' + template), function (err, data) {
+				Widget.templates[template] = data.toString();
+				next(err);
+			});
+		}
+	}
 }(module));
