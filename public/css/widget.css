@@ -21,7 +21,7 @@
 	margin-bottom: 0;
 }
 
-.recent-replies ul li img {
+.recent-replies ul li .user-img {
 	display: block;
 	float: left;
 	margin-right:8px;
