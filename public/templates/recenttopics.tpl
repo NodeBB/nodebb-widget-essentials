@@ -4,44 +4,83 @@
 	</ul>
 </div>
 
-<script type="text/javascript">
-$.get(RELATIVE_PATH + '/api/recent/{duration}', {}, function(posts) {
-	var recentPosts = $('#recent_topics');
+<script>
+(function() {
 
-	if(!posts || !posts.topics || !posts.topics.length) {
-		recentPosts.html('No topics have been posted in the past {duration}.');
-		return;
-	}
+	var recentTopicsWidget = app.widgets.recentTopics;
 
 	var numTopics = parseInt('{numTopics}', 10);
-	numTopics = numTopics || 8;
+		numTopics = numTopics || 8;
 
-	posts = posts.topics.slice(0, numTopics);
 
-	var replies = '';
+	if (!recentTopicsWidget) {
+		recentTopicsWidget = {};
+		recentTopicsWidget.onNewTopic = function(topic) {
 
-	for (var i = 0, numPosts = posts.length; i < numPosts; ++i) {
-		var lastPostIsoTime = utils.toISOString(posts[i].lastposttime);
+			var recentTopics = $('#recent_topics');
+			if (!recentTopics.length) {
+				return;
+			}
 
-		// this would be better as a template, I copied this from Lavender.
-		replies += '<li data-pid="'+ posts[i].pid +'" class="clearfix">' +
-					'<a href="' + RELATIVE_PATH + '/user/' + posts[i].teaser.userslug + '"><img title="' + posts[i].teaser.username + '" class="img-rounded user-img" src="' + posts[i].teaser.picture + '"/></a>' +
-					'<p>' +
-						'<strong><span>'+ posts[i].teaser.username + '</span></strong>' +
-						'<span> [[global:posted]] [[global:in]] </span>' +
-						'"<a href="' + RELATIVE_PATH + '/topic/' + posts[i].slug + '#' + posts[i].teaser.pid + '" >' + posts[i].title + '</a>"' +
-					'</p>'+
-					'<span class="pull-right">'+
-						'<span class="timeago" title="' + lastPostIsoTime + '"></span>' +
-					'</span>'+
-					'</li>';
+			parseAndTranslate([topic], function(html) {
+				html.hide()
+					.prependTo(recentTopics)
+					.fadeIn();
+
+				app.createUserTooltips();
+				if (recentTopics.children().length > numTopics) {
+					recentTopics.children().last().remove();
+				}
+			});
+		}
+
+		app.widgets.recentTopics = recentTopicsWidget;
+		socket.on('event:new_topic', app.widgets.recentTopics.onNewTopic);
 	}
 
-	translator.translate(replies, function(translatedHtml) {
-		recentPosts.html(translatedHtml);
+	$.get(RELATIVE_PATH + '/api/recent/{duration}', {}, function(posts) {
+		var recentTopics = $('#recent_topics');
 
-		$('#recent_topics span.timeago').timeago();
-		app.createUserTooltips();
+		if(!posts || !posts.topics || !posts.topics.length) {
+			recentTopics.html('No topics have been posted in the past {duration}.');
+			return;
+		}
+
+		posts = posts.topics.slice(0, numTopics);
+
+		parseAndTranslate(posts, function(html) {
+			recentTopics.html(html);
+
+			app.createUserTooltips();
+		});
 	});
-});
+
+	function parseAndTranslate(topics, callback) {
+		var replies = '';
+
+		for (var i = 0, numPosts = topics.length; i < numPosts; ++i) {
+			var lastPostIsoTime = utils.toISOString(topics[i].lastposttime);
+
+			// this would be better as a template, I copied this from Lavender.
+			replies += '<li data-pid="'+ topics[i].teaser.pid +'" class="clearfix">' +
+						'<a href="' + RELATIVE_PATH + '/user/' + topics[i].teaser.userslug + '"><img title="' + topics[i].teaser.username + '" class="img-rounded user-img" src="' + topics[i].teaser.picture + '"/></a>' +
+						'<p>' +
+							'<strong><span>'+ topics[i].teaser.username + '</span></strong>' +
+							'<span> [[global:posted]] [[global:in]] </span>' +
+							'"<a href="' + RELATIVE_PATH + '/topic/' + topics[i].slug + '#' + topics[i].teaser.pid + '" >' + topics[i].title + '</a>"' +
+						'</p>'+
+						'<span class="pull-right">'+
+							'<span class="timeago" title="' + lastPostIsoTime + '"></span>' +
+						'</span>'+
+						'</li>';
+		}
+
+		translator.translate(replies, function(translatedHtml) {
+			translatedHtml = $(translatedHtml);
+			translatedHtml.find('span.timeago').timeago();
+			callback(translatedHtml);
+		});
+	}
+
+}());
 </script>
