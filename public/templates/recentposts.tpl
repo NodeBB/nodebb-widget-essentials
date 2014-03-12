@@ -36,8 +36,12 @@
 		socket.on('event:new_post', app.widgets.recentPosts.onNewPost);
 	}
 
+	var data = {
+		term: '{duration}',
+		count: numPosts
+	};
 
-	socket.emit('posts.getRecentPosts', '{duration}', function(err, posts) {
+	socket.emit('posts.getRecentPosts', data, function(err, posts) {
 		var recentPosts = $('#recent_posts');
 
 		if (!posts || !posts.length) {
@@ -63,7 +67,7 @@
 						'<strong><span>'+ posts[i].username + '</span></strong>' +
 						'<div>' + posts[i].content + '</div>' +
 						'<span class="pull-right">'+
-							'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].tid + '#' + posts[i].pid +'">[[category:posted]]</a>' +
+							'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].tid + '#' + posts[i].pid +'">[[category:posted]]</a> ' +
 							'<span class="timeago" title="' + posts[i].relativeTime+'"></span>'+
 						'</span>'+
 						'</li>';
