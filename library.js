@@ -5,10 +5,10 @@
 		async = require('async'),
 		fs = require('fs'),
 		path = require('path'),
-		categories = require('../../src/categories'),
-		user = require('../../src/user'),
-		translator = require('../../public/src/translator'),
-		templates = require('../../public/src/templates');
+		categories = module.parent.require('./categories'),
+		user = module.parent.require('./user'),
+		translator = module.parent.require('../public/src/translator'),
+		templates = module.parent.require('../public/src/templates');
 
 
 	var Widget = {

@@ -28,5 +28,9 @@
   "readme": "",
   "readmeFilename": "README.md",
   "_id": "nodebb-widget-essentials@0.0.1",
-  "_from": "nodebb-widget-essentials@~0.0.1"
+  "_from": "nodebb-widget-essentials@~0.0.1",
+  "dependencies": {
+    "async": "^0.2.10",
+    "marked": "^0.3.2"
+  }
 }
