@@ -31,8 +31,8 @@ ajaxify.register_events([
 socket.emit('user.count', updateUserCount);
 socket.on('user.count', updateUserCount);
 
-function updateUserCount(err, data) {
-	$('#stats_users').html(utils.makeNumberHumanReadable(data.count)).attr('title', data.count);
+function updateUserCount(err, count) {
+	$('#stats_users').html(utils.makeNumberHumanReadable(count)).attr('title', count);
 }
 
 socket.emit('meta.getUsageStats', updateUsageStats);
@@ -48,5 +48,5 @@ socket.on('user.getActiveUsers', updateActiveUsers);
 
 function updateActiveUsers(err, data) {
 	$('#stats_online').html(data.users);
-}	
+}
 </script>
