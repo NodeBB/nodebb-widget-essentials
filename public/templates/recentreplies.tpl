@@ -2,10 +2,10 @@
 	<ul id="category_recent_replies">
 		<!-- BEGIN posts -->
 		<li data-pid="{posts.pid}" class="clearfix">
-			<a href="{relative_path}/user/{posts.userslug}">
-				<img title="{posts.username}" class="img-rounded user-img" src="{posts.picture}" />
+			<a href="{relative_path}/user/{posts.user.userslug}">
+				<img title="{posts.user.username}" class="img-rounded user-img" src="{posts.user.picture}" />
 			</a>
-			<strong><span>{posts.username}</span></strong>
+			<strong><span>{posts.user.username}</span></strong>
 			<div>
 				{posts.content}
 			</div>

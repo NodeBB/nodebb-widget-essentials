@@ -63,8 +63,8 @@
 		for (var i = 0, numPosts = posts.length; i < numPosts; ++i) {
 
 			html += '<li data-pid="'+ posts[i].pid +'" class="clearfix">' +
-						'<a href="' + RELATIVE_PATH + '/user/' + posts[i].userslug + '"><img title="' + posts[i].username + '" class="img-rounded user-img" src="' + posts[i].picture + '"/></a>' +
-						'<strong><span>'+ posts[i].username + '</span></strong>' +
+						'<a href="' + RELATIVE_PATH + '/user/' + posts[i].user.userslug + '"><img title="' + posts[i].user.username + '" class="img-rounded user-img" src="' + posts[i].user.picture + '"/></a>' +
+						'<strong><span>'+ posts[i].user.username + '</span></strong>' +
 						'<div>' + posts[i].content + '</div>' +
 						'<span class="pull-right">'+
 							'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].tid + '#' + posts[i].pid +'">[[category:posted]]</a> ' +
