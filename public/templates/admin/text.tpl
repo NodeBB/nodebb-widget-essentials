@@ -2,7 +2,7 @@
 <hr />
 <div class="checkbox">
 	<label>
-		<input type="checkbox" name="markdown" checked />
-		Parse as Markdown?
+		<input type="checkbox" name="parseAsPost" checked />
+		Parse as a Post? (Take all post-related plugins into effect)
 	</label>
 </div>

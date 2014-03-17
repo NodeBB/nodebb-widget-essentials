@@ -1,12 +1,12 @@
 (function(module) {
 	"use strict";
 
-	var marked = require('marked'),
-		async = require('async'),
+	var async = require('async'),
 		fs = require('fs'),
 		path = require('path'),
-		categories = require('../../src/categories'),
-		user = require('../../src/user'),
+		categories = require('./../../src/categories'),
+		user = require('./../../src/user'),
+		plugins = require('./../../src/plugins'),
 		translator = require('../../public/src/translator'),
 		templates = require('../../public/src/templates');
 
@@ -22,16 +22,16 @@
 	};
 
 	Widget.renderTextWidget = function(widget, callback) {
-		var markdown = !!widget.data.markdown,
+		var parseAsPost = !!widget.data.parseAsPost,
 			text = widget.data.text;
 
-		if (markdown) {
-			text = marked(text);
+		if (parseAsPost) {
+			plugins.fireHook('filter:post.parse', text, function(err, text) {
+				callback(err, text);
+			});
 		} else {
-			text = text.replace(/\r\n/g, "<br />");
+			callback(null, text.replace(/\r\n/g, "<br />"));
 		}
-
-		callback(null, text);
 	};
 
 	Widget.renderRecentRepliesWidget = function(widget, callback) {
@@ -121,7 +121,7 @@
 			{
 				widget: "text",
 				name: "Text",
-				description: "Markdown formatted text.",
+				description: "Text, optionally parsed as a post.",
 				content: Widget.templates['admin/text.tpl']
 			},
 			{
