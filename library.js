@@ -4,11 +4,11 @@
 	var async = require('async'),
 		fs = require('fs'),
 		path = require('path'),
-		categories = require('./../../src/categories'),
-		user = require('./../../src/user'),
-		plugins = require('./../../src/plugins'),
-		translator = require('../../public/src/translator'),
-		templates = require('../../public/src/templates');
+		categories = module.parent.require('./categories'),
+		user = module.parent.require('./user'),
+		plugins = module.parent.require('./plugins'),
+		translator = module.parent.require('../public/src/translator'),
+		templates = module.parent.require('../public/src/templates');
 
 
 	var Widget = {
