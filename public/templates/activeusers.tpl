@@ -7,8 +7,8 @@
 <script type="text/javascript">
 function addActiveUser(data) {
 	var activeUser = $('.active-users').find('a[data-uid="' + data.uid + '"]');
-	if(!activeUser.length) {
-		var newUser = templates.prepare(templates['category'].blocks['active_users']).parse({
+	if(!activeUser.length && templates.cache['category']) {
+		var newUser = templates.parse(templates.getBlock(templates.cache['category'], 'active_users'), {
 			active_users: [{
 				uid: data.uid,
 				username: data.username,

@@ -37,7 +37,7 @@
 	Widget.renderRecentRepliesWidget = function(widget, callback) {
 		var html = Widget.templates['recentreplies.tpl'];
 
-		html = templates.prepare(html).parse({cid: widget.data.cid || false});
+		html = templates.parse(html, {cid: widget.data.cid || false});
 
 		callback(null, html);
 	};
@@ -54,7 +54,7 @@
 
 		categories.getActiveUsers(cid, function(err, uids) {
 			user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
-				html = templates.prepare(html).parse({active_users: users});
+				html = templates.parse(html, {active_users: users});
 
 				callback(err, html);
 			});
@@ -72,7 +72,7 @@
 		}
 
 		categories.getModerators(cid, function(err, moderators) {
-			html = templates.prepare(html).parse({moderators: moderators});
+			html = templates.parse(html, {moderators: moderators});
 
 			callback(err, html);
 		});
@@ -81,7 +81,7 @@
 	Widget.renderForumStatsWidget = function(widget, callback) {
 		var html = Widget.templates['forumstats.tpl'];
 
-		html = templates.prepare(html).parse({statsClass: widget.data.statsClass});
+		html = templates.parse(html, {statsClass: widget.data.statsClass});
 
 		translator.translate(html, function(translatedHTML) {
 			callback(null, translatedHTML);
@@ -91,7 +91,7 @@
 	Widget.renderRecentPostsWidget = function(widget, callback) {
 		var html = Widget.templates['recentposts.tpl'];
 
-		html = templates.prepare(html).parse({
+		html = templates.parse(html, {
 			numPosts: widget.data.numPosts || 8,
 			duration: widget.data.duration || 'day'
 		});
@@ -102,7 +102,7 @@
 	Widget.renderRecentTopicsWidget = function(widget, callback) {
 		var html = Widget.templates['recenttopics.tpl'];
 
-		html = templates.prepare(html).parse({
+		html = templates.parse(html, {
 			numTopics: widget.data.numTopics || 8,
 			duration: widget.data.duration || 'day'
 		});

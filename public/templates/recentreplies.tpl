@@ -20,7 +20,7 @@
 
 <script>
 (function() {
-	var cid = {cid} || templates.get('category_id') || 1;
+	var cid = {cid} || ajaxify.variables.get('category_id') || 1;
 
 	function renderRecentReplies(err, posts) {
 		if (err || !posts || posts.length === 0) {
@@ -34,11 +34,8 @@
 	}
 
 	function parseAndTranslate(posts, callback) {
-		templates.preload_template('recentreplies', function() {
-
-			templates['recentreplies'].parse({posts:[]});
-
-			var html = templates.prepare(templates['recentreplies'].blocks['posts']).parse({
+		ajaxify.loadTemplate('recentreplies', function(recentrepliesTemplate) {
+			var html = templates.parse(templates.getBlock(recentrepliesTemplate, 'posts'), {
 				posts: posts
 			});
 
