@@ -15,6 +15,7 @@
 .recent-replies ul li {
 	clear: both;
 	line-height: 17px;
+	margin-bottom: 10px;
 }
 
 .recent-replies ul li:last-child {
@@ -27,14 +28,15 @@
 	margin-right:8px;
 }
 
+.recent-replies ul li > div {
+	margin-left:55px;
+}
+
 .recent-replies ul li p {
 	display: block;
 	overflow: hidden;
 	font-size: 14px;
-	min-height: 35px;
-	max-height: 203px;
-	margin-bottom: 0;
-	margin-left:55px;
+	word-break: break-word;
 }
 
 .recent-replies ul li span {
