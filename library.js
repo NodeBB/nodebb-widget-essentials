@@ -7,8 +7,10 @@
 		categories = module.parent.require('./categories'),
 		user = module.parent.require('./user'),
 		plugins = module.parent.require('./plugins'),
+		topics = module.parent.require('./topics'),
 		translator = module.parent.require('../public/src/translator'),
-		templates = module.parent.require('../public/src/templates');
+		templates = module.parent.require('../public/src/templates'),
+		app;
 
 
 	var Widget = {
@@ -32,6 +34,25 @@
 		} else {
 			callback(null, text.replace(/\r\n/g, "<br />"));
 		}
+	};
+
+	Widget.renderRecentViewWidget = function(widget, callback) {
+		// var uid = (req.user) ? req.user.uid : 0; // todo
+		var uid = 0;
+
+		topics.getLatestTopics(uid, 0, 19, 'month', function (err, data) {
+			if(err) {
+				return callback(err);
+			}
+
+			app.render('recent', data, function(err, html) {
+				html = html.replace(/<ol[\s\S]*?<br \/>/, '').replace('<br>', '');
+
+				translator.translate(html, function(translatedHTML) {
+					callback(err, translatedHTML);
+				});
+			});
+		});
 	};
 
 	Widget.renderRecentRepliesWidget = function(widget, callback) {
@@ -159,16 +180,24 @@
 				name: "Recent Topics",
 				description: "Lists the latest topics on your forum.",
 				content: Widget.templates['admin/recenttopics.tpl']
+			},
+			{
+				widget: "recentview",
+				name: "Recent View",
+				description: "Renders the /recent page",
+				content: Widget.templates['admin/defaultwidget.tpl']
 			}
 		]);
 
 		callback(null, widgets);
 	};
 
-	Widget.init = function() {
+	Widget.init = function(express, middleware, controllers) {
+		app = express;
+
 		var templatesToLoad = [
 			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
-			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl", "admin/recenttopics.tpl"
+			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl", "admin/recenttopics.tpl", "admin/defaultwidget.tpl"
 		];
 
 		function loadTemplate(template, next) {

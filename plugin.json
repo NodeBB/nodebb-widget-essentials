@@ -9,31 +9,34 @@
 			"hook": "action:app.load", "method": "init"
 		},
 		{
-			"hook": "filter:widgets.getWidgets", "method": "defineWidgets", "callbacked": true
+			"hook": "filter:widgets.getWidgets", "method": "defineWidgets"
 		},
 		{
-			"hook": "filter:widget.render:text", "method": "renderTextWidget", "callbacked": true
+			"hook": "filter:widget.render:text", "method": "renderTextWidget"
 		},
 		{
-			"hook": "filter:widget.render:html", "method": "renderHTMLWidget", "callbacked": true
+			"hook": "filter:widget.render:html", "method": "renderHTMLWidget"
 		},
 		{
-			"hook": "filter:widget.render:recentreplies", "method": "renderRecentRepliesWidget", "callbacked": true
+			"hook": "filter:widget.render:recentreplies", "method": "renderRecentRepliesWidget"
 		},
 		{
-			"hook": "filter:widget.render:activeusers", "method": "renderActiveUsersWidget", "callbacked": true
+			"hook": "filter:widget.render:activeusers", "method": "renderActiveUsersWidget"
 		},
 		{
-			"hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget", "callbacked": true
+			"hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget"
 		},
 		{
-			"hook": "filter:widget.render:forumstats", "method": "renderForumStatsWidget", "callbacked": true
+			"hook": "filter:widget.render:forumstats", "method": "renderForumStatsWidget"
 		},
 		{
-			"hook": "filter:widget.render:recentposts", "method": "renderRecentPostsWidget", "callbacked": true
+			"hook": "filter:widget.render:recentposts", "method": "renderRecentPostsWidget"
 		},
 		{
-			"hook": "filter:widget.render:recenttopics", "method": "renderRecentTopicsWidget", "callbacked": true
+			"hook": "filter:widget.render:recenttopics", "method": "renderRecentTopicsWidget"
+		},
+		{
+			"hook": "filter:widget.render:recentview", "method": "renderRecentViewWidget"
 		}
 	],
 	"staticDir": "./public",
