@@ -22,11 +22,11 @@
 </div>
 
 <script type="text/javascript">
-ajaxify.register_events([
-	'user.count',
-	'meta.getUsageStats',
-	'user.getActiveUsers'
-]);
+$(window).on('action:ajaxify.start', function(ev) {
+    socket.removeAllListeners('user.count');
+    socket.removeAllListeners('meta.getUsageStats');
+    socket.removeAllListeners('user.getActiveUsers');
+});
 
 socket.emit('user.count', updateUserCount);
 socket.on('user.count', updateUserCount);
