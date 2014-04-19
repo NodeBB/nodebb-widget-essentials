@@ -10,8 +10,8 @@
 				{posts.content}
 			</div>
 			<span class="pull-right">
-				<a href="{relative_path}/topic/{posts.topic.slug}#{posts.pid}">[[category:posted]]</a>
-				<span class="timeago" title="{posts.relativeTime}"></span>
+				[[global:posted_ago, {posts.relativeTime}]] &bull;
+				<a href="{relative_path}/topic/{posts.topic.slug}#{posts.pid}">[[global:read_more]] <i class="fa fa-chevron-circle-right"></i></a>
 			</span>
 		</li>
 		<!-- END posts -->

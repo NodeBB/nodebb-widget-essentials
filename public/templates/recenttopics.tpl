@@ -65,8 +65,6 @@
 			replies += '<li data-pid="'+ topics[i].teaser.pid +'" class="clearfix">' +
 						'<a href="' + RELATIVE_PATH + '/user/' + topics[i].teaser.userslug + '"><img title="' + topics[i].teaser.username + '" class="img-rounded user-img" src="' + topics[i].teaser.picture + '"/></a>' +
 						'<p>' +
-							'<strong><span>'+ topics[i].teaser.username + '</span></strong>' +
-							'<span> [[global:posted]] [[global:in]] </span>' +
 							'"<a href="' + RELATIVE_PATH + '/topic/' + topics[i].slug + '#' + topics[i].teaser.pid + '" >' + topics[i].title + '</a>"' +
 						'</p>'+
 						'<span class="pull-right">'+

@@ -67,8 +67,8 @@
 						'<strong><span>'+ posts[i].user.username + '</span></strong>' +
 						'<div>' + posts[i].content + '</div>' +
 						'<span class="pull-right">'+
-							'<a href="' + RELATIVE_PATH + '/topic/' + posts[i].tid + '#' + posts[i].pid +'">[[category:posted]]</a> ' +
-							'<span class="timeago" title="' + posts[i].relativeTime+'"></span>'+
+							'[[global:posted_ago, ' + posts[i].relativeTime + ']] '+
+							'&bull; <a href="' + RELATIVE_PATH + '/topic/' + posts[i].tid + '#' + posts[i].pid +'">read more <i class="fa fa-chevron-circle-right"></i></a>'+
 						'</span>'+
 						'</li>';
 		}
