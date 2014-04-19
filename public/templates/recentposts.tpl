@@ -68,7 +68,7 @@
 						'<div>' + posts[i].content + '</div>' +
 						'<span class="pull-right">'+
 							'[[global:posted_ago, ' + posts[i].relativeTime + ']] '+
-							'&bull; <a href="' + RELATIVE_PATH + '/topic/' + posts[i].tid + '#' + posts[i].pid +'">read more <i class="fa fa-chevron-circle-right"></i></a>'+
+							'&bull; <a href="' + RELATIVE_PATH + '/topic/' + posts[i].tid + '#' + posts[i].pid +'">[[global:read_more]] <i class="fa fa-chevron-circle-right"></i></a>'+
 						'</span>'+
 						'</li>';
 		}
