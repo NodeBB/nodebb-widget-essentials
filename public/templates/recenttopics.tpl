@@ -38,17 +38,21 @@
 		socket.on('event:new_topic', app.widgets.recentTopics.onNewTopic);
 	}
 
-	$.get(RELATIVE_PATH + '/api/recent/{duration}', {}, function(posts) {
+	socket.emit('topics.loadTopics', {start:0, end: numTopics - 1, set:'topics:tid'}, function(err, data) {
+		if (err) {
+			return app.alertError(err.message);
+		}
+
 		var recentTopics = $('#recent_topics');
 
-		if(!posts || !posts.topics || !posts.topics.length) {
-			recentTopics.html('No topics have been posted in the past {duration}.');
+		if(!data || !data.topics || !data.topics.length) {
+			translator.translate('[[topic:no_topics_found]]', function(translated) {
+				recentTopics.html(translated);
+			});
 			return;
 		}
 
-		posts = posts.topics.slice(0, numTopics);
-
-		parseAndTranslate(posts, function(html) {
+		parseAndTranslate(data.topics, function(html) {
 			recentTopics.html(html);
 
 			app.createUserTooltips();
@@ -59,16 +63,17 @@
 		var replies = '';
 
 		for (var i = 0, numPosts = topics.length; i < numPosts; ++i) {
-			var lastPostIsoTime = utils.toISOString(topics[i].lastposttime);
+			var lastPostIsoTime = utils.toISOString(topics[i].timestamp);
 
 			// this would be better as a template, I copied this from Lavender.
-			replies += '<li data-pid="'+ topics[i].teaser.pid +'" class="clearfix">' +
-						'<a href="' + RELATIVE_PATH + '/user/' + topics[i].teaser.userslug + '"><img title="' + topics[i].teaser.username + '" class="img-rounded user-img" src="' + topics[i].teaser.picture + '"/></a>' +
+			replies += '<li class="clearfix">' +
+						'<a href="' + RELATIVE_PATH + '/user/' + topics[i].user.userslug + '"><img title="' + topics[i].user.username + '" class="img-rounded user-img" src="' + topics[i].user.picture + '"/></a>' +
 						'<p>' +
-							'"<a href="' + RELATIVE_PATH + '/topic/' + topics[i].slug + '#' + topics[i].teaser.pid + '" >' + topics[i].title + '</a>"' +
-						'</p>'+
+							'"<a href="' + RELATIVE_PATH + '/topic/' + topics[i].slug  + '" >' + topics[i].title + '</a>"' +
+						'</p>' +
+
 						'<span class="pull-right">'+
-							'<span class="timeago" title="' + lastPostIsoTime + '"></span>' +
+							'[[global:posted_ago, ' + lastPostIsoTime + ']] '+
 						'</span>'+
 						'</li>';
 		}
