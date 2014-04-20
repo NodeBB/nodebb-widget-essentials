@@ -60,28 +60,21 @@
 	});
 
 	function parseAndTranslate(topics, callback) {
-		var replies = '';
-
-		for (var i = 0, numPosts = topics.length; i < numPosts; ++i) {
-			var lastPostIsoTime = utils.toISOString(topics[i].timestamp);
-
-			// this would be better as a template, I copied this from Lavender.
-			replies += '<li class="clearfix">' +
-						'<a href="' + RELATIVE_PATH + '/user/' + topics[i].user.userslug + '"><img title="' + topics[i].user.username + '" class="img-rounded user-img" src="' + topics[i].user.picture + '"/></a>' +
-						'<p>' +
-							'"<a href="' + RELATIVE_PATH + '/topic/' + topics[i].slug  + '" >' + topics[i].title + '</a>"' +
-						'</p>' +
-
-						'<span class="pull-right">'+
-							'[[global:posted_ago, ' + lastPostIsoTime + ']] '+
-						'</span>'+
-						'</li>';
+		for (var i = 0; i < topics.length; ++i) {
+			topics[i].isoTimestamp = utils.toISOString(topics[i].timestamp);
 		}
 
-		translator.translate(replies, function(translatedHtml) {
-			translatedHtml = $(translatedHtml);
-			translatedHtml.find('span.timeago').timeago();
-			callback(translatedHtml);
+		ajaxify.loadTemplate('partials/topics', function(topicsTemplate) {
+			var html = templates.parse(templates.getBlock(topicsTemplate, 'topics'), {
+				topics: topics
+			});
+
+
+			translator.translate(html, function(translatedHtml) {
+				translatedHtml = $(translatedHtml);
+				translatedHtml.find('span.timeago').timeago();
+				callback(translatedHtml);
+			});
 		});
 	}
 

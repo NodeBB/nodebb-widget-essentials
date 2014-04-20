@@ -1,20 +1,6 @@
 <div class="recent-replies">
 	<ul id="category_recent_replies">
-		<!-- BEGIN posts -->
-		<li data-pid="{posts.pid}" class="clearfix">
-			<a href="{relative_path}/user/{posts.user.userslug}">
-				<img title="{posts.user.username}" class="img-rounded user-img" src="{posts.user.picture}" />
-			</a>
-			<strong><span>{posts.user.username}</span></strong>
-			<div>
-				{posts.content}
-			</div>
-			<span class="pull-right">
-				[[global:posted_ago, {posts.relativeTime}]] &bull;
-				<a href="{relative_path}/topic/{posts.topic.slug}#{posts.pid}">[[global:read_more]] <i class="fa fa-chevron-circle-right"></i></a>
-			</span>
-		</li>
-		<!-- END posts -->
+
 	</ul>
 </div>
 
@@ -34,8 +20,8 @@
 	}
 
 	function parseAndTranslate(posts, callback) {
-		ajaxify.loadTemplate('recentreplies', function(recentrepliesTemplate) {
-			var html = templates.parse(templates.getBlock(recentrepliesTemplate, 'posts'), {
+		ajaxify.loadTemplate('partials/posts', function(postsTemplate) {
+			var html = templates.parse(templates.getBlock(postsTemplate, 'posts'), {
 				posts: posts
 			});
 

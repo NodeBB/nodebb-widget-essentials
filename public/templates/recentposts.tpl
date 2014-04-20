@@ -58,26 +58,17 @@
 	});
 
 	function parseAndTranslate(posts, callback) {
-		var html = '';
+		ajaxify.loadTemplate('partials/posts', function(postsTemplate) {
+			var html = templates.parse(templates.getBlock(postsTemplate, 'posts'), {
+				posts: posts
+			});
 
-		for (var i = 0, numPosts = posts.length; i < numPosts; ++i) {
-
-			html += '<li data-pid="'+ posts[i].pid +'" class="clearfix">' +
-						'<a href="' + RELATIVE_PATH + '/user/' + posts[i].user.userslug + '"><img title="' + posts[i].user.username + '" class="img-rounded user-img" src="' + posts[i].user.picture + '"/></a>' +
-						'<strong><span>'+ posts[i].user.username + '</span></strong>' +
-						'<div>' + posts[i].content + '</div>' +
-						'<span class="pull-right">'+
-							'[[global:posted_ago, ' + posts[i].relativeTime + ']] '+
-							'&bull; <a href="' + RELATIVE_PATH + '/topic/' + posts[i].tid + '#' + posts[i].pid +'">[[global:read_more]] <i class="fa fa-chevron-circle-right"></i></a>'+
-						'</span>'+
-						'</li>';
-		}
-
-		translator.translate(html, function(translatedHTML) {
-			translatedHTML = $(translatedHTML);
-			translatedHTML.find('img').addClass('img-responsive');
-			translatedHTML.find('span.timeago').timeago();
-			callback(translatedHTML);
+			translator.translate(html, function(translatedHTML) {
+				translatedHTML = $(translatedHTML);
+				translatedHTML.find('img').addClass('img-responsive');
+				translatedHTML.find('span.timeago').timeago();
+				callback(translatedHTML);
+			});
 		});
 	}
 }());
