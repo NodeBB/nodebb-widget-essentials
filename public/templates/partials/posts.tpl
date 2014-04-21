@@ -8,7 +8,7 @@
 		{posts.content}
 	</div>
 	<span class="pull-right">
-		[[global:posted_ago, {posts.relativeTime}]] &bull;
+		[[global:posted_ago, <span class="timeago" title="{posts.relativeTime}"></span>]] &bull;
 		<a href="{relative_path}/topic/{posts.topic.slug}#{posts.pid}">[[global:read_more]] <i class="fa fa-chevron-circle-right"></i></a>
 	</span>
 </li>

@@ -5,7 +5,7 @@
 		<a href="{config.relative_path}/topic/{topics.slug}">{topics.title}</a>
 	</p>
 	<span class="pull-right">
-		[[global:posted_ago, {topics.isoTimestamp}]]
+		[[global:posted_ago, <span class="timeago" title="{topics.isoTimestamp}"></span>]]
 	</span>
 </li>
 <!-- END topics -->
