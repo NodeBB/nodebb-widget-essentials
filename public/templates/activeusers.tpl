@@ -7,9 +7,8 @@
 <script type="text/javascript">
 function addActiveUser(data) {
 	var topic = data.topicData;
-	console.log('test');
 	var activeUser = $('.active-users').find('a[data-uid="' + topic.uid + '"]');
-	console.log('test', activeUser.length);
+
 	if(!activeUser.length) {
 		ajaxify.loadTemplate('activeusers', function(template) {
 
