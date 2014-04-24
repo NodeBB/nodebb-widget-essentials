@@ -5,8 +5,7 @@
 </div>
 
 <script type="text/javascript">
-function addActiveUser(data) {
-	var topic = data.topicData;
+function addActiveUser(topic) {
 	var activeUser = $('.active-users').find('a[data-uid="' + topic.uid + '"]');
 
 	if(!activeUser.length) {

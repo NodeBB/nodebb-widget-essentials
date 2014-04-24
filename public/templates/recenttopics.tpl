@@ -15,14 +15,14 @@
 
 	if (!recentTopicsWidget) {
 		recentTopicsWidget = {};
-		recentTopicsWidget.onNewTopic = function(data) {
+		recentTopicsWidget.onNewTopic = function(topic) {
 
 			var recentTopics = $('#recent_topics');
 			if (!recentTopics.length) {
 				return;
 			}
 
-			parseAndTranslate([data.topicData], function(html) {
+			parseAndTranslate([topic], function(html) {
 				html.hide()
 					.prependTo(recentTopics)
 					.fadeIn();
