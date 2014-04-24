@@ -6,17 +6,25 @@
 
 <script type="text/javascript">
 function addActiveUser(data) {
-	var activeUser = $('.active-users').find('a[data-uid="' + data.uid + '"]');
-	if(!activeUser.length && templates.cache['category']) {
-		var newUser = templates.parse(templates.getBlock(templates.cache['category'], 'active_users'), {
-			active_users: [{
-				uid: data.uid,
-				username: data.username,
-				userslug: data.userslug,
-				picture: data.teaser_userpicture
-			}]
+	var topic = data.topicData;
+	console.log('test');
+	var activeUser = $('.active-users').find('a[data-uid="' + topic.uid + '"]');
+	console.log('test', activeUser.length);
+	if(!activeUser.length) {
+		ajaxify.loadTemplate('activeusers', function(template) {
+
+			var newUser = templates.parse(templates.getBlock(template, 'active_users'), {
+				active_users: [{
+					uid: topic.uid,
+					username: topic.user.username,
+					userslug: topic.user.userslug,
+					picture: topic.user.picture
+				}]
+			});
+			$(newUser).prependTo($('.active-users'));
 		});
-		$(newUser).appendTo($('.active-users'));
+	} else {
+		activeUser.prependTo($('.active-users'));
 	}
 }
 
