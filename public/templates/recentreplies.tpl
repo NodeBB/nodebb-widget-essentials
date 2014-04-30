@@ -16,6 +16,7 @@
 		parseAndTranslate(posts, function(html) {
 			$('#category_recent_replies').html(html);
 			app.createUserTooltips();
+			app.replaceSelfLinks(html.find('a'));
 		});
 	}
 

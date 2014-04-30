@@ -54,6 +54,7 @@
 			recentPosts.html(html);
 
 			app.createUserTooltips();
+			app.replaceSelfLinks(html.find('a'));
 		});
 	});
 
