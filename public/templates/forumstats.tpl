@@ -23,9 +23,9 @@
 
 <script type="text/javascript">
 $(window).on('action:ajaxify.start', function(ev) {
-    socket.removeAllListeners('user.count');
-    socket.removeAllListeners('meta.getUsageStats');
-    socket.removeAllListeners('user.getActiveUsers');
+	socket.removeListener('user.count', updateUserCount);
+	socket.removeListener('meta.getUsageStats', updateUsageStats);
+	socket.removeListener('user.getActiveUsers', updateActiveUsers);
 });
 
 socket.emit('user.count', updateUserCount);

@@ -5,6 +5,11 @@
 </div>
 
 <script type="text/javascript">
+
+$(window).on('action:ajaxify.start', function(ev) {
+	socket.removeListener('event:new_topic', addActiveUser);
+});
+
 function addActiveUser(topic) {
 	var activeUser = $('.active-users').find('a[data-uid="' + topic.uid + '"]');
 
