@@ -39,9 +39,8 @@
 			"hook": "filter:widget.render:recentview", "method": "renderRecentViewWidget"
 		}
 	],
-	"staticDir": "./public",
 	"templates": "./public/templates",
 	"css": [
-    	"css/widget.css"
+    	"public/css/widget.css"
     ]
 }
