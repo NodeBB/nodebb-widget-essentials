@@ -30,11 +30,13 @@
 
 .recent-replies ul li > div {
 	margin-left:55px;
+	max-height: 250px;
+	overflow:hidden;
 }
 
 .recent-replies ul li p {
 	display: block;
-	overflow: hidden;
+
 	font-size: 14px;
 	word-break: break-word;
 }
@@ -45,11 +47,8 @@
 	height: 16px;
 }
 
-.recent-replies .img-rounded, .active-users .img-rounded, .moderators .img-rounded {
+.recent-replies .user-img, .active-users .user-img, .moderators .user-img {
 	margin-top: 2px;
-	width: 20%;
-	height: auto;
-	max-width: 48px;
 }
 
 .forum-stats .stats-card {
