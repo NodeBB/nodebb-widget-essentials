@@ -5,6 +5,7 @@
 	</a>
 	<div>
 		{posts.content}
+		<p class="fade-out"></p>
 	</div>
 	<span class="pull-right footer">
 		<span class="timeago" title="{posts.relativeTime}"></span> &bull;
