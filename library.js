@@ -131,6 +131,16 @@
 		callback(null, html);
 	};
 
+	Widget.renderCategories = function(widget, callback) {
+		var html = Widget.templates['categories.tpl'];
+
+		categories.getVisibleCategories(0, function(err, data) {
+			html = templates.parse(html, {categories: data});
+
+			callback(err, html);
+		});
+	};
+
 	Widget.defineWidgets = function(widgets, callback) {
 		widgets = widgets.concat([
 			{
@@ -186,6 +196,12 @@
 				name: "Recent View",
 				description: "Renders the /recent page",
 				content: Widget.templates['admin/defaultwidget.tpl']
+			},
+			{
+				widget: "categories",
+				name: "Categories",
+				description: "Lists the categories on your forum",
+				content: Widget.templates['admin/categories.tpl']
 			}
 		]);
 
@@ -196,8 +212,9 @@
 		app = express;
 
 		var templatesToLoad = [
-			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
-			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl", "admin/recenttopics.tpl", "admin/defaultwidget.tpl"
+			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl", "categories.tpl",
+			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
+			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categories.tpl"
 		];
 
 		function loadTemplate(template, next) {

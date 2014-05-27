@@ -73,3 +73,8 @@
 .forum-stats .stats-card h2 {
 	line-height: 25px;
 }
+
+.categories-list {
+	list-style: none;
+	padding-left: 0px;
+}

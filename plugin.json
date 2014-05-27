@@ -37,6 +37,9 @@
 		},
 		{
 			"hook": "filter:widget.render:recentview", "method": "renderRecentViewWidget"
+		},
+		{
+			"hook": "filter:widget.render:categories", "method": "renderCategories"
 		}
 	],
 	"templates": "./public/templates",
