@@ -37,10 +37,7 @@
 	};
 
 	Widget.renderRecentViewWidget = function(widget, callback) {
-		// var uid = (req.user) ? req.user.uid : 0; // todo
-		var uid = 0;
-
-		topics.getLatestTopics(uid, 0, 19, 'month', function (err, data) {
+		topics.getLatestTopics(widget.uid, 0, 19, 'month', function (err, data) {
 			if(err) {
 				return callback(err);
 			}
@@ -134,7 +131,7 @@
 	Widget.renderCategories = function(widget, callback) {
 		var html = Widget.templates['categories.tpl'];
 
-		categories.getVisibleCategories(0, function(err, data) {
+		categories.getVisibleCategories(widget.uid, function(err, data) {
 			html = templates.parse(html, {categories: data});
 
 			callback(err, html);
