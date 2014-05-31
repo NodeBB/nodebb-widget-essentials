@@ -40,6 +40,9 @@
 		},
 		{
 			"hook": "filter:widget.render:categories", "method": "renderCategories"
+		},
+		{
+			"hook": "filter:widget.render:populartags", "method": "renderPopularTags"
 		}
 	],
 	"templates": "./public/templates",

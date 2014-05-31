@@ -138,6 +138,21 @@
 		});
 	};
 
+	Widget.renderPopularTags = function(widget, callback) {
+		var html = Widget.templates['populartags.tpl'];
+		console.log(widget);
+		var numTags = widget.data.numTags || 8;
+		topics.getTags(0, numTags - 1, function(err, tags) {
+			if (err) {
+				return callback(err);
+			}
+
+			html = templates.parse(html, {tags: tags});
+
+			callback(err, html);
+		});
+	};
+
 	Widget.defineWidgets = function(widgets, callback) {
 		widgets = widgets.concat([
 			{
@@ -199,6 +214,12 @@
 				name: "Categories",
 				description: "Lists the categories on your forum",
 				content: Widget.templates['admin/categories.tpl']
+			},
+			{
+				widget:"populartags",
+				name:"Popular Tags",
+				description:"Lists popular tags on your forum",
+				content: Widget.templates['admin/populartags.tpl']
 			}
 		]);
 
@@ -209,13 +230,18 @@
 		app = express;
 
 		var templatesToLoad = [
-			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl", "categories.tpl",
+			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
+			"categories.tpl", "populartags.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
-			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categories.tpl"
+			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categories.tpl", "admin/populartags.tpl"
 		];
 
 		function loadTemplate(template, next) {
 			fs.readFile(path.resolve(__dirname, './public/templates/' + template), function (err, data) {
+				if (err) {
+					console.log(err.message);
+					return next(err);
+				}
 				Widget.templates[template] = data.toString();
 				next(err);
 			});
