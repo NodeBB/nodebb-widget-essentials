@@ -140,7 +140,6 @@
 
 	Widget.renderPopularTags = function(widget, callback) {
 		var html = Widget.templates['populartags.tpl'];
-		console.log(widget);
 		var numTags = widget.data.numTags || 8;
 		topics.getTags(0, numTags - 1, function(err, tags) {
 			if (err) {
@@ -213,7 +212,7 @@
 				widget: "categories",
 				name: "Categories",
 				description: "Lists the categories on your forum",
-				content: Widget.templates['admin/categories.tpl']
+				content: Widget.templates['admin/categorieswidget.tpl']
 			},
 			{
 				widget:"populartags",
@@ -233,7 +232,7 @@
 			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
 			"categories.tpl", "populartags.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
-			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categories.tpl", "admin/populartags.tpl"
+			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl"
 		];
 
 		function loadTemplate(template, next) {
