@@ -80,14 +80,14 @@
 
 		if (widget.data.cid) {
 			cidOrtid = widget.data.cid;
-		} else if (widget.area.url.indexOf('category') === 0) {
-			var match = widget.area.url.match('category/([0-9]+)');
-			cidOrtid = (match && match.length > 1) ? match[1] : 1;
-			categories.getActiveUsers(cidOrtid, getUserData);
 		} else if (widget.area.url.indexOf('topic') === 0) {
 			var match = widget.area.url.match('topic/([0-9]+)');
 			cidOrtid = (match && match.length > 1) ? match[1] : 1;
 			topics.getUids(cidOrtid, getUserData);
+		} else {
+			var match = widget.area.url.match('[0-9]+');
+			cidOrtid = match ? match[0] : 1;
+			categories.getActiveUsers(cidOrtid, getUserData);
 		}
 	};
 
