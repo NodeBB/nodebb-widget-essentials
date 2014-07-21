@@ -237,7 +237,7 @@
 		callback(null, widgets);
 	};
 
-	Widget.init = function(express, middleware, controllers) {
+	Widget.init = function(express, middleware, controllers, callback) {
 		app = express;
 
 		var templatesToLoad = [
@@ -259,6 +259,8 @@
 		}
 
 		async.each(templatesToLoad, loadTemplate);
+
+		callback();
 	};
 
 	module.exports = Widget;
