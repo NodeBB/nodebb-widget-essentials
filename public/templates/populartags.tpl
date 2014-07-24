@@ -1,8 +1,7 @@
+<div class="popular-tags">
 <!-- BEGIN tags -->
-	<a href="{relative_path}/tags/{tags.value}" class="pull-left">
-		<h4>
-		<span class="label label-info">{tags.value}</span>
-		 <small>x</small><span class="tag-topic-count">{tags.score}</span>
-		</h4>
-	</a>
+	<span class="inline-block">
+	<a href="{relative_path}/tags/{tags.value}"><span class="tag-item tag-{tags.valie}">&bull; {tags.value}</span></a><span> <small>x</small><span class="tag-topic-count">{tags.score}</span></span>
+	</span>
 <!-- END tags -->
+</div>
