@@ -70,6 +70,7 @@
 				if (err) {
 					return callback(err);
 				}
+
 				html = templates.parse(html, {active_users: users});
 
 				callback(err, html);
@@ -254,7 +255,7 @@
 					return next(err);
 				}
 				Widget.templates[template] = data.toString();
-				next(err);
+				next(null);
 			});
 		}
 

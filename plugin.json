@@ -6,7 +6,7 @@
 	"library": "./library.js",
 	"hooks": [
 		{
-			"hook": "filter:app.load", "method": "init"
+			"hook": "static:app.load", "method": "init"
 		},
 		{
 			"hook": "filter:widgets.getWidgets", "method": "defineWidgets"
