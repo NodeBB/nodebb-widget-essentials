@@ -8,6 +8,7 @@
 		user = module.parent.require('./user'),
 		plugins = module.parent.require('./plugins'),
 		topics = module.parent.require('./topics'),
+		posts = module.parent.require('./posts'),
 		translator = module.parent.require('../public/src/translator'),
 		templates = module.parent.require('../public/src/templates'),
 		app;
@@ -85,6 +86,8 @@
 			var match = widget.area.url.match('topic/([0-9]+)');
 			cidOrtid = (match && match.length > 1) ? match[1] : 1;
 			topics.getUids(cidOrtid, getUserData);
+		} else if (widget.area.url === '') {
+			posts.getRecentPosterUids(0, 24, getUserData);
 		} else {
 			var match = widget.area.url.match('[0-9]+');
 			cidOrtid = match ? match[0] : 1;
