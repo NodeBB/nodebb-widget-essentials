@@ -147,7 +147,7 @@
 	Widget.renderCategories = function(widget, callback) {
 		var html = Widget.templates['categories.tpl'];
 
-		categories.getVisibleCategories(widget.uid, function(err, data) {
+		categories.getCategoriesByPrivilege(widget.uid, 'find', function(err, data) {
 			html = templates.parse(html, {categories: data});
 
 			callback(err, html);
