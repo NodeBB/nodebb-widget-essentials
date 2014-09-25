@@ -10,7 +10,7 @@
 		topics = module.parent.require('./topics'),
 		posts = module.parent.require('./posts'),
 		translator = module.parent.require('../public/src/translator'),
-		templates = module.parent.require('../public/src/templates'),
+		templates = module.parent.require('templates.js'),
 		app;
 
 
