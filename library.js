@@ -19,9 +19,7 @@
 	};
 
 	Widget.renderHTMLWidget = function(widget, callback) {
-		var html = widget.data.html;
-
-		callback(null, html);
+		callback(null, widget.data.html);
 	};
 
 	Widget.renderTextWidget = function(widget, callback) {
@@ -29,9 +27,7 @@
 			text = widget.data.text;
 
 		if (parseAsPost) {
-			plugins.fireHook('filter:post.parse', text, function(err, text) {
-				callback(err, text);
-			});
+			plugins.fireHook('filter:post.parse', text, callback);
 		} else {
 			callback(null, text.replace(/\r\n/g, "<br />"));
 		}
@@ -82,6 +78,7 @@
 
 		if (widget.data.cid) {
 			cidOrtid = widget.data.cid;
+			categories.getActiveUsers(cidOrtid, getUserData);
 		} else if (widget.area.url.indexOf('topic') === 0) {
 			var match = widget.area.url.match('topic/([0-9]+)');
 			cidOrtid = (match && match.length > 1) ? match[1] : 1;
