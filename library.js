@@ -76,7 +76,29 @@
 
 		var html = Widget.templates['activeusers.tpl'], cidOrtid;
 
-		if (widget.data.cid) {
+		if(widget.data.global) {
+			async.parallel({
+				users: function(next) {
+					user.getUsersFromSet('users:online', 0, 49, next);
+				},
+				isAdministrator: function(next) {
+					user.isAdministrator(widget.uid, next);
+				}
+			}, function(err, results) {
+				if (err) {
+					return getUserData(err);
+				}
+
+				if (!results.isAdministrator) {
+					results.users = results.users.filter(function(user) {
+						return user && user.status !== 'offline';
+					});
+				}
+
+				results.users = results.users.map(function(a) { return a.uid; });
+				getUserData(err, results.users);
+			});
+		} else if (widget.data.cid) {
 			cidOrtid = widget.data.cid;
 			categories.getActiveUsers(cidOrtid, getUserData);
 		} else if (widget.area.url.indexOf('topic') === 0) {
@@ -188,8 +210,8 @@
 			{
 				widget: "activeusers",
 				name: "Active Users",
-				description: "List of active users in a category.",
-				content: Widget.templates['admin/categorywidget.tpl']
+				description: "List of active users, optionally in a category.",
+				content: Widget.templates['admin/activeusers.tpl']
 			},
 			{
 				widget: "moderators",
@@ -244,7 +266,7 @@
 		var templatesToLoad = [
 			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
 			"categories.tpl", "populartags.tpl",
-			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
+			"admin/categorywidget.tpl", "admin/activeusers.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl"
 		];
 
