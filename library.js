@@ -27,7 +27,7 @@
 			text = widget.data.text;
 
 		if (parseAsPost) {
-			plugins.fireHook('filter:post.parse', text, callback);
+			plugins.fireHook('filter:parse.raw', text, callback);
 		} else {
 			callback(null, text.replace(/\r\n/g, "<br />"));
 		}
