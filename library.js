@@ -18,6 +18,32 @@
 		templates: {}
 	};
 
+	Widget.init = function(params, callback) {
+		app = params.app;
+
+		var templatesToLoad = [
+			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
+			"categories.tpl", "populartags.tpl",
+			"admin/categorywidget.tpl", "admin/activeusers.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
+			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl"
+		];
+
+		function loadTemplate(template, next) {
+			fs.readFile(path.resolve(__dirname, './public/templates/' + template), function (err, data) {
+				if (err) {
+					console.log(err.message);
+					return next(err);
+				}
+				Widget.templates[template] = data.toString();
+				next(null);
+			});
+		}
+
+		async.each(templatesToLoad, loadTemplate);
+
+		callback();
+	};
+
 	Widget.renderHTMLWidget = function(widget, callback) {
 		callback(null, widget.data.html);
 	};
@@ -27,7 +53,7 @@
 			text = widget.data.text;
 
 		if (parseAsPost) {
-			plugins.fireHook('filter:post.parse', text, callback);
+			plugins.fireHook('filter:parse.raw', text, callback);
 		} else {
 			callback(null, text.replace(/\r\n/g, "<br />"));
 		}
@@ -76,7 +102,8 @@
 
 		var html = Widget.templates['activeusers.tpl'], cidOrtid;
 
-		if(widget.data.global) {
+		var match;
+		if (widget.data.global) {
 			async.parallel({
 				users: function(next) {
 					user.getUsersFromSet('users:online', 0, 49, next);
@@ -102,13 +129,13 @@
 			cidOrtid = widget.data.cid;
 			categories.getActiveUsers(cidOrtid, getUserData);
 		} else if (widget.area.url.indexOf('topic') === 0) {
-			var match = widget.area.url.match('topic/([0-9]+)');
+			match = widget.area.url.match('topic/([0-9]+)');
 			cidOrtid = (match && match.length > 1) ? match[1] : 1;
 			topics.getUids(cidOrtid, getUserData);
 		} else if (widget.area.url === '') {
 			posts.getRecentPosterUids(0, 24, getUserData);
 		} else {
-			var match = widget.area.url.match('[0-9]+');
+			match = widget.area.url.match('[0-9]+');
 			cidOrtid = match ? match[0] : 1;
 			categories.getActiveUsers(cidOrtid, getUserData);
 		}
@@ -258,32 +285,6 @@
 		]);
 
 		callback(null, widgets);
-	};
-
-	Widget.init = function(express, middleware, controllers, callback) {
-		app = express;
-
-		var templatesToLoad = [
-			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
-			"categories.tpl", "populartags.tpl",
-			"admin/categorywidget.tpl", "admin/activeusers.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
-			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl"
-		];
-
-		function loadTemplate(template, next) {
-			fs.readFile(path.resolve(__dirname, './public/templates/' + template), function (err, data) {
-				if (err) {
-					console.log(err.message);
-					return next(err);
-				}
-				Widget.templates[template] = data.toString();
-				next(null);
-			});
-		}
-
-		async.each(templatesToLoad, loadTemplate);
-
-		callback();
 	};
 
 	module.exports = Widget;
