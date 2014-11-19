@@ -228,12 +228,6 @@
 				content: Widget.templates['admin/categorywidget.tpl']
 			},
 			{
-				widget: "activeusers",
-				name: "Active Users",
-				description: "List of active users in a category.",
-				content: Widget.templates['admin/categorywidget.tpl']
-			},
-			{
 				widget: "moderators",
 				name: "Moderators",
 				description: "List of moderators in a category.",
