@@ -18,9 +18,6 @@
 			"hook": "filter:widget.render:html", "method": "renderHTMLWidget"
 		},
 		{
-			"hook": "filter:widget.render:recentreplies", "method": "renderRecentRepliesWidget"
-		},
-		{
 			"hook": "filter:widget.render:activeusers", "method": "renderActiveUsersWidget"
 		},
 		{

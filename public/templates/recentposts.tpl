@@ -1,15 +1,20 @@
 <div class="recent-replies">
-	<ul id="recent_posts">
-
+	<ul id="recent_posts" data-numposts="{numPosts}">
+	<!-- IMPORT partials/posts.tpl -->
 	</ul>
 </div>
 
 <script>
-(function() {
+'use strict';
+/* globals app, socket, translator, templates*/
+$(document).ready(function() {
+	var replies = $('#recent_posts');
+
+	app.createUserTooltips();
+	processHtml(replies);
 
 	var recentPostsWidget = app.widgets.recentPosts;
-	var numPosts = parseInt('{numPosts}', 10);
-		numPosts = numPosts || 8;
+	var numPosts = parseInt(replies.attr('data-numposts', 10)) || 4;
 
 	if (!recentPostsWidget) {
 		recentPostsWidget = {};
@@ -30,47 +35,27 @@
 					recentPosts.children().last().remove();
 				}
 			});
-		}
+		};
 
 		app.widgets.recentPosts = recentPostsWidget;
 		socket.on('event:new_post', app.widgets.recentPosts.onNewPost);
 	}
 
-	var data = {
-		term: '{duration}',
-		count: numPosts
-	};
-
-	socket.emit('posts.getRecentPosts', data, function(err, posts) {
-		var recentPosts = $('#recent_posts');
-
-		if (!posts || !posts.length) {
-			recentPosts.html('No posts have been posted in the past {duration}.');
-			return;
-		}
-
-		posts = posts.slice(0, numPosts);
-		parseAndTranslate(posts, function(html) {
-			recentPosts.html(html);
-
-			app.createUserTooltips();
-			app.replaceSelfLinks(html.find('a'));
-		});
-	});
-
 	function parseAndTranslate(posts, callback) {
-		ajaxify.loadTemplate('partials/posts', function(postsTemplate) {
-			var html = templates.parse(templates.getBlock(postsTemplate, 'posts'), {
-				posts: posts
-			});
-
+		templates.parse('partials/posts', 'posts', {posts: posts}, function(html) {
 			translator.translate(html, function(translatedHTML) {
 				translatedHTML = $(translatedHTML);
-				translatedHTML.find('img').addClass('img-responsive');
-				translatedHTML.find('span.timeago').timeago();
+				processHtml(translatedHTML);
 				callback(translatedHTML);
 			});
 		});
 	}
-}());
+
+	function processHtml(html) {
+		app.replaceSelfLinks(html.find('a'));
+
+		html.find('img').addClass('img-responsive');
+		html.find('span.timeago').timeago();
+	}
+});
 </script>

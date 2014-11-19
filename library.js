@@ -22,8 +22,7 @@
 		app = params.app;
 
 		var templatesToLoad = [
-			//"recentreplies.tpl"
-			"activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
+			"activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recenttopics.tpl",
 			"categories.tpl", "populartags.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl"
@@ -72,28 +71,6 @@
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
-			});
-		});
-	};
-
-	Widget.renderRecentRepliesWidget = function(widget, callback) {
-		console.log(widget);
-		//var html = Widget.templates['recentreplies.tpl'];
-
-		var cid = widget.data.cid;
-		if (!cid) {
-			var match = widget.area.url.match('category/([0-9]+)');
-			cid = (match && match.length > 1) ? match[1] : 1;
-		}
-
-		categories.getRecentReplies(cid, widget.uid, widget.data.numPosts || 4, function(err, posts) {
-			if (err) {
-				return callback(err);
-			}
-
-			templates.parse('recentreplies', {cid: widget.data.cid, posts: posts}, function(html) {
-				console.log('fail', html);
-				callback(null, html);
 			});
 		});
 	};
@@ -161,14 +138,27 @@
 	};
 
 	Widget.renderRecentPostsWidget = function(widget, callback) {
-		var html = Widget.templates['recentposts.tpl'];
-
-		html = templates.parse(html, {
-			numPosts: widget.data.numPosts || 8,
-			duration: widget.data.duration || 'day'
-		});
-
-		callback(null, html);
+		function done(err, posts) {
+			if (err) {
+				return callback(err);
+			}
+			app.render('recentposts', {posts: posts, numPosts: numPosts}, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					callback(err, translatedHTML);
+				});
+			});
+		}
+		var cid = widget.data.cid;
+		if (!cid) {
+			var match = widget.area.url.match('category/([0-9]+)');
+			cid = (match && match.length > 1) ? match[1] : 1;
+		}
+		var numPosts = widget.data.numPosts || 4;
+		if (cid) {
+			categories.getRecentReplies(cid, widget.uid, numPosts, done);
+		} else {
+			posts.getRecentPosts(widget.uid, 0, numPosts, widget.data.duration || 'day', done);
+		}
 	};
 
 	Widget.renderRecentTopicsWidget = function(widget, callback) {
@@ -219,12 +209,6 @@
 				name: "Text",
 				description: "Text, optionally parsed as a post.",
 				content: Widget.templates['admin/text.tpl']
-			},
-			{
-				widget: "recentreplies",
-				name: "Recent Replies",
-				description: "List of recent replies in a category.",
-				content: Widget.templates['admin/categorywidget.tpl']
 			},
 			{
 				widget: "activeusers",
