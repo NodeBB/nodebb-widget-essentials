@@ -22,7 +22,7 @@
 		app = params.app;
 
 		var templatesToLoad = [
-			"activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recenttopics.tpl",
+			"activeusers.tpl", "moderators.tpl", "forumstats.tpl",
 			"categories.tpl", "populartags.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl"
@@ -142,7 +142,7 @@
 			if (err) {
 				return callback(err);
 			}
-			app.render('recentposts', {posts: posts, numPosts: numPosts}, function(err, html) {
+			app.render('recentposts', {posts: posts, numPosts: numPosts, cid: cid}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -151,7 +151,7 @@
 		var cid = widget.data.cid;
 		if (!cid) {
 			var match = widget.area.url.match('category/([0-9]+)');
-			cid = (match && match.length > 1) ? match[1] : 1;
+			cid = (match && match.length > 1) ? match[1] : null;
 		}
 		var numPosts = widget.data.numPosts || 4;
 		if (cid) {
@@ -162,14 +162,19 @@
 	};
 
 	Widget.renderRecentTopicsWidget = function(widget, callback) {
-		var html = Widget.templates['recenttopics.tpl'];
+		var numTopics = widget.data.numTopics || 8;
 
-		html = templates.parse(html, {
-			numTopics: widget.data.numTopics || 8,
-			duration: widget.data.duration || 'day'
+		topics.getTopicsFromSet('topics:recent', widget.uid, 0, numTopics, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			app.render('recenttopics', {topics: data.topics, numTopics: numTopics}, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					callback(err, translatedHTML);
+				});
+			});
 		});
-
-		callback(null, html);
 	};
 
 	Widget.renderCategories = function(widget, callback) {

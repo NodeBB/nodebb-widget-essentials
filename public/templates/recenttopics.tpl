@@ -1,17 +1,22 @@
 <div class="recent-replies">
-	<ul id="recent_topics">
-
+	<ul id="recent_topics" data-numtopics="{numTopics}">
+	<!-- IMPORT partials/topics.tpl -->
 	</ul>
 </div>
 
 <script>
-(function() {
+'use strict';
+/* globals app, socket, translator, templates, utils*/
+
+$(document).ready(function() {
+	var	topics = $('#recent_topics');
+
+	app.createUserTooltips();
+	processHtml(topics);
 
 	var recentTopicsWidget = app.widgets.recentTopics;
 
-	var numTopics = parseInt('{numTopics}', 10);
-		numTopics = numTopics || 8;
-
+	var numTopics = parseInt(topics.attr('data-numtopics'), 10) || 8;
 
 	if (!recentTopicsWidget) {
 		recentTopicsWidget = {};
@@ -32,51 +37,29 @@
 					recentTopics.children().last().remove();
 				}
 			});
-		}
+		};
 
 		app.widgets.recentTopics = recentTopicsWidget;
 		socket.on('event:new_topic', app.widgets.recentTopics.onNewTopic);
 	}
-
-	socket.emit('topics.loadTopics', {start:0, end: numTopics - 1, set:'topics:tid'}, function(err, data) {
-		if (err) {
-			return app.alertError(err.message);
-		}
-
-		var recentTopics = $('#recent_topics');
-
-		if(!data || !data.topics || !data.topics.length) {
-			translator.translate('[[topic:no_topics_found]]', function(translated) {
-				recentTopics.html(translated);
-			});
-			return;
-		}
-
-		parseAndTranslate(data.topics, function(html) {
-			recentTopics.html(html);
-
-			app.createUserTooltips();
-		});
-	});
 
 	function parseAndTranslate(topics, callback) {
 		for (var i = 0; i < topics.length; ++i) {
 			topics[i].isoTimestamp = utils.toISOString(topics[i].timestamp);
 		}
 
-		ajaxify.loadTemplate('partials/topics', function(topicsTemplate) {
-			var html = templates.parse(templates.getBlock(topicsTemplate, 'topics'), {
-				topics: topics
-			});
-
-
+		templates.parse('partials/topics', 'topics', {topics: topics}, function(html) {
 			translator.translate(html, function(translatedHtml) {
 				translatedHtml = $(translatedHtml);
-				translatedHtml.find('span.timeago').timeago();
+				processHtml(translatedHtml);
 				callback(translatedHtml);
 			});
 		});
 	}
 
-}());
+	function processHtml(html) {
+		html.find('span.timeago').timeago();
+	}
+
+});
 </script>
