@@ -86,12 +86,12 @@
 			cid = (match && match.length > 1) ? match[1] : 1;
 		}
 
-		categories.getRecentReplies(cid, widget.uid, widget.data.numPosts || 4, function(err, data) {
+		categories.getRecentReplies(cid, widget.uid, widget.data.numPosts || 4, function(err, posts) {
 			if (err) {
 				return callback(err);
 			}
 
-			templates.parse('recentreplies', {cid: widget.data.cid, posts: data.posts}, function(html) {
+			templates.parse('recentreplies', {cid: widget.data.cid, posts: posts}, function(html) {
 				console.log('fail', html);
 				callback(null, html);
 			});
