@@ -216,6 +216,18 @@
 				content: Widget.templates['admin/text.tpl']
 			},
 			{
+				widget: "recentreplies",
+				name: "Recent Replies[deprecated]",
+				description: "List of recent replies in a category.",
+				content: Widget.templates['admin/categorywidget.tpl']
+			},
+			{
+				widget: "activeusers",
+				name: "Active Users",
+				description: "List of active users in a category.",
+				content: Widget.templates['admin/categorywidget.tpl']
+			},
+			{
 				widget: "activeusers",
 				name: "Active Users",
 				description: "List of active users in a category.",
