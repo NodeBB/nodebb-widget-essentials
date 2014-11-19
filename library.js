@@ -22,7 +22,8 @@
 		app = params.app;
 
 		var templatesToLoad = [
-			"recentreplies.tpl", "activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
+			//"recentreplies.tpl"
+			"activeusers.tpl", "moderators.tpl", "forumstats.tpl", "recentposts.tpl", "recenttopics.tpl",
 			"categories.tpl", "populartags.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl"
@@ -76,11 +77,25 @@
 	};
 
 	Widget.renderRecentRepliesWidget = function(widget, callback) {
-		var html = Widget.templates['recentreplies.tpl'];
+		console.log(widget);
+		//var html = Widget.templates['recentreplies.tpl'];
 
-		html = templates.parse(html, {cid: widget.data.cid || false});
+		var cid = widget.data.cid;
+		if (!cid) {
+			var match = widget.area.url.match('category/([0-9]+)');
+			cid = (match && match.length > 1) ? match[1] : 1;
+		}
 
-		callback(null, html);
+		categories.getRecentReplies(cid, widget.uid, widget.data.numPosts || 4, function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+
+			templates.parse('recentreplies', {cid: widget.data.cid, posts: data.posts}, function(html) {
+				console.log('fail', html);
+				callback(null, html);
+			});
+		});
 	};
 
 	Widget.renderActiveUsersWidget = function(widget, callback) {
