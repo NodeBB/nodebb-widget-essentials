@@ -4,6 +4,7 @@
 	var async = require('async'),
 		fs = require('fs'),
 		path = require('path'),
+		db = module.parent.require('./database'),
 		categories = module.parent.require('./categories'),
 		user = module.parent.require('./user'),
 		plugins = module.parent.require('./plugins'),
@@ -11,6 +12,7 @@
 		posts = module.parent.require('./posts'),
 		translator = module.parent.require('../public/src/translator'),
 		templates = module.parent.require('templates.js'),
+		websockets = module.parent.require('./socket.io'),
 		app;
 
 
@@ -22,7 +24,7 @@
 		app = params.app;
 
 		var templatesToLoad = [
-			"activeusers.tpl", "moderators.tpl", "forumstats.tpl",
+			"activeusers.tpl", "moderators.tpl",
 			"categories.tpl", "populartags.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl"
@@ -128,12 +130,22 @@
 	};
 
 	Widget.renderForumStatsWidget = function(widget, callback) {
-		var html = Widget.templates['forumstats.tpl'];
-
-		html = templates.parse(html, {statsClass: widget.data.statsClass});
-
-		translator.translate(html, function(translatedHTML) {
-			callback(null, translatedHTML);
+		db.getObjectFields('global', ['topicCount', 'postCount', 'userCount'], function(err, data) {
+			if (err) {
+				return callback(err);
+			}
+			var stats = {
+				topics: data.topicCount ? data.topicCount : 0,
+				posts: data.postCount ? data.postCount : 0,
+				users: data.userCount ? data.userCount : 0,
+				online: websockets.getOnlineUserCount(),
+				statsClass: widget.data.statsClass
+			};
+			app.render('forumstats', stats, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					callback(err, translatedHTML);
+				});
+			});
 		});
 	};
 
