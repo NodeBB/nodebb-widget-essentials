@@ -138,7 +138,7 @@
 				topics: data.topicCount ? data.topicCount : 0,
 				posts: data.postCount ? data.postCount : 0,
 				users: data.userCount ? data.userCount : 0,
-				online: websockets.getOnlineUserCount(),
+				online: websockets.getOnlineUserCount() + websockets.getOnlineAnonCount(),
 				statsClass: widget.data.statsClass
 			};
 			app.render('forumstats', stats, function(err, html) {
