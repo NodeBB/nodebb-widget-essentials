@@ -169,7 +169,7 @@
 		if (cid) {
 			categories.getRecentReplies(cid, widget.uid, numPosts, done);
 		} else {
-			posts.getRecentPosts(widget.uid, 0, numPosts, widget.data.duration || 'day', done);
+			posts.getRecentPosts(widget.uid, 0, Math.max(0, numPosts - 1), widget.data.duration || 'day', done);
 		}
 	};
 
