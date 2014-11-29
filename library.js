@@ -130,15 +130,24 @@
 	};
 
 	Widget.renderForumStatsWidget = function(widget, callback) {
-		db.getObjectFields('global', ['topicCount', 'postCount', 'userCount'], function(err, data) {
+		async.parallel({
+			global: function(next) {
+				db.getObjectFields('global', ['topicCount', 'postCount', 'userCount'], next);
+			},
+			onlineCount: function(next) {
+				var now = Date.now();
+				db.sortedSetCount('users:online', now - 300000, now, next);
+			}
+		}, function(err, results) {
 			if (err) {
 				return callback(err);
 			}
+
 			var stats = {
-				topics: data.topicCount ? data.topicCount : 0,
-				posts: data.postCount ? data.postCount : 0,
-				users: data.userCount ? data.userCount : 0,
-				online: websockets.getOnlineUserCount() + websockets.getOnlineAnonCount(),
+				topics: results.global.topicCount ? results.global.topicCount : 0,
+				posts: results.global.postCount ? results.global.postCount : 0,
+				users: results.global.userCount ? results.global.userCount : 0,
+				online: results.onlineCount + websockets.getOnlineAnonCount(),
 				statsClass: widget.data.statsClass
 			};
 			app.render('forumstats', stats, function(err, html) {
