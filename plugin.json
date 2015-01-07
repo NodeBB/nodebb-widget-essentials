@@ -40,6 +40,9 @@
 		},
 		{
 			"hook": "filter:widget.render:populartags", "method": "renderPopularTags"
+		},
+		{
+			"hook": "filter:widget.render:populartopics", "method": "renderPopularTopics"
 		}
 	],
 	"templates": "./public/templates",

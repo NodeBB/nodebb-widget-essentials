@@ -25,9 +25,10 @@
 
 		var templatesToLoad = [
 			"activeusers.tpl", "moderators.tpl",
-			"categories.tpl", "populartags.tpl",
+			"categories.tpl", "populartags.tpl", "populartopics.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
-			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl"
+			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl",
+			"admin/populartopics.tpl"
 		];
 
 		function loadTemplate(template, next) {
@@ -222,6 +223,21 @@
 		});
 	};
 
+	Widget.renderPopularTopics = function(widget, callback) {
+		var numTopics = widget.data.numTopics || 8;
+		topics.getPopular(widget.data.duration || 'alltime', widget.uid, numTopics, function(err, topics) {
+			if (err) {
+				return callback(err);
+			}
+
+			app.render('populartopics', {topics: topics, numTopics: numTopics}, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					callback(err, translatedHTML);
+				});
+			});
+		});
+	};
+
 	Widget.defineWidgets = function(widgets, callback) {
 		widgets = widgets.concat([
 			{
@@ -289,6 +305,12 @@
 				name:"Popular Tags",
 				description:"Lists popular tags on your forum",
 				content: Widget.templates['admin/populartags.tpl']
+			},
+			{
+				widget:"populartopics",
+				name:"Popular Topics",
+				description:"Lists popular topics on your forum",
+				content: Widget.templates['admin/populartopics.tpl']
 			}
 		]);
 
