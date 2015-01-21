@@ -10,6 +10,7 @@
 		plugins = module.parent.require('./plugins'),
 		topics = module.parent.require('./topics'),
 		posts = module.parent.require('./posts'),
+		groups = module.parent.require('./groups'),
 		translator = module.parent.require('../public/src/translator'),
 		templates = module.parent.require('templates.js'),
 		websockets = module.parent.require('./socket.io'),
@@ -25,10 +26,11 @@
 
 		var templatesToLoad = [
 			"activeusers.tpl", "moderators.tpl",
-			"categories.tpl", "populartags.tpl", "populartopics.tpl",
+			"categories.tpl", "populartags.tpl",
+			"populartopics.tpl", "mygroups.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl",
-			"admin/populartopics.tpl"
+			"admin/populartopics.tpl", "admin/mygroups.tpl"
 		];
 
 		function loadTemplate(template, next) {
@@ -238,6 +240,22 @@
 		});
 	};
 
+	Widget.renderMyGroups = function(widget, callback) {
+		var uid = widget.uid;
+		groups.getUserGroups([uid], function(err, groupsData) {
+			if (err) {
+				return callback(err);
+			}
+			var userGroupData = groupsData.length ? groupsData[0] : [];
+
+			app.render('mygroups', {groups: userGroupData}, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					callback(err, translatedHTML);
+				});
+			});
+		});
+	};
+
 	Widget.defineWidgets = function(widgets, callback) {
 		widgets = widgets.concat([
 			{
@@ -311,6 +329,12 @@
 				name:"Popular Topics",
 				description:"Lists popular topics on your forum",
 				content: Widget.templates['admin/populartopics.tpl']
+			},
+			{
+				widget:"mygroups",
+				name:"My Groups",
+				description: "List of groups that you are in",
+				content: Widget.templates['admin/mygroups.tpl']
 			}
 		]);
 
