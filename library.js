@@ -242,15 +242,43 @@
 
 	Widget.renderMyGroups = function(widget, callback) {
 		var uid = widget.uid;
+		var numGroups = parseInt(widget.data.numGroups, 10) || 9;
 		groups.getUserGroups([uid], function(err, groupsData) {
 			if (err) {
 				return callback(err);
 			}
 			var userGroupData = groupsData.length ? groupsData[0] : [];
-
+			userGroupData = userGroupData.slice(0, numGroups);
 			app.render('mygroups', {groups: userGroupData}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
+				});
+			});
+		});
+	};
+
+	Widget.renderNewGroups = function(widget, callback) {
+		var numGroups = parseInt(widget.data.numGroups, 10) || 9;
+
+		groups.getGroups(0, widget.data.numGroups - 1, function(err, groupNames) {
+			if (err) {
+				return callback(err);
+			}
+
+			async.map(groupNames, function (groupName, next) {
+				groups.get(groupName, {}, next);
+			}, function (err, groups) {
+				if (err) {
+					return callback(err);
+				}
+				groups = groups.filter(function(group) {
+					return group && !group.hidden;
+				});
+
+				app.render('mygroups', {groups: groups}, function(err, html) {
+					translator.translate(html, function(translatedHTML) {
+						callback(err, translatedHTML);
+					});
 				});
 			});
 		});
@@ -334,6 +362,12 @@
 				widget:"mygroups",
 				name:"My Groups",
 				description: "List of groups that you are in",
+				content: Widget.templates['admin/mygroups.tpl']
+			},
+			{
+				widget: "newgroups",
+				name:"New Groups",
+				description: "List of newest groups",
 				content: Widget.templates['admin/mygroups.tpl']
 			}
 		]);
