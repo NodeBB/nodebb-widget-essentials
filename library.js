@@ -258,9 +258,7 @@
 	};
 
 	Widget.renderNewGroups = function(widget, callback) {
-		var numGroups = parseInt(widget.data.numGroups, 10) || 9;
-
-		groups.getGroups(0, widget.data.numGroups - 1, function(err, groupNames) {
+		groups.getGroups(0, 19, function(err, groupNames) {
 			if (err) {
 				return callback(err);
 			}
@@ -271,9 +269,11 @@
 				if (err) {
 					return callback(err);
 				}
+
+				var numGroups = parseInt(widget.data.numGroups, 10) || 8;
 				groups = groups.filter(function(group) {
 					return group && !group.hidden;
-				});
+				}).slice(0, numGroups);
 
 				app.render('mygroups', {groups: groups}, function(err, html) {
 					translator.translate(html, function(translatedHTML) {
