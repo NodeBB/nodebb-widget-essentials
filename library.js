@@ -186,9 +186,9 @@
 	};
 
 	Widget.renderRecentTopicsWidget = function(widget, callback) {
-		var numTopics = widget.data.numTopics || 8;
+		var numTopics = (widget.data.numTopics || 8) - 1;
 
-		topics.getTopicsFromSet('topics:recent', widget.uid, 0, numTopics, function(err, data) {
+		topics.getTopicsFromSet('topics:recent', widget.uid, 0, Math.max(0, numTopics), function(err, data) {
 			if (err) {
 				return callback(err);
 			}
