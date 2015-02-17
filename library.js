@@ -97,7 +97,7 @@
 			});
 		}
 
-		var html = Widget.templates['activeusers.tpl'], cidOrtid;
+		var html = Widget.templates['widgets/activeusers.tpl'], cidOrtid;
 		var match;
 		if (widget.data.cid) {
 			cidOrtid = widget.data.cid;
@@ -116,7 +116,7 @@
 	};
 
 	Widget.renderModeratorsWidget = function(widget, callback) {
-		var html = Widget.templates['moderators.tpl'], cid;
+		var html = Widget.templates['widgets/moderators.tpl'], cid;
 
 		if (widget.data.cid) {
 			cid = widget.data.cid;
@@ -202,7 +202,7 @@
 	};
 
 	Widget.renderCategories = function(widget, callback) {
-		var html = Widget.templates['categories.tpl'];
+		var html = Widget.templates['widgets/categories.tpl'];
 
 		categories.getCategoriesByPrivilege(widget.uid, 'find', function(err, data) {
 			html = templates.parse(html, {categories: data});
@@ -212,7 +212,7 @@
 	};
 
 	Widget.renderPopularTags = function(widget, callback) {
-		var html = Widget.templates['populartags.tpl'];
+		var html = Widget.templates['widgets/populartags.tpl'];
 		var numTags = widget.data.numTags || 8;
 		topics.getTags(0, numTags - 1, function(err, tags) {
 			if (err) {
