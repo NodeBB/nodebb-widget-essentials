@@ -25,9 +25,9 @@
 		app = params.app;
 
 		var templatesToLoad = [
-			"activeusers.tpl", "moderators.tpl",
-			"categories.tpl", "populartags.tpl",
-			"populartopics.tpl", "mygroups.tpl",
+			"widgets/activeusers.tpl", "widgets/moderators.tpl",
+			"widgets/categories.tpl", "widgets/populartags.tpl",
+			"widgets/populartopics.tpl", "widgets/groups.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl",
 			"admin/populartopics.tpl", "admin/mygroups.tpl"
@@ -97,7 +97,7 @@
 			});
 		}
 
-		var html = Widget.templates['activeusers.tpl'], cidOrtid;
+		var html = Widget.templates['widgets/activeusers.tpl'], cidOrtid;
 		var match;
 		if (widget.data.cid) {
 			cidOrtid = widget.data.cid;
@@ -116,7 +116,7 @@
 	};
 
 	Widget.renderModeratorsWidget = function(widget, callback) {
-		var html = Widget.templates['moderators.tpl'], cid;
+		var html = Widget.templates['widgets/moderators.tpl'], cid;
 
 		if (widget.data.cid) {
 			cid = widget.data.cid;
@@ -153,7 +153,7 @@
 				online: results.onlineCount + websockets.getOnlineAnonCount(),
 				statsClass: widget.data.statsClass
 			};
-			app.render('forumstats', stats, function(err, html) {
+			app.render('widgets/forumstats', stats, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -166,7 +166,7 @@
 			if (err) {
 				return callback(err);
 			}
-			app.render('recentposts', {posts: posts, numPosts: numPosts, cid: cid}, function(err, html) {
+			app.render('widgets/recentposts', {posts: posts, numPosts: numPosts, cid: cid}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -193,7 +193,7 @@
 				return callback(err);
 			}
 
-			app.render('recenttopics', {topics: data.topics, numTopics: numTopics}, function(err, html) {
+			app.render('widgets/recenttopics', {topics: data.topics, numTopics: numTopics}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -202,7 +202,7 @@
 	};
 
 	Widget.renderCategories = function(widget, callback) {
-		var html = Widget.templates['categories.tpl'];
+		var html = Widget.templates['widgets/categories.tpl'];
 
 		categories.getCategoriesByPrivilege(widget.uid, 'find', function(err, data) {
 			html = templates.parse(html, {categories: data});
@@ -212,7 +212,7 @@
 	};
 
 	Widget.renderPopularTags = function(widget, callback) {
-		var html = Widget.templates['populartags.tpl'];
+		var html = Widget.templates['widgets/populartags.tpl'];
 		var numTags = widget.data.numTags || 8;
 		topics.getTags(0, numTags - 1, function(err, tags) {
 			if (err) {
@@ -232,7 +232,7 @@
 				return callback(err);
 			}
 
-			app.render('populartopics', {topics: topics, numTopics: numTopics}, function(err, html) {
+			app.render('widgets/populartopics', {topics: topics, numTopics: numTopics}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -249,7 +249,7 @@
 			}
 			var userGroupData = groupsData.length ? groupsData[0] : [];
 			userGroupData = userGroupData.slice(0, numGroups);
-			app.render('mygroups', {groups: userGroupData}, function(err, html) {
+			app.render('widgets/groups', {groups: userGroupData}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -275,7 +275,7 @@
 					return group && !group.hidden;
 				}).slice(0, numGroups);
 
-				app.render('mygroups', {groups: groups}, function(err, html) {
+				app.render('widgets/groups', {groups: groups}, function(err, html) {
 					translator.translate(html, function(translatedHTML) {
 						callback(err, translatedHTML);
 					});
