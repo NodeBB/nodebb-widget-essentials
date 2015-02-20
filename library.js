@@ -263,9 +263,7 @@
 				return callback(err);
 			}
 
-			async.map(groupNames, function (groupName, next) {
-				groups.get(groupName, {}, next);
-			}, function (err, groups) {
+			groups.getGroupsData(groupNames, function(err, groups){
 				if (err) {
 					return callback(err);
 				}
