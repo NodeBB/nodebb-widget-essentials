@@ -2,7 +2,7 @@
 	"id": "nodebb-widget-essentials",
 	"name": "NodeBB Essential Widgets",
 	"description": "Several basic widgets bundled together in one package including 'HTML', 'Markdown'",
-	"url": "https://github.com/psychobunny/nodebb-widget-essentials",
+	"url": "https://github.com/exo-do/nodebb-widget-essentials",
 	"library": "./library.js",
 	"hooks": [
 		{

@@ -16,13 +16,11 @@
 		<span id="pull"><span title=" Respuestas: {topics.postcount} - Visitas: {topics.viewcount}"><i class="fa fa-signal"></i> &nbsp; {topics.postcount} / {topics.viewcount}</span>&nbsp;
 		<!-- IF topics.unreplied -->
 		| &nbsp;
-		<a href="{relative_path}/topic/{topics.slug}/" title="Ir al hilo"><span class="timeago" title="{topics.relativeTime}"></span>&nbsp;<i class="fa fa-lg fa-long-arrow-right"></i> </a>
+		<a href="{relative_path}/topic/{topics.slug}/" title="Ir al hilo"><span>{function.humanReadableDateLast}</span>&nbsp;<i class="fa fa-lg fa-long-arrow-right"></i> </a>
 		<!-- ELSE -->
-		<!--[[global:replied_ago,--> | &nbsp; <a href="{relative_path}/topic/{topics.slug}/{topics.teaser.index}" title="Ir al último mensaje"><span class="timeago"  title="{topics.teaser.timestamp}"></span>  &nbsp;<i class="fa fa-lg fa-long-arrow-right"></i></a> <!-- ]] -->
+		 | &nbsp; <a href="{relative_path}/topic/{topics.slug}/{topics.teaser.index}" title="Ir al último mensaje"><span>{function.humanReadableDateLast}</span>  &nbsp;<i class="fa fa-lg fa-long-arrow-right"></i></a>
 		<!-- ENDIF topics.unreplied -->
 		</span>
-		
-		
 		</p> 
 		
 		
