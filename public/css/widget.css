@@ -1,3 +1,83 @@
+#recent_topics, #recent_topics p {
+	/* overflow-y: hidden;
+	overflow-x: hidden; */
+ 
+list-style: none;
+font-size: 10px;
+margin:0px; padding:0px;
+}
+
+#big {
+    overflow: hidden !important;
+       white-space:nowrap !important;
+       text-overflow:ellipsis !important;
+	    width: 85%;
+	   display:inline-block !important;
+	font-size: 12px !important;
+	
+}
+
+#big:first-letter {
+	text-transform:uppercase;
+}
+
+#sub a { 
+	color: #2e3539;
+}	
+#sub a:hover{
+	
+	text-decoration: none !important;
+	color: #cf246a;
+}
+
+#recent_topics > li{
+  /* float:left; */
+  margin-right: 20px;
+ /* width: 130px; */
+}
+
+#recent_topics > li > .image{
+  display:block;
+  float:left;
+  margin-right:10px;
+  margin-top: 10px;
+}
+
+#recent_topics > li > .image,
+#recent_topics > li > .image > img{
+  width:24px; height:24px;
+}
+
+#catid {
+    display:block;
+    float:left;
+    margin-right:10px;
+    margin-top: 10px;
+	
+}
+#pull {
+	margin-top: 2px;
+	float: right;
+}
+
+
+#pull2 {
+	margin-top: 6px;
+	float: right;
+}
+
+.badge {
+  padding: 1px 9px 2px;
+  font-size: 12.025px;
+  font-weight: bold;
+  white-space: nowrap;
+  color: #ffffff;
+  background-color: #999999;
+  -webkit-border-radius: 9px;
+  -moz-border-radius: 9px;
+  border-radius: 9px;
+}
+/*
 .recent-replies {
 	overflow-y: hidden;
 	overflow-x: hidden;
@@ -7,15 +87,15 @@
 	width: 100%;
 	height: 50px;
 	line-height: 16px;
-	margin-left: 1px;
-	padding: 5px 5px 5px 0px;
+	margin-left: 5px;
+	padding: 5px 5px 5px 0px; 
 	list-style-type: none;
 }
 
 .recent-replies ul li {
 	clear: both;
 	line-height: 17px;
-	margin-bottom: 20px;
+	margin-bottom: 6px;
 }
 
 .recent-replies ul li:last-child {
@@ -83,3 +163,10 @@
 	width: 50px;
 	margin-right: 10px;
 }
+
+.recent-replies .last-topic-title {
+	
+	font-size: 13px;
+	text-overflow: ellipsis;
+}
+*/
