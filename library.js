@@ -16,6 +16,8 @@
 		websockets = module.parent.require('./socket.io'),
 		app;
 
+		var SocketPlugins = module.parent.require('./socket.io/plugins');
+
 
 	var Widget = {
 		templates: {}
@@ -30,7 +32,9 @@
 			"widgets/populartopics.tpl", "widgets/groups.tpl",
 			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl",
-			"admin/populartopics.tpl", "admin/mygroups.tpl"
+			"admin/populartopics.tpl", "admin/mygroups.tpl",
+			"admin/recenttagstopics.tpl",
+			"admin/recentcategorytopics.tpl"
 		];
 
 		function loadTemplate(template, next) {
@@ -43,6 +47,33 @@
 				next(null);
 			});
 		}
+
+		// Create Helpers!
+		templates.registerHelper('specialTags', function(data) {
+			//var tag = data.value.toLowerCase();
+			//console.log(data.topics.length);
+			for(var i=0;data.topics && i<data.topics.length;i++)
+			{	//console.log(data.topics[i].category);
+				if( JSON.stringify(data.topics[i].tags).toLowerCase().indexOf("temaserio") < 0 )
+				{	// Si no esta la etiqueta que quiero lo elimino del array, y ya no lo muestra
+					data.topics.splice(i, 1); i--; // Luego sumare, asi cuando el siguiente se vaya hacia atras, no lo salto
+				}
+			}
+			return true;
+		});
+
+		templates.registerHelper('specialCategory', function(data) {
+			// Para mostrar solo topics en una categoria concreta
+			//console.log(data.topics);
+			for(var i=0;data.topics && i<data.topics.length;i++)
+			{	console.log(data.topics[i].category);
+				if( data.topics[i].category.cid != 1 )
+				{	// Si no esta la categoria (id categoria) que quiero lo elimino del array, y ya no lo muestra
+					data.topics.splice(i, 1); i--; // Luego sumare, asi cuando el siguiente se vaya hacia atras, no lo salto
+				}
+			}
+			return true;
+		});
 
 		async.each(templatesToLoad, loadTemplate);
 
@@ -184,9 +215,10 @@
 			posts.getRecentPosts(widget.uid, 0, Math.max(0, numPosts - 1), widget.data.duration || 'day', done);
 		}
 	};
-
+	
 	Widget.renderRecentTopicsWidget = function(widget, callback) {
 		var numTopics = (widget.data.numTopics || 8) - 1;
+		console.log(widget);
 
 		topics.getTopicsFromSet('topics:recent', widget.uid, 0, Math.max(0, numTopics), function(err, data) {
 			if (err) {
@@ -200,6 +232,7 @@
 			});
 		});
 	};
+	
 
 	Widget.renderCategories = function(widget, callback) {
 		var html = Widget.templates['widgets/categories.tpl'];
@@ -369,10 +402,60 @@
 				name:"New Groups",
 				description: "List of newest groups",
 				content: Widget.templates['admin/mygroups.tpl']
+			},
+			// Mis widgets
+			{
+				widget: "recenttagstopics",
+				name:"Recent Tags Topics",
+				description: "Muestra topics con la etiqueta indicada",
+				content: Widget.templates['admin/recenttagstopics.tpl']
+			},
+			{
+				widget: "recentcategorytopics",
+				name:"Recent Category Topics",
+				description: "Muestra topics con la categoria indicada",
+				content: Widget.templates['admin/recentcategorytopics.tpl']
 			}
 		]);
 
 		callback(null, widgets);
+	};
+
+
+	Widget.renderRecentTagsTopicsWidget = function(widget, callback) {
+		var numTopics = widget.data.numTopics || 10;
+		var tag = widget.data.tag || "temaserio";
+		//console.log(widget);
+
+		topics.getTopicsFromSet("tag:"+tag+":topics", widget.uid, 0, numTopics, function(err, tp) {
+			if (err) {
+				return callback(err);
+			}
+
+			app.render('widgets/recenttopics', {topics: tp.topics, numTopics: numTopics}, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					callback(err, translatedHTML);
+				});
+			});
+		});
+	};
+
+	Widget.renderRecentCategoryTopicsWidget = function(widget, callback) {
+		var numTopics = widget.data.numTopics || 10;
+		var cid = widget.data.cid || "1";
+		//console.log(widget);
+
+		topics.getTopicsFromSet("cid:"+cid+":tids", widget.uid, 0, numTopics, function(err, tp) {
+			if (err) {
+				return callback(err);
+			}
+
+			app.render('widgets/recenttopics', {topics: tp.topics, numTopics: numTopics}, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					callback(err, translatedHTML);
+				});
+			});
+		});
 	};
 
 

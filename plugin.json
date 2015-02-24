@@ -49,6 +49,12 @@
 		},
 		{
 			"hook": "filter:widget.render:mygroups", "method": "renderMyGroups"
+		},
+		{
+			"hook": "filter:widget.render:recenttagstopics", "method": "renderRecentTagsTopicsWidget"
+		},
+		{
+			"hook": "filter:widget.render:recentcategorytopics", "method": "renderRecentCategoryTopicsWidget"
 		}
 	],
 	"templates": "./public/templates",

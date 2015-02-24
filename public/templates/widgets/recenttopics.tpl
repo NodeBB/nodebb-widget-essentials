@@ -9,6 +9,8 @@
 /* globals app, socket, translator, templates, utils*/
 
 $(document).ready(function() {
+
+	
 	var	topics = $('#recent_topics');
 
 	app.createUserTooltips();
