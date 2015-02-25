@@ -282,6 +282,40 @@
 		});
 	};
 
+	Widget.renderSuggestedTopics = function(widget, callback) {
+		
+		var numTopics = (widget.data.numTopics || 8) - 1;
+		var tidMatch = widget.area.url.match('topic/([0-9]+)');
+		var cidMatch = widget.area.url.match('category/([0-9]+)');
+
+		if (tidMatch) {
+			var tid = tidMatch.length > 1 ? tidMatch[1] : 1;
+			topics.getSuggestedTopics(tid, widget.uid, 0, numTopics, function(err, topics) {
+				if (err) {
+					return callback(err);
+				}
+				app.render('widgets/suggestedtopics', {topics: topics}, callback);	
+			});
+		} else if (cidMatch) {
+			var cid = cidMatch.length > 1 ? cidMatch[1] : 1;
+			categories.getCategoryTopics({
+				cid: cid, 
+				uid: widget.uid, 
+				set: 'cid:' + cid + ':tids', 
+				reverse: false, 
+				start: 0, 
+				stop: numTopics
+			}, function(err, data) {
+				if (err) {
+					return callback(err);
+				}
+				app.render('widgets/suggestedtopics', {topics: data.topics}, callback);	
+			});
+		} else {
+			Widget.renderRecentTopicsWidget(widget, callback);
+		}	
+	};
+
 	Widget.defineWidgets = function(widgets, callback) {
 		widgets = widgets.concat([
 			{
@@ -367,6 +401,12 @@
 				name:"New Groups",
 				description: "List of newest groups",
 				content: Widget.templates['admin/mygroups.tpl']
+			},
+			{
+				widget: "suggestedtopics",
+				name: "Suggested Topics",
+				description: "Lists of suggested topics.",
+				content: Widget.templates['admin/recenttopics.tpl']
 			}
 		]);
 
