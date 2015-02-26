@@ -71,7 +71,7 @@
 			// Para mostrar solo topics en una categoria concreta
 			//console.log(data.topics);
 			for(var i=0;data.topics && i<data.topics.length;i++)
-			{	console.log(data.topics[i].category);
+			{	//console.log(data.topics[i].category);
 				if( data.topics[i].category.cid != 1 )
 				{	// Si no esta la categoria (id categoria) que quiero lo elimino del array, y ya no lo muestra
 					data.topics.splice(i, 1); i--; // Luego sumare, asi cuando el siguiente se vaya hacia atras, no lo salto
@@ -223,7 +223,7 @@
 	
 	Widget.renderRecentTopicsWidget = function(widget, callback) {
 		var numTopics = (widget.data.numTopics || 8) - 1;
-		console.log(widget);
+		//console.log(widget);
 
 		topics.getTopicsFromSet('topics:recent', widget.uid, 0, Math.max(0, numTopics), function(err, data) {
 			if (err) {
@@ -471,23 +471,16 @@
 
 
 	Widget.renderCategoriesFilter = function(widget, callback) {
-		console.log(widget);
+		//console.log(widget);
 		var cids = widget.data.cid || "1,2";
+		cids = JSON.parse("["+cids+"]"); // Lee como array!
 
-		categories.getAllCategories(widget.uid, function(err, cat) {
+		categories.getCategoriesData(cids, function(err,cat){
+			// Cargo las categorias que me diga
 			if (err) {
 				return callback(err);
 			}
-
-			//console.log(cat);
-			for(var i=0;i<cat.length;i++)
-			{	// Eliminamos las categorias que no esten entre las seleccionadas
-				if( cids.indexOf(cat[i].cid) < 0 )
-				{
-					cat.splice(i, 1); i--;
-				}
-			}
-
+			// Cargo para cada categoria su ultima reply
 			Widget.categoriesPostsLoop(0, cat, [], widget, callback);
 		});
 	};
