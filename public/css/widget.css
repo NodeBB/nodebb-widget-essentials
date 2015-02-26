@@ -1,3 +1,8 @@
+#rowwidget {
+	
+	margin: 0px auto !important;
+}
+
 #recent_topics, #recent_topics p {
 	/* overflow-y: hidden;
 	overflow-x: hidden; */
