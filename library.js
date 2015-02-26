@@ -258,16 +258,18 @@
 	};
 
 	Widget.renderNewGroups = function(widget, callback) {
-		groups.getGroups(0, 19, function(err, groupNames) {
-			if (err) {
-				return callback(err);
-			}
+		async.waterfall([
+			function(next) {
+				groups.getGroups(0, 19, next);
+			},
+			function(groupNames, next) {
+				groupNames = groupNames.filter(function(groupName) {
+					return groupName !== 'registered-users' && groupName.indexOf(':privileges:') === -1;
+				});
 
-			groups.getGroupsData(groupNames, function(err, groups){
-				if (err) {
-					return callback(err);
-				}
-
+				groups.getGroupsData(groupNames, next);
+			},
+			function(groups, next) {
 				var numGroups = parseInt(widget.data.numGroups, 10) || 8;
 				groups = groups.filter(function(group) {
 					return group && !group.hidden;
@@ -275,15 +277,15 @@
 
 				app.render('widgets/groups', {groups: groups}, function(err, html) {
 					translator.translate(html, function(translatedHTML) {
-						callback(err, translatedHTML);
+						next(err, translatedHTML);
 					});
 				});
-			});
-		});
+			}
+		], callback);
 	};
 
 	Widget.renderSuggestedTopics = function(widget, callback) {
-		
+
 		var numTopics = (widget.data.numTopics || 8) - 1;
 		var tidMatch = widget.area.url.match('topic/([0-9]+)');
 		var cidMatch = widget.area.url.match('category/([0-9]+)');
@@ -294,26 +296,26 @@
 				if (err) {
 					return callback(err);
 				}
-				app.render('widgets/suggestedtopics', {topics: topics}, callback);	
+				app.render('widgets/suggestedtopics', {topics: topics}, callback);
 			});
 		} else if (cidMatch) {
 			var cid = cidMatch.length > 1 ? cidMatch[1] : 1;
 			categories.getCategoryTopics({
-				cid: cid, 
-				uid: widget.uid, 
-				set: 'cid:' + cid + ':tids', 
-				reverse: false, 
-				start: 0, 
+				cid: cid,
+				uid: widget.uid,
+				set: 'cid:' + cid + ':tids',
+				reverse: false,
+				start: 0,
 				stop: numTopics
 			}, function(err, data) {
 				if (err) {
 					return callback(err);
 				}
-				app.render('widgets/suggestedtopics', {topics: data.topics}, callback);	
+				app.render('widgets/suggestedtopics', {topics: data.topics}, callback);
 			});
 		} else {
 			Widget.renderRecentTopicsWidget(widget, callback);
-		}	
+		}
 	};
 
 	Widget.defineWidgets = function(widgets, callback) {
