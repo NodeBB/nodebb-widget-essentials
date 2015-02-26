@@ -23,6 +23,9 @@
 		templates: {}
 	};
 
+	Widget.categories = [];
+	Widget.loadedCategories = [];
+
 	Widget.init = function(params, callback) {
 		app = params.app;
 
@@ -34,7 +37,9 @@
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl",
 			"admin/populartopics.tpl", "admin/mygroups.tpl",
 			"admin/recenttagstopics.tpl",
-			"admin/recentcategorytopics.tpl"
+			"admin/recentcategorytopics.tpl",
+			"widgets/categoriesfilter.tpl",
+			"admin/categoriesfilter.tpl"
 		];
 
 		function loadTemplate(template, next) {
@@ -415,6 +420,12 @@
 				name:"Recent Category Topics",
 				description: "Muestra topics con la categoria indicada",
 				content: Widget.templates['admin/recentcategorytopics.tpl']
+			},
+			{
+				widget: "categoriesfilter",
+				name:"Categories Filter",
+				description: "Muestra las categorias indicadas",
+				content: Widget.templates['admin/categoriesfilter.tpl']
 			}
 		]);
 
@@ -457,6 +468,53 @@
 			});
 		});
 	};
+
+
+	Widget.renderCategoriesFilter = function(widget, callback) {
+		console.log(widget);
+		var cids = widget.data.cid || "1,2";
+
+		categories.getAllCategories(widget.uid, function(err, cat) {
+			if (err) {
+				return callback(err);
+			}
+
+			//console.log(cat);
+			for(var i=0;i<cat.length;i++)
+			{	// Eliminamos las categorias que no esten entre las seleccionadas
+				if( cids.indexOf(cat[i].cid) < 0 )
+				{
+					cat.splice(i, 1); i--;
+				}
+			}
+
+			Widget.categoriesPostsLoop(0, cat, [], widget, callback);
+		});
+	};
+
+	
+	Widget.categoriesPostsLoop = function(i, cats, loadedCategories, widget, callback)
+	{	// Recorremos las categorias para ir cargando los posts recientes
+		if( loadedCategories.length < cats.length )
+		{	//console.log("Loading: "+cats[i].cid);
+			categories.getRecentReplies(cats[i].cid, widget.uid, 1, function(err, dat){
+				//console.log(dat);
+				cats[i].posts = dat; // Meto el post reciente
+				i++;
+				loadedCategories.push(i);
+				Widget.categoriesPostsLoop(i, cats, loadedCategories, widget, callback);
+			});
+		}
+		else
+		{	// Todas las categorias cargadas! Puedo renderizar
+			app.render('widgets/categoriesfilter', {categories: cats}, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					callback(err, translatedHTML);
+				});
+			});
+		}
+	}
+	
 
 
 	module.exports = Widget;
