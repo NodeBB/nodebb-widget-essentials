@@ -1,4 +1,4 @@
-<div class="row home" itemscope itemtype="http://www.schema.org/ItemList">
+<div id="rowwidget" class="row home" itemscope itemtype="http://www.schema.org/ItemList">
 	<div id="pad" class="col-lg-7 col-md-7 col-sm-12 col-xs-12" no-widget-class="col-lg-12 col-sm-12" no-widget-target="sidebar" style="width: 100%;">
 		<!-- BEGIN categories -->
 		<div class="category {categories.class} padding15" data-cid="{categories.cid}" data-numRecentReplies="{categories.numRecentReplies}">
