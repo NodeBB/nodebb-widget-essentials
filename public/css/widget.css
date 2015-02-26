@@ -11,9 +11,10 @@ margin:0px; padding:0px;
     overflow: hidden !important;
        white-space:nowrap !important;
        text-overflow:ellipsis !important;
-	    width: 85%;
+	    width: 90%;
 	   display:inline-block !important;
 	font-size: 12px !important;
+	margin-bottom: 1px;
 	
 }
 
@@ -21,6 +22,10 @@ margin:0px; padding:0px;
 	text-transform:uppercase;
 }
 
+#sub > p {
+	
+	margin-top: 2px !important;
+}
 #sub a { 
 	color: #2e3539;
 }	
@@ -32,8 +37,12 @@ margin:0px; padding:0px;
 
 #recent_topics > li{
   /* float:left; */
-  margin-right: 20px;
+  /*margin-right: 20px; */
  /* width: 130px; */
+}
+
+#recent_topics > li:last-child hr {
+	 display:none;
 }
 
 #recent_topics > li > .image{
@@ -56,7 +65,6 @@ margin:0px; padding:0px;
 	
 }
 #pull {
-	margin-top: 2px;
 	float: right;
 }
 

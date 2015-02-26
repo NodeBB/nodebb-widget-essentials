@@ -21,7 +21,7 @@
 			<!-- ENDIF topics.unreplied -->
 			</span>
 			</p> 
-		
+
+		<hr style="margin-top:4px !important; margin-bottom:4px !important">
 </li>	
-<hr style="margin-top:2px; margin-bottom:2px">
 <!-- END topics -->
