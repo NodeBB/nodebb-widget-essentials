@@ -62,21 +62,11 @@ margin:0px; padding:0px;
   width:24px; height:24px;
 }
 
-#catid {
-    display:block;
-    float:left;
-    margin-right:10px;
-    margin-top: 10px;
-	
-}
-#pull {
-	float: right;
-}
-
-
-#pull2 {
-	margin-top: 6px;
-	float: right;
+.cat-icon {
+    margin-top: 4px;
+    text-align: center;
+    width: 20px;
+    color: #555;
 }
 
 .badge {
