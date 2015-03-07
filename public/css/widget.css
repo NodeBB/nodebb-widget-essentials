@@ -1,3 +1,11 @@
+.panel-default > .panel-heading {
+background: linear-gradient(to right, #cf246a 0, #ff942e 100%) repeat scroll 0 0 transparent;
+border-left: #cf246a;
+border-right: #ff942e;
+color: #fff;
+padding: 7px 5px;
+}
+
 #rowwidget {
 	
 	margin: 0px auto !important;
