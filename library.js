@@ -202,7 +202,7 @@
 			if (err) {
 				return callback(err);
 			}
-			app.render('widgets/recentposts', {posts: posts, numPosts: numPosts, cid: cid}, function(err, html) {
+			app.render('widgets/recentposts', {posts: posts, numPosts: numPosts, cid: cid, title:widget.data.title}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -230,7 +230,7 @@
 				return callback(err);
 			}
 
-			app.render('widgets/recenttopics', {topics: data.topics, numTopics: numTopics}, function(err, html) {
+			app.render('widgets/recenttopics', {topics: data.topics, numTopics: numTopics, title:widget.data.title}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -270,7 +270,7 @@
 				return callback(err);
 			}
 
-			app.render('widgets/populartopics', {topics: topics, numTopics: numTopics}, function(err, html) {
+			app.render('widgets/populartopics', {topics: topics, numTopics: numTopics, title:widget.data.title}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -287,7 +287,7 @@
 			}
 			var userGroupData = groupsData.length ? groupsData[0] : [];
 			userGroupData = userGroupData.slice(0, numGroups);
-			app.render('widgets/groups', {groups: userGroupData}, function(err, html) {
+			app.render('widgets/groups', {groups: userGroupData, title:widget.data.title}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -443,7 +443,7 @@
 				return callback(err);
 			}
 
-			app.render('widgets/recenttopics', {topics: tp.topics, numTopics: numTopics}, function(err, html) {
+			app.render('widgets/recenttopics', {topics: tp.topics, numTopics: numTopics, title:widget.data.title}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -461,7 +461,7 @@
 				return callback(err);
 			}
 
-			app.render('widgets/recenttopics', {topics: tp.topics, numTopics: numTopics}, function(err, html) {
+			app.render('widgets/recenttopics', {topics: tp.topics, numTopics: numTopics, title:widget.data.title}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -500,7 +500,7 @@
 		}
 		else
 		{	// Todas las categorias cargadas! Puedo renderizar
-			app.render('widgets/categoriesfilter', {categories: cats}, function(err, html) {
+			app.render('widgets/categoriesfilter', {categories: cats, title:widget.data.title}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
