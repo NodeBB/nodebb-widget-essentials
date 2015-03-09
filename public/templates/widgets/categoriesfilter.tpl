@@ -23,9 +23,9 @@
 					
 				</a>
 				<div class="category-info hidden-xs">
-					<div class="category-stats" style="text-align: center;">
-						<i class="fa fa-comments-o" title="Temas"> {categories.topic_count} </i>  | <i class="fa fa-pencil" title="Mensajes"> {categories.post_count} </i>
-					</div>
+					<div class="category-stats text-right">
+                        <i class="fa fa-comments-o" title="Temas"></i> {categories.topic_count} · <i class="fa fa-pencil" title="Mensajes"></i> {categories.post_count}
+                    </div>
 					<div class="category-last-topic">
 						<!-- BEGIN posts -->
 						<!-- IF @first -->

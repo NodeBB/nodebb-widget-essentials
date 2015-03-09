@@ -1,9 +1,11 @@
+<div class="panel panel-default"><div class="panel-heading"><h3 class="panel-title">{title}</h3></div><div class="panel-body">
+
 <div class="recent-replies">
 	<ul id="recent_topics" data-numtopics="{numTopics}">
 	<!-- IMPORT partials/topics.tpl -->
 	</ul>
 </div>
-
+</div></div></div>
 <script>
 'use strict';
 /* globals app, socket, translator, templates, utils*/

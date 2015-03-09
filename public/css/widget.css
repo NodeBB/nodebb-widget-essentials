@@ -1,3 +1,11 @@
+.panel-default > .panel-heading {
+background: linear-gradient(to right, #cf246a 0, #ff942e 100%) repeat scroll 0 0 transparent;
+border-left: #cf246a;
+border-right: #ff942e;
+color: #fff;
+padding: 7px 5px;
+}
+
 #rowwidget {
 	
 	margin: 0px auto !important;
@@ -62,21 +70,11 @@ margin:0px; padding:0px;
   width:24px; height:24px;
 }
 
-#catid {
-    display:block;
-    float:left;
-    margin-right:10px;
-    margin-top: 10px;
-	
-}
-#pull {
-	float: right;
-}
-
-
-#pull2 {
-	margin-top: 6px;
-	float: right;
+.cat-icon {
+    margin-top: 4px;
+    text-align: center;
+    width: 20px;
+    color: #555;
 }
 
 .badge {
