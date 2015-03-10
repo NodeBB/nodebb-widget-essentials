@@ -25,12 +25,13 @@
 $(document).ready(function() {
 	utils.makeNumbersHumanReadable($('.forum-stats .stats'));
 
-	// If something occured, updateStats!
+	// When new post or topic, you update stats
 	socket.on('event:new_post', updateStats);
 	socket.on('event:new_topic', updateStats);
-	socket.on('event:widgets.requestStatsUpdate', updateStats);
+	// When someone load the widget, you update stats
+	socket.on('event:widgets.requestStatsUpdate', autoUpdateStats);
 	
-	function updateStats(data)
+	function updateStats(d)
 	{
 		socket.emit("plugins.updateStats", function(err, data){
 			if(!err)
@@ -41,6 +42,14 @@ $(document).ready(function() {
 				$("#postsNumber").html(data.posts);
 			}
 		});
+	}
+
+	function autoUpdateStats(data)
+	{
+		$("#onlineUsers").html(data.online);
+		$("#registeredUsers").html(data.users);
+		$("#topicsNumber").html(data.topics);
+		$("#postsNumber").html(data.posts);
 	}
 	
 

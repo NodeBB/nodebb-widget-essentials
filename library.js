@@ -190,7 +190,7 @@
 				online: results.onlineCount + websockets.getOnlineAnonCount(),
 				statsClass: widget.data.statsClass
 			};
-			SocketIndex.server.sockets.emit('event:widgets.requestStatsUpdate');
+			SocketIndex.server.sockets.emit('event:widgets.requestStatsUpdate', stats);
 			app.render('widgets/forumstats', stats, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
