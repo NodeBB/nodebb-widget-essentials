@@ -17,6 +17,7 @@
 		app;
 
 		var SocketPlugins = module.parent.require('./socket.io/plugins');
+		var SocketIndex = module.parent.require('./socket.io/index');
 
 
 	var Widget = {
@@ -189,6 +190,7 @@
 				online: results.onlineCount + websockets.getOnlineAnonCount(),
 				statsClass: widget.data.statsClass
 			};
+			SocketIndex.server.sockets.emit('event:widgets.requestStatsUpdate');
 			app.render('widgets/forumstats', stats, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
@@ -508,6 +510,33 @@
 		}
 	}
 	
+
+	SocketPlugins.updateStats = function(socket, data, callback){
+		// This function will handle an update stats request for the forum stats widget
+		async.parallel({
+			global: function(next) {
+				db.getObjectFields('global', ['topicCount', 'postCount', 'userCount'], next);
+			},
+			onlineCount: function(next) {
+				var now = Date.now();
+				db.sortedSetCount('users:online', now - 300000, now, next);
+			}
+		}, function(err, results) {
+			if (err) {
+				return callback(err, "err");
+			}
+
+			var stats = {
+				topics: results.global.topicCount ? results.global.topicCount : 0,
+				posts: results.global.postCount ? results.global.postCount : 0,
+				users: results.global.userCount ? results.global.userCount : 0,
+				online: results.onlineCount + websockets.getOnlineAnonCount()
+				//statsClass: widget.data.statsClass
+			};
+
+			callback(null, stats);
+		});
+	};
 
 
 	module.exports = Widget;
