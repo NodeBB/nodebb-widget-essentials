@@ -40,6 +40,7 @@ $(document).ready(function() {
 				$("#registeredUsers").html(data.users);
 				$("#topicsNumber").html(data.topics);
 				$("#postsNumber").html(data.posts);
+				updateAnimation();
 			}
 		});
 	}
@@ -50,6 +51,22 @@ $(document).ready(function() {
 		$("#registeredUsers").html(data.users);
 		$("#topicsNumber").html(data.topics);
 		$("#postsNumber").html(data.posts);
+		updateAnimation();
+	}
+
+	function updateAnimation()
+	{
+		var maxSize = 45, minSize = 30;
+		// Update Animations
+		$("#onlineUsers").animate({"font-size":maxSize}, 700);
+		$("#registeredUsers").animate({"font-size":maxSize}, 700);
+		$("#topicsNumber").animate({"font-size":maxSize}, 700);
+		$("#postsNumber").animate({"font-size":maxSize}, 700);
+
+		$("#onlineUsers").animate({"font-size":minSize}, 700);
+		$("#registeredUsers").animate({"font-size":minSize}, 700);
+		$("#topicsNumber").animate({"font-size":minSize}, 700);
+		$("#postsNumber").animate({"font-size":minSize}, 700);
 	}
 	
 
