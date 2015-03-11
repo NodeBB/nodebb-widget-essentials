@@ -36,37 +36,47 @@ $(document).ready(function() {
 		socket.emit("plugins.updateStats", function(err, data){
 			if(!err)
 			{
+				$(".stats").slideUp(500, function() {
+				 
+				  
 				$("#onlineUsers").html(data.online);
 				$("#registeredUsers").html(data.users);
 				$("#topicsNumber").html(data.topics);
 				$("#postsNumber").html(data.posts);
-				updateAnimation();
+			  
+			  	$(".stats").slideDown(500);
+				});
+				//updateAnimation();
 			}
 		});
 	}
 
 	function autoUpdateStats(data)
 	{
+		$(".stats").slideUp(500, function() {
+		 
 		$("#onlineUsers").html(data.online);
 		$("#registeredUsers").html(data.users);
 		$("#topicsNumber").html(data.topics);
 		$("#postsNumber").html(data.posts);
-		updateAnimation();
+	  
+	  	$(".stats").slideDown(500);
+		});
+		//updateAnimation();
 	}
 
 	function updateAnimation()
 	{
-		var maxSize = 45, minSize = 30;
+		var maxSize = 45, minSize = 30, opamin=0.25, opamax=1, colorin="#6BCC66", colorout="#cf246a";
 		// Update Animations
-		$("#onlineUsers").animate({"font-size":maxSize}, 700);
-		$("#registeredUsers").animate({"font-size":maxSize}, 700);
-		$("#topicsNumber").animate({"font-size":maxSize}, 700);
-		$("#postsNumber").animate({"font-size":maxSize}, 700);
+		//$("#onlineUsers").animate({ "color": colorin, "font-weight": "bold", "text-shadow": "2px 2px #FF0000"}, 700);
+		//$("#registeredUsers").animate({"font-size":maxSize}, 700);
+		//$("#topicsNumber").animate({"font-size":maxSize}, 700);
+		//$("#postsNumber").animate({"font-size":maxSize}, 700);
+		
+		//$("#onlineUsers").animate({"color": colorout, "font-weight": "normal", "text-shadow": "none"}, 700);
+		
 
-		$("#onlineUsers").animate({"font-size":minSize}, 700);
-		$("#registeredUsers").animate({"font-size":minSize}, 700);
-		$("#topicsNumber").animate({"font-size":minSize}, 700);
-		$("#postsNumber").animate({"font-size":minSize}, 700);
 	}
 	
 
