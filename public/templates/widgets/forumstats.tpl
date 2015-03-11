@@ -36,47 +36,29 @@ $(document).ready(function() {
 		socket.emit("plugins.updateStats", function(err, data){
 			if(!err)
 			{
-				$(".stats").slideUp(500, function() {
-				 
-				  
-				$("#onlineUsers").html(data.online);
-				$("#registeredUsers").html(data.users);
-				$("#topicsNumber").html(data.topics);
-				$("#postsNumber").html(data.posts);
-			  
-			  	$(".stats").slideDown(500);
-				});
-				//updateAnimation();
+				autoUpdateStats(data);
 			}
 		});
 	}
 
 	function autoUpdateStats(data)
 	{
-		$(".stats").slideUp(500, function() {
-		 
-		$("#onlineUsers").html(data.online);
-		$("#registeredUsers").html(data.users);
-		$("#topicsNumber").html(data.topics);
-		$("#postsNumber").html(data.posts);
-	  
-	  	$(".stats").slideDown(500);
-		});
-		//updateAnimation();
+		updateAnimation($("#onlineUsers"), data.online);
+		updateAnimation($("#registeredUsers"), data.users);
+		updateAnimation($("#topicsNumber"), data.topics);
+		updateAnimation($("#postsNumber"), data.posts);
 	}
 
-	function updateAnimation()
+	function updateAnimation(element, newValue)
 	{
 		var maxSize = 45, minSize = 30, opamin=0.25, opamax=1, colorin="#6BCC66", colorout="#cf246a";
-		// Update Animations
-		//$("#onlineUsers").animate({ "color": colorin, "font-weight": "bold", "text-shadow": "2px 2px #FF0000"}, 700);
-		//$("#registeredUsers").animate({"font-size":maxSize}, 700);
-		//$("#topicsNumber").animate({"font-size":maxSize}, 700);
-		//$("#postsNumber").animate({"font-size":maxSize}, 700);
-		
-		//$("#onlineUsers").animate({"color": colorout, "font-weight": "normal", "text-shadow": "none"}, 700);
-		
-
+		if(element.html() != newValue)
+		{	// If has changed, i do the animation
+			element.slideUp(500, function(){
+				element.html(newValue);
+				element.slideDown(500);
+			});
+		}
 	}
 	
 
