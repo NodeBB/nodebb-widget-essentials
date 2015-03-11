@@ -5,6 +5,9 @@ border-right: #ff942e;
 color: #fff;
 padding: 7px 5px;
 }
+.panel-default > .panel-heading h3{
+font-size: 14px;
+}
 
 #rowwidget {
 	
@@ -95,16 +98,21 @@ margin:0px; padding:0px;
 
 .forum-stats .stats-card h2 {
 	line-height: 25px;
+	margin-bottom: 5px;
+	margin-bottom: 5px;
 }
 
 
 .popular-tags {
 	font-size: 20px;
+	text-align: center;
 }
 
 .popular-tags > span {
 	margin-bottom: 10px;
 }
+
+
 /*
 .recent-replies {
 	overflow-y: hidden;
