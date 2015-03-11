@@ -88,6 +88,23 @@ margin:0px; padding:0px;
   -moz-border-radius: 9px;
   border-radius: 9px;
 }
+
+.forum-stats .stats-card {
+	text-align: center;
+}
+
+.forum-stats .stats-card h2 {
+	line-height: 25px;
+}
+
+
+.popular-tags {
+	font-size: 20px;
+}
+
+.popular-tags > span {
+	margin-bottom: 10px;
+}
 /*
 .recent-replies {
 	overflow-y: hidden;
@@ -144,13 +161,7 @@ margin:0px; padding:0px;
 	margin-top: 2px;
 }
 
-.forum-stats .stats-card {
-	text-align: center;
-}
 
-.forum-stats .stats-card h2 {
-	line-height: 25px;
-}
 
 .categories-list {
 	list-style: none;
@@ -158,13 +169,6 @@ margin:0px; padding:0px;
 }
 
 
-.popular-tags {
-	font-size: 20px;
-}
-
-.popular-tags > span {
-	margin-bottom: 10px;
-}
 
 .groups-list-item {
 	margin-bottom: 10px;
