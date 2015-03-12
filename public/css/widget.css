@@ -31,9 +31,11 @@ margin:0px; padding:0px;
 	display:inline-block !important;
 	font-size: 12px !important;
 	margin-bottom: 1px;
-	text-transform: capitalize; 
 }
 
+#big:first-letter {
+	text-transform:uppercase;
+}
 
 #sub > p {
 	
