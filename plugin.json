@@ -21,6 +21,9 @@
 			"hook": "filter:widget.render:activeusers", "method": "renderActiveUsersWidget"
 		},
 		{
+			"hook": "filter:widget.render:latestusers", "method": "renderLatestUsersWidget"
+		},
+		{
 			"hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget"
 		},
 		{

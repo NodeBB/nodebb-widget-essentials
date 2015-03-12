@@ -28,9 +28,13 @@
 			"widgets/activeusers.tpl", "widgets/moderators.tpl",
 			"widgets/categories.tpl", "widgets/populartags.tpl",
 			"widgets/populartopics.tpl", "widgets/groups.tpl",
-			"admin/categorywidget.tpl", "admin/forumstats.tpl", "admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
-			"admin/recenttopics.tpl", "admin/defaultwidget.tpl", "admin/categorieswidget.tpl", "admin/populartags.tpl",
-			"admin/populartopics.tpl", "admin/mygroups.tpl"
+
+			"admin/categorywidget.tpl", "admin/forumstats.tpl",
+			"admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
+			"admin/recenttopics.tpl", "admin/defaultwidget.tpl",
+			"admin/categorieswidget.tpl", "admin/populartags.tpl",
+			"admin/populartopics.tpl", "admin/mygroups.tpl",
+			"admin/activeusers.tpl", "admin/latestusers.tpl"
 		];
 
 		function loadTemplate(template, next) {
@@ -86,6 +90,8 @@
 				return callback(err);
 			}
 
+			uids = uids.slice(0, count);
+
 			user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
 				if (err) {
 					return callback(err);
@@ -96,7 +102,7 @@
 				callback(err, html);
 			});
 		}
-
+		var count = Math.max(1, widget.data.numUsers || 24);
 		var html = Widget.templates['widgets/activeusers.tpl'], cidOrtid;
 		var match;
 		if (widget.data.cid) {
@@ -107,13 +113,24 @@
 			cidOrtid = (match && match.length > 1) ? match[1] : 1;
 			topics.getUids(cidOrtid, getUserData);
 		} else if (widget.area.url === '') {
-			posts.getRecentPosterUids(0, 24, getUserData);
+			posts.getRecentPosterUids(0, count - 1, getUserData);
 		} else {
 			match = widget.area.url.match('[0-9]+');
 			cidOrtid = match ? match[0] : 1;
 			categories.getActiveUsers(cidOrtid, getUserData);
 		}
 	};
+
+	Widget.renderLatestUsersWidget = function(widget, callback) {
+		var count = Math.max(1, widget.data.numUsers || 24);
+		user.getUsersFromSet('users:joindate', widget.uid, 0, count - 1, function(err, users) {
+			if (err) {
+				return callback(err);
+			}
+			app.render('widgets/latestusers', {users: users}, callback);
+		});
+	};
+
 
 	Widget.renderModeratorsWidget = function(widget, callback) {
 		var html = Widget.templates['widgets/moderators.tpl'], cid;
@@ -342,7 +359,13 @@
 				widget: "activeusers",
 				name: "Active Users",
 				description: "List of active users in a category.",
-				content: Widget.templates['admin/categorywidget.tpl']
+				content: Widget.templates['admin/activeusers.tpl']
+			},
+			{
+				widget: "latestusers",
+				name: "Latest Users",
+				description: "List of latest registered users.",
+				content: Widget.templates['admin/latestusers.tpl']
 			},
 			{
 				widget: "moderators",
