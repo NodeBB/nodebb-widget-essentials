@@ -25,18 +25,15 @@ margin:0px; padding:0px;
 
 #big {
     overflow: hidden !important;
-       white-space:nowrap !important;
-       text-overflow:ellipsis !important;
-	    width: 90%;
-	   display:inline-block !important;
+    white-space:nowrap !important;
+    text-overflow:ellipsis !important;
+	width: 90%;
+	display:inline-block !important;
 	font-size: 12px !important;
 	margin-bottom: 1px;
-	
+	text-transform: capitalize; 
 }
 
-#big:first-letter {
-	text-transform:uppercase;
-}
 
 #sub > p {
 	
