@@ -484,7 +484,7 @@
 			}
 
 			var cats = [];
-			async.each(cat,
+			async.eachSeries(cat,
 				function(c, callback) {
 					categories.getRecentReplies(c.cid, widget.uid, 1, function(err, post){
 						c.posts = post;
