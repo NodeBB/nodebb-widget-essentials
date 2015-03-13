@@ -4,7 +4,7 @@
 	<p>
 		<a href="{config.relative_path}/topic/{topics.slug}">{topics.title}</a>
 	</p>
-	<span class="pull-right footer">
+	<span class="pull-right post-preview-footer">
 		<span class="timeago" title="{topics.relativeTime}"></span>
 	</span>
 </li>
