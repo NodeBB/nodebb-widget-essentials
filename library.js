@@ -1,19 +1,3 @@
-Skip to content
- This repository
-Explore
-Gist
-Blog
-Help
-alberto__segura segura2010
- 
-1  Unwatch 
-  Star 0
- Fork 6segura2010/nodebb-widget-essentials
-forked from exo-do/nodebb-widget-essentials
- branch: master  nodebb-widget-essentials/library.js
-alberto__segurasegura2010 40 minutes ago Better load in categories filter widget
-4 contributors Barış Soner Uşaklıpsychobunnyalberto__seguraJulian Lam
-RawBlameHistory     561 lines (492 sloc)  16.898 kb
 (function(module) {
 	"use strict";
 
@@ -575,5 +559,3 @@ RawBlameHistory     561 lines (492 sloc)  16.898 kb
 
 	module.exports = Widget;
 }(module));
-Status API Training Shop Blog About
-© 2015 GitHub, Inc. Terms Privacy Security Contact
