@@ -472,18 +472,36 @@
 	};
 
 
-	Widget.renderCategoriesFilter = function(widget, callback) {
+	Widget.renderCategoriesFilter = function(widget, fcallback) {
 		//console.log(widget);
 		var cids = widget.data.cid || "1,2";
 		cids = JSON.parse("["+cids+"]"); // Lee como array!
 
-		categories.getCategoriesData(cids, function(err,cat){
+		categories.getCategories(cids, widget.uid, function(err,cat){
 			// Cargo las categorias que me diga
 			if (err) {
-				return callback(err);
+				return fcallback(err);
 			}
-			// Cargo para cada categoria su ultima reply
+
+			var cats = [];
+			async.eachSeries(cat,
+				function(c, callback) {
+					categories.getRecentReplies(c.cid, widget.uid, 1, function(err, post){
+						c.posts = post;
+						cats.push(c);
+						callback();
+					});
+				}, function(result){
+				app.render('widgets/categoriesfilter', {categories: cats, title:widget.data.title}, function(err, html) {
+					translator.translate(html, function(translatedHTML) {
+						fcallback(err, translatedHTML);
+					});
+				});
+			});
+
+			/* Cargo para cada categoria su ultima reply
 			Widget.categoriesPostsLoop(0, cat, [], widget, callback);
+			*/
 		});
 	};
 
