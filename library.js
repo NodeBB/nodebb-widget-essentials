@@ -483,6 +483,13 @@
 				return fcallback(err);
 			}
 
+			app.render('widgets/categoriesfilter', {categories: cat, title:widget.data.title}, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					fcallback(err, translatedHTML);
+				});
+			});
+
+			/*
 			var cats = [];
 			async.eachSeries(cat,
 				function(c, callback) {
