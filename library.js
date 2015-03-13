@@ -478,18 +478,11 @@
 		cids = JSON.parse("["+cids+"]"); // Lee como array!
 
 		categories.getCategories(cids, widget.uid, function(err,cat){
-			// Cargo las categorias que me diga
+			/* Cargo las categorias que me diga
 			if (err) {
 				return fcallback(err);
-			}
+			}*/
 
-			app.render('widgets/categoriesfilter', {categories: cat, title:widget.data.title}, function(err, html) {
-				translator.translate(html, function(translatedHTML) {
-					fcallback(err, translatedHTML);
-				});
-			});
-
-			/*
 			var cats = [];
 			async.eachSeries(cat,
 				function(c, callback) {
@@ -499,11 +492,9 @@
 						callback();
 					});
 				}, function(result){
-				app.render('widgets/categoriesfilter', {categories: cats, title:widget.data.title}, function(err, html) {
-					translator.translate(html, function(translatedHTML) {
-						fcallback(err, translatedHTML);
-					});
-				});
+					var html = Widget.templates['widgets/categoriesfilter.tpl'];
+					html = templates.parse(html, {categories: cats});
+					fcallback(err, html);
 			});
 
 			/* Cargo para cada categoria su ultima reply
