@@ -483,8 +483,11 @@
 				return fcallback(err);
 			}
 
+			for(var i=0;i<cat.length;i++)
+				cat[i].it = i;
+
 			var cats = [];
-			async.eachSeries(cat,
+			async.each(cat,
 				function(c, callback) {
 					categories.getRecentReplies(c.cid, widget.uid, 1, function(err, post){
 						c.posts = post;
@@ -492,10 +495,14 @@
 						callback();
 					});
 				}, function(result){
-				app.render('widgets/categoriesfilter', {categories: cats, title:widget.data.title}, function(err, html) {
-					translator.translate(html, function(translatedHTML) {
-						fcallback(err, translatedHTML);
-					});
+					async.sortBy(cats, function(c, callback){
+						callback(null, c.it)
+				},function(err, r){
+						app.render('widgets/categoriesfilter', {categories: r, title:widget.data.title}, function(err, html) {
+							translator.translate(html, function(translatedHTML) {
+								fcallback(err, translatedHTML);
+							});
+						});
 				});
 			});
 
