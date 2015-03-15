@@ -190,7 +190,7 @@
 			});
 		}
 		var cid = widget.data.cid;
-		if (!cid) {
+		if (!parseInt(cid, 10)) {
 			var match = widget.area.url.match('category/([0-9]+)');
 			cid = (match && match.length > 1) ? match[1] : null;
 		}
@@ -198,7 +198,7 @@
 		if (cid) {
 			categories.getRecentReplies(cid, widget.uid, numPosts, done);
 		} else {
-			posts.getRecentPosts(widget.uid, 0, Math.max(0, numPosts - 1), widget.data.duration || 'day', done);
+			posts.getRecentPosts(widget.uid, 0, Math.max(0, numPosts - 1), 'alltime', done);
 		}
 	};
 
