@@ -11,7 +11,7 @@
 		topics = module.parent.require('./topics'),
 		posts = module.parent.require('./posts'),
 		groups = module.parent.require('./groups'),
-		translator = module.parent.require('../public/src/translator'),
+		translator = module.parent.require('../public/src/modules/translator'),
 		templates = module.parent.require('templates.js'),
 		websockets = module.parent.require('./socket.io'),
 		app;
