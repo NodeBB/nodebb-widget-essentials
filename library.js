@@ -108,7 +108,7 @@
 		if (widget.data.cid) {
 			cidOrtid = widget.data.cid;
 			categories.getActiveUsers(cidOrtid, getUserData);
-		} else if (widget.area.url.indexOf('topic') === 0) {
+		} else if (widget.area.url.startsWith('topic')) {
 			match = widget.area.url.match('topic/([0-9]+)');
 			cidOrtid = (match && match.length > 1) ? match[1] : 1;
 			topics.getUids(cidOrtid, getUserData);
