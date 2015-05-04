@@ -5,7 +5,7 @@
 		<a href="{config.relative_path}/topic/{topics.slug}">{topics.title}</a>
 	</p>
 	<span class="pull-right post-preview-footer">
-		<span class="timeago" title="{topics.relativeTime}"></span>
+		<span class="timeago" title="{topics.lastposttimeISO}"></span>
 	</span>
 </li>
 <!-- END topics -->
