@@ -286,13 +286,14 @@
 
 				groups.getGroupsData(groupNames, next);
 			},
-			function(groups, next) {
+			function(groupsData, next) {
 				var numGroups = parseInt(widget.data.numGroups, 10) || 8;
-				groups = groups.filter(function(group) {
+				groupsData = groupsData.filter(function(group) {
+					groups.escapeGroupData(group);
 					return group && !group.hidden;
 				}).slice(0, numGroups);
 
-				app.render('widgets/groups', {groups: groups}, function(err, html) {
+				app.render('widgets/groups', {groups: groupsData}, function(err, html) {
 					translator.translate(html, function(translatedHTML) {
 						next(err, translatedHTML);
 					});
