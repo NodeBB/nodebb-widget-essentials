@@ -275,23 +275,17 @@
 	};
 
 	Widget.renderNewGroups = function(widget, callback) {
+		var numGroups = parseInt(widget.data.numGroups, 10) || 8;
 		async.waterfall([
 			function(next) {
-				groups.getGroups(0, 19, next);
+				db.getSortedSetRevRange('groups:visible:createtime', 0, numGroups - 1, next);
 			},
 			function(groupNames, next) {
-				groupNames = groupNames.filter(function(groupName) {
-					return groupName !== 'registered-users' && groupName.indexOf(':privileges:') === -1;
-				});
-
 				groups.getGroupsData(groupNames, next);
 			},
 			function(groupsData, next) {
-				var numGroups = parseInt(widget.data.numGroups, 10) || 8;
-				groupsData = groupsData.filter(function(group) {
-					groups.escapeGroupData(group);
-					return group && !group.hidden;
-				}).slice(0, numGroups);
+				groupsData = groupsData.filter(Boolean);
+				groupsData.forEach(groups.escapeGroupData);
 
 				app.render('widgets/groups', {groups: groupsData}, function(err, html) {
 					translator.translate(html, function(translatedHTML) {
