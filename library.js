@@ -1,7 +1,8 @@
 (function(module) {
 	"use strict";
 
-	var async = require('async'),
+	var async = module.parent.require('async'),
+		nconf = module.parent.require('nconf'),
 		fs = require('fs'),
 		path = require('path'),
 		db = module.parent.require('./database'),
@@ -97,7 +98,10 @@
 					return callback(err);
 				}
 
-				html = templates.parse(html, {active_users: users});
+				html = templates.parse(html, {
+					active_users: users,
+					relative_path: nconf.get('relative_path')
+				});
 
 				callback(err, html);
 			});
@@ -210,7 +214,11 @@
 				return callback(err);
 			}
 
-			app.render('widgets/recenttopics', {topics: data.topics, numTopics: numTopics}, function(err, html) {
+			app.render('widgets/recenttopics', {
+				topics: data.topics,
+				numTopics: numTopics,
+				relative_path: nconf.get('relative_path')
+			}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -222,7 +230,10 @@
 		var html = Widget.templates['widgets/categories.tpl'];
 
 		categories.getCategoriesByPrivilege('cid:0:children', widget.uid, 'find', function(err, data) {
-			html = templates.parse(html, {categories: data});
+			html = templates.parse(html, {
+				categories: data,
+				relative_path: nconf.get('relative_path')
+			});
 
 			callback(err, html);
 		});
@@ -249,7 +260,11 @@
 				return callback(err);
 			}
 
-			app.render('widgets/populartopics', {topics: topics, numTopics: numTopics}, function(err, html) {
+			app.render('widgets/populartopics', {
+				topics: topics,
+				numTopics: numTopics,
+				relative_path: nconf.get('relative_path')
+			}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -266,7 +281,10 @@
 			}
 			var userGroupData = groupsData.length ? groupsData[0] : [];
 			userGroupData = userGroupData.slice(0, numGroups);
-			app.render('widgets/groups', {groups: userGroupData}, function(err, html) {
+			app.render('widgets/groups', {
+				groups: userGroupData,
+				relative_path: nconf.get('relative_path')
+			}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -308,7 +326,10 @@
 				if (err) {
 					return callback(err);
 				}
-				app.render('widgets/suggestedtopics', {topics: topics}, callback);
+				app.render('widgets/suggestedtopics', {
+					topics: topics,
+					relative_path: nconf.get('relative_path')
+				}, callback);
 			});
 		} else if (cidMatch) {
 			var cid = cidMatch.length > 1 ? cidMatch[1] : 1;
@@ -323,7 +344,10 @@
 				if (err) {
 					return callback(err);
 				}
-				app.render('widgets/suggestedtopics', {topics: data.topics}, callback);
+				app.render('widgets/suggestedtopics', {
+					topics: data.topics,
+					relative_path: nconf.get('relative_path')
+				}, callback);
 			});
 		} else {
 			Widget.renderRecentTopicsWidget(widget, callback);
