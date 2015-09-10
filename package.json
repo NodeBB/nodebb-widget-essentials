@@ -1,6 +1,6 @@
 {
   "name": "nodebb-widget-essentials",
-  "version": "1.0.5",
+  "version": "2.0.0",
   "description": "NodeBB Essential Widgets",
   "main": "library.js",
   "scripts": {
@@ -29,10 +29,7 @@
   "readmeFilename": "README.md",
   "_id": "nodebb-widget-essentials@0.0.1",
   "_from": "nodebb-widget-essentials@~0.0.1",
-  "dependencies": {
-    "async": "^0.9.0"
-  },
   "nbbpm": {
-    "compatibility": "^0.7.0"
+    "compatibility": "^0.7.0 || ^0.8.0"
   }
 }
