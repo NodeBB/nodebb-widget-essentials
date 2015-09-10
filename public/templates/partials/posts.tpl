@@ -1,7 +1,7 @@
 <!-- BEGIN posts -->
 <li data-pid="{posts.pid}" class="clearfix">
 	<a href="<!-- IF posts.user.userslug -->{relative_path}/user/{posts.user.userslug}<!-- ELSE -->#<!-- ENDIF posts.user.userslug -->">
-		<img title="{posts.user.username}" class="profile-image user-img" src="{posts.user.picture}" />
+		<img title="{posts.user.username}" class="profile-image user-img not-responsive" src="{posts.user.picture}" />
 	</a>
 	<div>
 		{posts.content}

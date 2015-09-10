@@ -58,7 +58,7 @@ $(document).ready(function() {
 	function processHtml(html) {
 		app.replaceSelfLinks(html.find('a'));
 
-		html.find('img').addClass('img-responsive');
+		html.find('img:not(.not-responsive)').addClass('img-responsive');
 		html.find('span.timeago').timeago();
 	}
 });
