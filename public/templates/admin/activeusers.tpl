@@ -1,5 +1,5 @@
 <label>
-  Include All Users: <input name="global" type="checkbox" name="includeall"><br />
+  Include All Users: <input name="global" type="checkbox"><br />
   <small>Active users will include all online users(regardless of current category).</small>
 </label>
 <br />
