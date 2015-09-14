@@ -58,12 +58,10 @@
 		callback(null, widget.data.html);
 	};
 
-  Widget.render
-
 	Widget.renderTextWidget = function(widget, callback) {
 		var parseAsPost = !!widget.data.parseAsPost,
 			text = widget.data.text;
-      
+
 		if (parseAsPost) {
 			plugins.fireHook('filter:parse.raw', text, callback);
 		} else {
@@ -89,13 +87,13 @@
 	};
 
 	Widget.renderActiveUsersWidget = function(widget, callback) {
-    function generateHtml(users) {
-				html = templates.parse(html, {
-					active_users: users,
-					relative_path: nconf.get('relative_path')
-				});
-        return html;
-    }
+		function generateHtml(users) {
+			html = templates.parse(html, {
+				active_users: users,
+				relative_path: nconf.get('relative_path')
+			});
+			return html;
+		}
 
 		function getUserData(err, uids) {
 			if (err) {
@@ -109,7 +107,7 @@
 					return callback(err);
 				}
 
-        html = generateHtml(users);
+				html = generateHtml(users);
 
 				callback(err, html);
 			});
@@ -138,12 +136,12 @@
 				}
 
 				results.users = results.users.map(function(a) { 
-          return {'uid': a.uid, 'username': a.username, 'userslug': a.userslug, 'picture': a.picture}; 
-        });
+					return {'uid': a.uid, 'username': a.username, 'userslug': a.userslug, 'picture': a.picture}; 
+				});
 
-        html = generateHtml(results.users);
+				html = generateHtml(results.users);
 
-        callback(null, html);
+				callback(null, html);
 			});
 		} else if (widget.data.cid) {
 			cidOrtid = widget.data.cid;
