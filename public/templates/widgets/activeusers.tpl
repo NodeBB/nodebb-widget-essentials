@@ -1,6 +1,6 @@
 <div class="active-users">
 	<!-- BEGIN active_users -->
-	<a data-uid="{active_users.uid}" href="../../user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="profile-image user-img" /></a>
+	<a data-uid="{active_users.uid}" href="{relative_path}/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="profile-image user-img not-responsive" /></a>
 	<!-- END active_users -->
 </div>
 

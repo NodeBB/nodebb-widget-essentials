@@ -18,10 +18,10 @@
 			"hook": "filter:widget.render:html", "method": "renderHTMLWidget"
 		},
 		{
-			"hook": "filter:widget.render:recentreplies", "method": "renderRecentRepliesWidget"
+			"hook": "filter:widget.render:activeusers", "method": "renderActiveUsersWidget"
 		},
 		{
-			"hook": "filter:widget.render:activeusers", "method": "renderActiveUsersWidget"
+			"hook": "filter:widget.render:latestusers", "method": "renderLatestUsersWidget"
 		},
 		{
 			"hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget"
@@ -43,11 +43,23 @@
 		},
 		{
 			"hook": "filter:widget.render:populartags", "method": "renderPopularTags"
+		},
+		{
+			"hook": "filter:widget.render:populartopics", "method": "renderPopularTopics"
+		},
+		{
+			"hook": "filter:widget.render:newgroups", "method": "renderNewGroups"
+		},
+		{
+			"hook": "filter:widget.render:mygroups", "method": "renderMyGroups"
+		},
+		{
+			"hook": "filter:widget.render:suggestedtopics", "method": "renderSuggestedTopics"
 		}
 	],
 	"templates": "./public/templates",
 	"css": [
     	"public/css/widget.css"
     ],
-    "compatibility": "~0.5.0"
+    "compatibility": "^0.5.0 || ^0.6.0 || ^0.7.0 || ^0.8.0"
 }

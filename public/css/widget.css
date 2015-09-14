@@ -74,3 +74,12 @@
 .popular-tags > span {
 	margin-bottom: 10px;
 }
+
+.groups-list-item {
+	margin-bottom: 10px;
+}
+
+.groups-list-item img {
+	width: 50px;
+	margin-right: 10px;
+}
