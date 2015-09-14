@@ -223,7 +223,7 @@
 			if (err) {
 				return callback(err);
 			}
-			app.render('widgets/recentposts', {posts: posts, numPosts: numPosts, cid: cid}, function(err, html) {
+			app.render('widgets/recentposts', {posts: posts, numPosts: numPosts, cid: cid, relative_path: nconf.get('relative_path')}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
