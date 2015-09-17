@@ -303,7 +303,6 @@
 			},
 			function(groupsData, next) {
 				groupsData = groupsData.filter(Boolean);
-				groupsData.forEach(groups.escapeGroupData);
 
 				app.render('widgets/groups', {groups: groupsData}, function(err, html) {
 					translator.translate(html, function(translatedHTML) {
