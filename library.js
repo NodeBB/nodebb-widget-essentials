@@ -55,7 +55,7 @@
 	};
 
 	Widget.renderHTMLWidget = function(widget, callback) {
-		callback(null, widget.data.html);
+		callback(null, widget.data ? widget.data.html : '');
 	};
 
 	Widget.renderTextWidget = function(widget, callback) {
