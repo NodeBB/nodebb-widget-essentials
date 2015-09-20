@@ -67,6 +67,7 @@
 		} else {
 			callback(null, text.replace(/\r\n/g, "<br />"));
 		}
+
 	};
 
 	Widget.renderRecentViewWidget = function(widget, callback) {
@@ -86,6 +87,14 @@
 	};
 
 	Widget.renderActiveUsersWidget = function(widget, callback) {
+		function generateHtml(users) {
+			html = templates.parse(html, {
+				active_users: users,
+				relative_path: nconf.get('relative_path')
+			});
+			return html;
+		}
+
 		function getUserData(err, uids) {
 			if (err) {
 				return callback(err);
@@ -98,18 +107,43 @@
 					return callback(err);
 				}
 
-				html = templates.parse(html, {
-					active_users: users,
-					relative_path: nconf.get('relative_path')
-				});
+				html = generateHtml(users);
 
 				callback(err, html);
 			});
 		}
+
 		var count = Math.max(1, widget.data.numUsers || 24);
 		var html = Widget.templates['widgets/activeusers.tpl'], cidOrtid;
 		var match;
-		if (widget.data.cid) {
+		if (!!widget.data.global) {
+			async.parallel({
+				users: function(next) {
+					user.getUsersFromSet('users:online', widget.uid, 0, 49, next);
+				},
+				isAdministrator: function(next) {
+					user.isAdministrator(widget.uid, next);
+				}
+			}, function(err, results) {
+				if (err) {
+					return callback(err);
+				}
+
+				if (!results.isAdministrator) {
+					results.users = results.users.filter(function(usr) {
+						return usr && usr.status !== 'offline';
+					});
+				}
+
+				results.users = results.users.map(function(a) { 
+					return {'uid': a.uid, 'username': a.username, 'userslug': a.userslug, 'picture': a.picture}; 
+				});
+
+				html = generateHtml(results.users);
+
+				callback(null, html);
+			});
+		} else if (widget.data.cid) {
 			cidOrtid = widget.data.cid;
 			categories.getActiveUsers(cidOrtid, getUserData);
 		} else if (widget.area.url.startsWith('topic')) {
@@ -187,7 +221,7 @@
 			if (err) {
 				return callback(err);
 			}
-			app.render('widgets/recentposts', {posts: posts, numPosts: numPosts, cid: cid}, function(err, html) {
+			app.render('widgets/recentposts', {posts: posts, numPosts: numPosts, cid: cid, relative_path: nconf.get('relative_path')}, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -455,7 +489,6 @@
 
 		callback(null, widgets);
 	};
-
 
 	module.exports = Widget;
 }(module));
