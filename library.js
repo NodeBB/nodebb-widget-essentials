@@ -75,6 +75,8 @@
 				return callback(err);
 			}
 
+			data.relative_path = nconf.get('relative_path');
+
 			app.render('recent', data, function(err, html) {
 				html = html.replace(/<ol[\s\S]*?<br \/>/, '').replace('<br>', '');
 
@@ -131,7 +133,11 @@
 			if (err) {
 				return callback(err);
 			}
-			app.render('widgets/latestusers', {users: users}, callback);
+			var data = {
+				users: users,
+				relative_path: nconf.get('relative_path')
+			};
+			app.render('widgets/latestusers', data, callback);
 		});
 	};
 
@@ -147,9 +153,17 @@
 		}
 
 		categories.getModerators(cid, function(err, moderators) {
-			html = templates.parse(html, {moderators: moderators});
+			if (err) {
+				return callback(err);
 
-			callback(err, html);
+			}
+
+			html = templates.parse(html, {
+				moderators: moderators,
+				relative_path: nconf.get('relative_path')
+			});
+
+			callback(null, html);
 		});
 	};
 
@@ -187,7 +201,13 @@
 			if (err) {
 				return callback(err);
 			}
-			app.render('widgets/recentposts', {posts: posts, numPosts: numPosts, cid: cid}, function(err, html) {
+			var data = {
+				posts: posts,
+				numPosts: numPosts,
+				cid: cid,
+				relative_path: nconf.get('relative_path')
+			};
+			app.render('widgets/recentposts', data, function(err, html) {
 				translator.translate(html, function(translatedHTML) {
 					callback(err, translatedHTML);
 				});
@@ -247,7 +267,10 @@
 				return callback(err);
 			}
 
-			html = templates.parse(html, {tags: tags});
+			html = templates.parse(html, {
+				tags: tags,
+				relative_path: nconf.get('relative_path')
+			});
 
 			callback(err, html);
 		});
@@ -304,7 +327,7 @@
 			function(groupsData, next) {
 				groupsData = groupsData.filter(Boolean);
 
-				app.render('widgets/groups', {groups: groupsData}, function(err, html) {
+				app.render('widgets/groups', {groups: groupsData, relative_path: nconf.get('relative_path')}, function(err, html) {
 					translator.translate(html, function(translatedHTML) {
 						next(err, translatedHTML);
 					});
