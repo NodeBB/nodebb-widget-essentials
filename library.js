@@ -95,7 +95,7 @@
 
 			uids = uids.slice(0, count);
 
-			user.getMultipleUserFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
+			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
 				if (err) {
 					return callback(err);
 				}
