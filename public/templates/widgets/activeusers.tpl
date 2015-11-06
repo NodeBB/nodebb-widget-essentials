@@ -1,6 +1,12 @@
 <div class="active-users">
 	<!-- BEGIN active_users -->
-	<a data-uid="{active_users.uid}" href="{relative_path}/user/{active_users.userslug}"><img title="{active_users.username}" src="{active_users.picture}" class="profile-image user-img not-responsive" /></a>
+	<a data-uid="{active_users.uid}" href="{relative_path}/user/{active_users.userslug}">
+		<!-- IF active_users.picture -->
+		<img title="{active_users.username}" src="{active_users.picture}" class="user-icon profile-image user-img not-responsive" />
+		<!-- ELSE -->
+		<div class="user-icon profile-image user-img not-responsive" style="background-color: {active_users.icon:bgColor};">{active_users.icon:text}</div>
+		<!-- ENDIF active_users.picture -->
+	</a>
 	<!-- END active_users -->
 </div>
 

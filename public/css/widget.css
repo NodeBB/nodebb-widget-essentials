@@ -83,3 +83,12 @@
 	width: 50px;
 	margin-right: 10px;
 }
+
+.latest-users img, .active-users img, .moderators img {
+	vertical-align: top;
+}
+
+.widget-posts .user-icon, .widget-topics .user-icon {
+	font-size: 20px;
+	line-height: 24px;
+}
