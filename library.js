@@ -366,6 +366,9 @@
 				if (err) {
 					return callback(err);
 				}
+				data.topics = data.topics.filter(function(topic) {
+					return topic && !topic.deleted;
+				});
 				app.render('widgets/suggestedtopics', {
 					topics: data.topics,
 					relative_path: nconf.get('relative_path')
