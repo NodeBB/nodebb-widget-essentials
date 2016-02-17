@@ -1,11 +1,11 @@
 <!-- BEGIN posts -->
 <li data-pid="{posts.pid}" class="clearfix widget-posts">
 	<a href="<!-- IF posts.user.userslug -->{relative_path}/user/{posts.user.userslug}<!-- ELSE -->#<!-- ENDIF posts.user.userslug -->">
-		
+
 		<!-- IF posts.user.picture -->
-		<img title="{posts.user.username}" class="profile-image user-img not-responsive" src="{posts.user.picture}" />
+		<img title="{posts.user.username}" class="avatar avatar-sm not-responsive" src="{posts.user.picture}" />
 		<!-- ELSE -->
-		<div class="user-icon profile-image user-img not-responsive" style="background-color: {posts.user.icon:bgColor};">{posts.user.icon:text}</div>
+		<div class="avatar avatar-sm not-responsive" style="background-color: {posts.user.icon:bgColor};">{posts.user.icon:text}</div>
 		<!-- ENDIF posts.user.picture -->
 	</a>
 	<div>

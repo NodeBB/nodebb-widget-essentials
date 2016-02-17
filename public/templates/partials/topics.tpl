@@ -2,9 +2,9 @@
 <li class="clearfix widget-topics">
 	<a href="<!-- IF topics.user.userslug -->{relative_path}/user/{topics.user.userslug}<!-- ELSE -->#<!-- ENDIF topics.user.userslug -->">
 		<!-- IF topics.user.picture -->
-		<img title="{topics.user.username}" class="profile-image user-img not-responsive" src="{topics.user.picture}" />
+		<img title="{topics.user.username}" class="avatar avatar-sm not-responsive" src="{topics.user.picture}" />
 		<!-- ELSE -->
-		<div class="user-icon profile-image user-img not-responsive" style="background-color: {topics.user.icon:bgColor};">{topics.user.icon:text}</div>
+		<div class="avatar avatar-sm not-responsive" style="background-color: {topics.user.icon:bgColor};">{topics.user.icon:text}</div>
 		<!-- ENDIF topics.user.picture -->
 	</a>
 

@@ -22,12 +22,10 @@
 	margin-bottom: 0;
 }
 
-.recent-replies ul li .user-img {
+.recent-replies ul li .avatar {
 	display: block;
 	float: left;
 	margin-right:8px;
-	width:26px;
-	height:26px;
 }
 
 .recent-replies ul li > div {
@@ -49,7 +47,7 @@
 	height: 16px;
 }
 
-.recent-replies .user-img, .active-users .user-img, .moderators .user-img {
+.recent-replies .avatar, .active-users .avatar, .moderators .avatar {
 	margin-top: 2px;
 }
 
@@ -88,7 +86,7 @@
 	vertical-align: top;
 }
 
-.widget-posts .user-icon, .widget-topics .user-icon {
+.widget-posts .avatar, .widget-topics .avatar {
 	font-size: 20px;
 	line-height: 24px;
 }
