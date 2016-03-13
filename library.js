@@ -174,7 +174,10 @@
 			},
 			onlineCount: function(next) {
 				var now = Date.now();
-				db.sortedSetCount('users:online', now - 300000, now, next);
+				db.sortedSetCount('users:online', now - 300000, '+inf', next);
+			},
+			guestCount: function(next) {
+				module.parent.require('./socket.io/admin/rooms').getTotalGuestCount(next);
 			}
 		}, function(err, results) {
 			if (err) {
@@ -185,7 +188,7 @@
 				topics: results.global.topicCount ? results.global.topicCount : 0,
 				posts: results.global.postCount ? results.global.postCount : 0,
 				users: results.global.userCount ? results.global.userCount : 0,
-				online: results.onlineCount + websockets.getOnlineAnonCount(),
+				online: results.onlineCount + results.guestCount,
 				statsClass: widget.data.statsClass
 			};
 			app.render('widgets/forumstats', stats, function(err, html) {
