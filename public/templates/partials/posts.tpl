@@ -13,7 +13,7 @@
 		<p class="fade-out"></p>
 	</div>
 	<span class="pull-right post-preview-footer">
-		<span class="timeago" title="{posts.relativeTime}"></span> &bull;
+		<span class="timeago" title="{posts.timestampISO}"></span> &bull;
 		<a href="{relative_path}/topic/{posts.topic.slug}/{posts.index}">[[global:read_more]]</a>
 	</span>
 </li>
