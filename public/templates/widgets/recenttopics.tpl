@@ -44,10 +44,6 @@ $(document).ready(function() {
 	}
 
 	function parseAndTranslate(topics, callback) {
-		for (var i = 0; i < topics.length; ++i) {
-			topics[i].isoTimestamp = utils.toISOString(topics[i].timestamp);
-		}
-
 		templates.parse('partials/topics', 'topics', {topics: topics}, function(html) {
 			translator.translate(html, function(translatedHtml) {
 				translatedHtml = $(translatedHtml);
