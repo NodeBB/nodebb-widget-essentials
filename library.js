@@ -1,21 +1,21 @@
 (function(module) {
 	"use strict";
 
-	var async = module.parent.require('async'),
-		nconf = module.parent.require('nconf'),
-		fs = require('fs'),
-		path = require('path'),
-		db = module.parent.require('./database'),
-		categories = module.parent.require('./categories'),
-		user = module.parent.require('./user'),
-		plugins = module.parent.require('./plugins'),
-		topics = module.parent.require('./topics'),
-		posts = module.parent.require('./posts'),
-		groups = module.parent.require('./groups'),
-		translator = module.parent.require('../public/src/modules/translator'),
-		templates = module.parent.require('templates.js'),
-		websockets = module.parent.require('./socket.io'),
-		app;
+	var async = module.parent.require('async');
+	var nconf = module.parent.require('nconf');
+	var fs = require('fs');
+	var path = require('path');
+	var db = module.parent.require('./database');
+	var categories = module.parent.require('./categories');
+	var user = module.parent.require('./user');
+	var plugins = module.parent.require('./plugins');
+	var topics = module.parent.require('./topics');
+	var posts = module.parent.require('./posts');
+	var groups = module.parent.require('./groups');
+	var translator = module.parent.require('../public/src/modules/translator');
+	var templates = module.parent.require('templates.js');
+	var websockets = module.parent.require('./socket.io');
+	var app;
 
 
 	var Widget = {
@@ -35,7 +35,8 @@
 			"admin/recenttopics.tpl", "admin/defaultwidget.tpl",
 			"admin/categorieswidget.tpl", "admin/populartags.tpl",
 			"admin/populartopics.tpl", "admin/mygroups.tpl",
-			"admin/activeusers.tpl", "admin/latestusers.tpl"
+			"admin/activeusers.tpl", "admin/latestusers.tpl",
+			"admin/groupposts.tpl"
 		];
 
 		function loadTemplate(template, next) {
@@ -318,6 +319,23 @@
 		});
 	};
 
+	Widget.renderGroupPosts = function(widget, callback) {
+		var numPosts = parseInt(widget.data.numPosts, 10) || 4;
+		async.waterfall([
+			function (next) {
+				groups.getLatestMemberPosts(widget.data.groupName, numPosts, widget.uid, next);
+			},
+			function (posts, next) {
+				app.render('widgets/groupposts', {posts: posts}, next);
+			},
+			function(html, next) {
+				translator.translate(html, function(translatedHTML) {
+					next(null, translatedHTML);
+				});
+			}
+		], callback);
+	};
+
 	Widget.renderNewGroups = function(widget, callback) {
 		var numGroups = parseInt(widget.data.numGroups, 10) || 8;
 		async.waterfall([
@@ -482,7 +500,27 @@
 			}
 		]);
 
-		callback(null, widgets);
+		async.waterfall([
+			function(next) {
+				db.getSortedSetRevRange('groups:visible:createtime', 0, - 1, next);
+			},
+			function(groupNames, next) {
+				groups.getGroupsData(groupNames, next);
+			},
+			function(groupsData, next) {
+				groupsData = groupsData.filter(Boolean);
+
+				templates.parse(Widget.templates['admin/groupposts.tpl'], {groups: groupsData}, function(html) {
+					widgets.push({
+						widget: "groupposts",
+						name: "Group Posts",
+						description: "Posts made my members of a group",
+						content: html
+					});
+					next(null, widgets);
+				});
+			}
+		], callback);
 	};
 
 
