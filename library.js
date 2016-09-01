@@ -3,6 +3,7 @@
 
 	var async = module.parent.require('async');
 	var nconf = module.parent.require('nconf');
+	var validator = module.parent.require('validator');
 	var fs = require('fs');
 	var path = require('path');
 	var db = module.parent.require('./database');
@@ -509,7 +510,9 @@
 			},
 			function(groupsData, next) {
 				groupsData = groupsData.filter(Boolean);
-
+				groupsData.forEach(function(group) {
+					group.name = validator.escape(String(group.name));
+				})
 				templates.parse(Widget.templates['admin/groupposts.tpl'], {groups: groupsData}, function(html) {
 					widgets.push({
 						widget: "groupposts",
