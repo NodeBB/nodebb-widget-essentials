@@ -19,39 +19,10 @@
 	var app;
 
 
-	var Widget = {
-		templates: {}
-	};
+	var Widget = {};
 
 	Widget.init = function(params, callback) {
 		app = params.app;
-
-		var templatesToLoad = [
-			"widgets/activeusers.tpl", "widgets/moderators.tpl",
-			"widgets/categories.tpl", "widgets/populartags.tpl",
-			"widgets/populartopics.tpl", "widgets/groups.tpl",
-
-			"admin/categorywidget.tpl", "admin/forumstats.tpl",
-			"admin/html.tpl", "admin/text.tpl", "admin/recentposts.tpl",
-			"admin/recenttopics.tpl", "admin/defaultwidget.tpl",
-			"admin/categorieswidget.tpl", "admin/populartags.tpl",
-			"admin/populartopics.tpl", "admin/mygroups.tpl",
-			"admin/activeusers.tpl", "admin/latestusers.tpl",
-			"admin/groupposts.tpl"
-		];
-
-		function loadTemplate(template, next) {
-			fs.readFile(path.resolve(__dirname, './public/templates/' + template), function (err, data) {
-				if (err) {
-					console.log(err.message);
-					return next(err);
-				}
-				Widget.templates[template] = data.toString();
-				next(null);
-			});
-		}
-
-		async.each(templatesToLoad, loadTemplate);
 
 		callback();
 	};
@@ -102,16 +73,14 @@
 					return callback(err);
 				}
 
-				html = templates.parse(html, {
+				app.render('widgets/activeusers', {
 					active_users: users,
 					relative_path: nconf.get('relative_path')
-				});
-
-				callback(err, html);
+				}, callback);
 			});
 		}
 		var count = Math.max(1, widget.data.numUsers || 24);
-		var html = Widget.templates['widgets/activeusers.tpl'], cidOrtid;
+		var cidOrtid;
 		var match;
 		if (widget.data.cid) {
 			cidOrtid = widget.data.cid;
@@ -145,7 +114,7 @@
 
 
 	Widget.renderModeratorsWidget = function(widget, callback) {
-		var html = Widget.templates['widgets/moderators.tpl'], cid;
+		var cid;
 
 		if (widget.data.cid) {
 			cid = widget.data.cid;
@@ -157,15 +126,12 @@
 		categories.getModerators(cid, function(err, moderators) {
 			if (err) {
 				return callback(err);
-
 			}
 
-			html = templates.parse(html, {
+			app.render('widgets/moderators', {
 				moderators: moderators,
 				relative_path: nconf.get('relative_path')
-			});
-
-			callback(null, html);
+			}, callback);
 		});
 	};
 
@@ -252,32 +218,25 @@
 	};
 
 	Widget.renderCategories = function(widget, callback) {
-		var html = Widget.templates['widgets/categories.tpl'];
-
 		categories.getCategoriesByPrivilege('cid:0:children', widget.uid, 'find', function(err, data) {
-			html = templates.parse(html, {
+			app.render('widgets/categories', {
 				categories: data,
 				relative_path: nconf.get('relative_path')
-			});
-
-			callback(err, html);
+			}, callback);
 		});
 	};
 
 	Widget.renderPopularTags = function(widget, callback) {
-		var html = Widget.templates['widgets/populartags.tpl'];
 		var numTags = widget.data.numTags || 8;
 		topics.getTags(0, numTags - 1, function(err, tags) {
 			if (err) {
 				return callback(err);
 			}
 
-			html = templates.parse(html, {
+			app.render('widgets/populartags', {
 				tags: tags,
 				relative_path: nconf.get('relative_path')
-			});
-
-			callback(err, html);
+			}, callback);
 		});
 	};
 
@@ -402,106 +361,115 @@
 	};
 
 	Widget.defineWidgets = function(widgets, callback) {
-		widgets = widgets.concat([
-			{
-				widget: "html",
-				name: "HTML",
-				description: "Any text, html, or embedded script.",
-				content: Widget.templates['admin/html.tpl']
-			},
-			{
-				widget: "text",
-				name: "Text",
-				description: "Text, optionally parsed as a post.",
-				content: Widget.templates['admin/text.tpl']
-			},
-			{
-				widget: "recentreplies",
-				name: "Recent Replies[deprecated]",
-				description: "List of recent replies in a category.",
-				content: Widget.templates['admin/categorywidget.tpl']
-			},
-			{
-				widget: "activeusers",
-				name: "Active Users",
-				description: "List of active users in a category.",
-				content: Widget.templates['admin/activeusers.tpl']
-			},
-			{
-				widget: "latestusers",
-				name: "Latest Users",
-				description: "List of latest registered users.",
-				content: Widget.templates['admin/latestusers.tpl']
-			},
-			{
-				widget: "moderators",
-				name: "Moderators",
-				description: "List of moderators in a category.",
-				content: Widget.templates['admin/categorywidget.tpl']
-			},
-			{
-				widget: "forumstats",
-				name: "Forum Stats",
-				description: "Lists user, topics, and post count.",
-				content: Widget.templates['admin/forumstats.tpl']
-			},
-			{
-				widget: "recentposts",
-				name: "Recent Posts",
-				description: "Lists the latest posts on your forum.",
-				content: Widget.templates['admin/recentposts.tpl']
-			},
-			{
-				widget: "recenttopics",
-				name: "Recent Topics",
-				description: "Lists the latest topics on your forum.",
-				content: Widget.templates['admin/recenttopics.tpl']
-			},
-			{
-				widget: "recentview",
-				name: "Recent View",
-				description: "Renders the /recent page",
-				content: Widget.templates['admin/defaultwidget.tpl']
-			},
-			{
-				widget: "categories",
-				name: "Categories",
-				description: "Lists the categories on your forum",
-				content: Widget.templates['admin/categorieswidget.tpl']
-			},
-			{
-				widget:"populartags",
-				name:"Popular Tags",
-				description:"Lists popular tags on your forum",
-				content: Widget.templates['admin/populartags.tpl']
-			},
-			{
-				widget:"populartopics",
-				name:"Popular Topics",
-				description:"Lists popular topics on your forum",
-				content: Widget.templates['admin/populartopics.tpl']
-			},
-			{
-				widget:"mygroups",
-				name:"My Groups",
-				description: "List of groups that you are in",
-				content: Widget.templates['admin/mygroups.tpl']
-			},
-			{
-				widget: "newgroups",
-				name:"New Groups",
-				description: "List of newest groups",
-				content: Widget.templates['admin/mygroups.tpl']
-			},
-			{
-				widget: "suggestedtopics",
-				name: "Suggested Topics",
-				description: "Lists of suggested topics.",
-				content: Widget.templates['admin/recenttopics.tpl']
-			}
-		]);
-
 		async.waterfall([
+			function(next) {
+				async.map([
+					{
+						widget: "html",
+						name: "HTML",
+						description: "Any text, html, or embedded script.",
+						content: 'admin/html'
+					},
+					{
+						widget: "text",
+						name: "Text",
+						description: "Text, optionally parsed as a post.",
+						content: 'admin/text'
+					},
+					{
+						widget: "recentreplies",
+						name: "Recent Replies[deprecated]",
+						description: "List of recent replies in a category.",
+						content: 'admin/categorywidget'
+					},
+					{
+						widget: "activeusers",
+						name: "Active Users",
+						description: "List of active users in a category.",
+						content: 'admin/activeusers'
+					},
+					{
+						widget: "latestusers",
+						name: "Latest Users",
+						description: "List of latest registered users.",
+						content: 'admin/latestusers'
+					},
+					{
+						widget: "moderators",
+						name: "Moderators",
+						description: "List of moderators in a category.",
+						content: 'admin/categorywidget'
+					},
+					{
+						widget: "forumstats",
+						name: "Forum Stats",
+						description: "Lists user, topics, and post count.",
+						content: 'admin/forumstats'
+					},
+					{
+						widget: "recentposts",
+						name: "Recent Posts",
+						description: "Lists the latest posts on your forum.",
+						content: 'admin/recentposts'
+					},
+					{
+						widget: "recenttopics",
+						name: "Recent Topics",
+						description: "Lists the latest topics on your forum.",
+						content: 'admin/recenttopics'
+					},
+					{
+						widget: "recentview",
+						name: "Recent View",
+						description: "Renders the /recent page",
+						content: 'admin/defaultwidget'
+					},
+					{
+						widget: "categories",
+						name: "Categories",
+						description: "Lists the categories on your forum",
+						content: 'admin/categorieswidget'
+					},
+					{
+						widget: "populartags",
+						name: "Popular Tags",
+						description: "Lists popular tags on your forum",
+						content: 'admin/populartags'
+					},
+					{
+						widget: "populartopics",
+						name: "Popular Topics",
+						description: "Lists popular topics on your forum",
+						content: 'admin/populartopics'
+					},
+					{
+						widget: "mygroups",
+						name: "My Groups",
+						description: "List of groups that you are in",
+						content: 'admin/mygroups'
+					},
+					{
+						widget: "newgroups",
+						name: "New Groups",
+						description: "List of newest groups",
+						content: 'admin/mygroups'
+					},
+					{
+						widget: "suggestedtopics",
+						name: "Suggested Topics",
+						description: "Lists of suggested topics.",
+						content: 'admin/recenttopics'
+					}
+				], function(widget, next) {
+					app.render(widget.content, {}, function(err, html) {
+						widget.content = html;
+						next(err, widget);
+					});
+				}, function(err, _widgets) {
+					widgets = widgets.concat(_widgets);
+					next(err);
+				});
+			},
 			function(next) {
 				db.getSortedSetRevRange('groups:visible:createtime', 0, - 1, next);
 			},
@@ -513,14 +481,14 @@
 				groupsData.forEach(function(group) {
 					group.name = validator.escape(String(group.name));
 				})
-				templates.parse(Widget.templates['admin/groupposts.tpl'], {groups: groupsData}, function(html) {
+				app.render('admin/groupposts', {groups: groupsData}, function(err, html) {
 					widgets.push({
 						widget: "groupposts",
 						name: "Group Posts",
 						description: "Posts made my members of a group",
 						content: html
 					});
-					next(null, widgets);
+					next(err, widgets);
 				});
 			}
 		], callback);
