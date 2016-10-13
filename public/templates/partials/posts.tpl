@@ -14,7 +14,7 @@
 	</div>
 	<span class="pull-right post-preview-footer">
 		<span class="timeago" title="{posts.timestampISO}"></span> &bull;
-		<a href="{config.relative_path}/topic/{posts.topic.slug}/{posts.index}">[[global:read_more]]</a>
+		<a href="{config.relative_path}/post/{posts.pid}">[[global:read_more]]</a>
 	</span>
 </li>
 <!-- END posts -->
