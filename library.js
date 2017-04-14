@@ -4,7 +4,6 @@ var async = module.parent.require('async');
 var nconf = module.parent.require('nconf');
 var validator = module.parent.require('validator');
 
-
 var db = module.parent.require('./database');
 var categories = module.parent.require('./categories');
 var user = module.parent.require('./user');
@@ -25,90 +24,107 @@ Widget.init = function(params, callback) {
 };
 
 Widget.renderHTMLWidget = function(widget, callback) {
-	callback(null, widget.data ? widget.data.html : '');
+	widget.html = widget.data ? widget.data.html : '';
+	setImmediate(callback, null, widget);
 };
 
 Widget.renderTextWidget = function(widget, callback) {
-	var parseAsPost = !!widget.data.parseAsPost,
-		text = widget.data.text;
+	var parseAsPost = !!widget.data.parseAsPost;
+	var text = widget.data.text;
 
-	if (parseAsPost) {
-		plugins.fireHook('filter:parse.raw', text, callback);
-	} else {
-		callback(null, text.replace(/\r\n/g, "<br />"));
-	}
+	async.waterfall([
+		function (next) {
+			if (parseAsPost) {
+				plugins.fireHook('filter:parse.raw', text, next);
+			} else {
+				next(null, text.replace(/\r\n/g, "<br />"));
+			}
+		},
+		function (text, next) {
+			widget.html = text;
+			next(null, widget);
+		}
+	], callback);
 };
 
 Widget.renderRecentViewWidget = function(widget, callback) {
-	topics.getLatestTopics(widget.uid, 0, 19, 'month', function (err, data) {
-		if(err) {
-			return callback(err);
-		}
+	async.waterfall([
+		function (next) {
+			topics.getLatestTopics(widget.uid, 0, 19, 'month', next);
+		},
+		function (data, next) {
+			data.relative_path = nconf.get('relative_path');
 
-		data.relative_path = nconf.get('relative_path');
-
-		app.render('recent', data, function(err, html) {
+			app.render('recent', data, next);
+		},
+		function (html, next) {
 			html = html.replace(/<ol[\s\S]*?<br \/>/, '').replace('<br>', '');
-
 			translator.translate(html, function(translatedHTML) {
-				callback(err, translatedHTML);
+				widget.html = translatedHTML;
+				next(null, widget);
 			});
-		});
-	});
+		}
+	], callback);
 };
 
 Widget.renderActiveUsersWidget = function(widget, callback) {
-	function getUserData(err, uids) {
-		if (err) {
-			return callback(err);
-		}
-
-		uids = uids.slice(0, count);
-
-		user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], function(err, users) {
-			if (err) {
-				return callback(err);
-			}
-
-			app.render('widgets/activeusers', {
-				active_users: users,
-				relative_path: nconf.get('relative_path')
-			}, callback);
-		});
-	}
 	var count = Math.max(1, widget.data.numUsers || 24);
 	var cidOrtid;
 	var match;
-	if (widget.data.cid) {
-		cidOrtid = widget.data.cid;
-		categories.getActiveUsers(cidOrtid, getUserData);
-	} else if (widget.area.url.startsWith('topic')) {
-		match = widget.area.url.match('topic/([0-9]+)');
-		cidOrtid = (match && match.length > 1) ? match[1] : 1;
-		topics.getUids(cidOrtid, getUserData);
-	} else if (widget.area.url === '') {
-		posts.getRecentPosterUids(0, count - 1, getUserData);
-	} else {
-		match = widget.area.url.match('[0-9]+');
-		cidOrtid = match ? match[0] : 1;
-		categories.getActiveUsers(cidOrtid, getUserData);
-	}
+
+	async.waterfall([
+		function (next) {
+			if (widget.data.cid) {
+				cidOrtid = widget.data.cid;
+				categories.getActiveUsers(cidOrtid, next);
+			} else if (widget.area.url.startsWith('topic')) {
+				match = widget.area.url.match('topic/([0-9]+)');
+				cidOrtid = (match && match.length > 1) ? match[1] : 1;
+				topics.getUids(cidOrtid, next);
+			} else if (widget.area.url === '') {
+				posts.getRecentPosterUids(0, count - 1, next);
+			} else {
+				match = widget.area.url.match('[0-9]+');
+				cidOrtid = match ? match[0] : 1;
+				categories.getActiveUsers(cidOrtid, next);
+			}
+		},
+		function (uids, next) {
+			uids = uids.slice(0, count);
+
+			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+		},
+		function (userData, next) {
+			app.render('widgets/activeusers', {
+				active_users: userData,
+				relative_path: nconf.get('relative_path')
+			}, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
+		}
+	], callback);
 };
 
 Widget.renderLatestUsersWidget = function(widget, callback) {
 	var count = Math.max(1, widget.data.numUsers || 24);
-	user.getUsersFromSet('users:joindate', widget.uid, 0, count - 1, function(err, users) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			user.getUsersFromSet('users:joindate', widget.uid, 0, count - 1, next);
+		},
+		function (users, next) {
+			app.render('widgets/latestusers', {
+				users: users,
+				relative_path: nconf.get('relative_path')
+			}, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
 		}
-		var data = {
-			users: users,
-			relative_path: nconf.get('relative_path')
-		};
-		app.render('widgets/latestusers', data, callback);
-	});
+	], callback);
 };
-
 
 Widget.renderModeratorsWidget = function(widget, callback) {
 	var cid;
@@ -120,16 +136,21 @@ Widget.renderModeratorsWidget = function(widget, callback) {
 		cid = match ? match[0] : 1;
 	}
 
-	categories.getModerators(cid, function(err, moderators) {
-		if (err) {
-			return callback(err);
+	async.waterfall([
+		function (next) {
+			categories.getModerators(cid, next);
+		},
+		function (moderators, next) {
+			app.render('widgets/moderators', {
+				moderators: moderators,
+				relative_path: nconf.get('relative_path')
+			}, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
 		}
-
-		app.render('widgets/moderators', {
-			moderators: moderators,
-			relative_path: nconf.get('relative_path')
-		}, callback);
-	});
+	], callback);
 };
 
 Widget.renderForumStatsWidget = function(widget, callback) {
@@ -158,7 +179,8 @@ Widget.renderForumStatsWidget = function(widget, callback) {
 		};
 		app.render('widgets/forumstats', stats, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
-				callback(err, translatedHTML);
+				widget.html = translatedHTML;
+				callback(err, widget);
 			});
 		});
 	});
@@ -177,7 +199,8 @@ Widget.renderRecentPostsWidget = function(widget, callback) {
 		};
 		app.render('widgets/recentposts', data, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
-				callback(err, translatedHTML);
+				widget.html = translatedHTML;
+				callback(err, widget);
 			});
 		});
 	}
@@ -208,7 +231,8 @@ Widget.renderRecentTopicsWidget = function(widget, callback) {
 			relative_path: nconf.get('relative_path')
 		}, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
-				callback(err, translatedHTML);
+				widget.html = translatedHTML;
+				callback(err, widget);
 			});
 		});
 	});
@@ -219,7 +243,10 @@ Widget.renderCategories = function(widget, callback) {
 		app.render('widgets/categories', {
 			categories: data,
 			relative_path: nconf.get('relative_path')
-		}, callback);
+		}, function (err, html) {
+			widget.html = html;
+			callback(err, widget);
+		});
 	});
 };
 
@@ -233,7 +260,10 @@ Widget.renderPopularTags = function(widget, callback) {
 		app.render('widgets/populartags', {
 			tags: tags,
 			relative_path: nconf.get('relative_path')
-		}, callback);
+		}, function (err, html) {
+			widget.html = html;
+			callback(err, widget);
+		});
 	});
 };
 
@@ -250,7 +280,8 @@ Widget.renderPopularTopics = function(widget, callback) {
 			relative_path: nconf.get('relative_path')
 		}, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
-				callback(err, translatedHTML);
+				widget.html = translatedHTML;
+				callback(err, widget);
 			});
 		});
 	});
@@ -270,7 +301,8 @@ Widget.renderMyGroups = function(widget, callback) {
 			relative_path: nconf.get('relative_path')
 		}, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
-				callback(err, translatedHTML);
+				widget.html = translatedHTML;
+				callback(err, widget);
 			});
 		});
 	});
@@ -287,7 +319,8 @@ Widget.renderGroupPosts = function(widget, callback) {
 		},
 		function(html, next) {
 			translator.translate(html, function(translatedHTML) {
-				next(null, translatedHTML);
+				widget.html = translatedHTML;
+				next(null, widget);
 			});
 		}
 	], callback);
@@ -305,10 +338,12 @@ Widget.renderNewGroups = function(widget, callback) {
 		function(groupsData, next) {
 			groupsData = groupsData.filter(Boolean);
 
-			app.render('widgets/groups', {groups: groupsData, relative_path: nconf.get('relative_path')}, function(err, html) {
-				translator.translate(html, function(translatedHTML) {
-					next(err, translatedHTML);
-				});
+			app.render('widgets/groups', {groups: groupsData, relative_path: nconf.get('relative_path')}, next);
+		},
+		function (html, next) {
+			translator.translate(html, function(translatedHTML) {
+				widget.html = translatedHTML;
+				next(null, widget);
 			});
 		}
 	], callback);
@@ -316,45 +351,46 @@ Widget.renderNewGroups = function(widget, callback) {
 
 Widget.renderSuggestedTopics = function(widget, callback) {
 
-	var numTopics = (widget.data.numTopics || 8) - 1;
+	var numTopics = Math.max(0, (widget.data.numTopics || 8) - 1);
 	var tidMatch = widget.area.url.match('topic/([0-9]+)');
 	var cidMatch = widget.area.url.match('category/([0-9]+)');
 
-	if (tidMatch) {
-		var tid = tidMatch.length > 1 ? tidMatch[1] : 1;
-		topics.getSuggestedTopics(tid, widget.uid, 0, numTopics, function(err, topics) {
-			if (err) {
-				return callback(err);
+	async.waterfall([
+		function (next) {
+			if (tidMatch) {
+				var tid = tidMatch.length > 1 ? tidMatch[1] : 1;
+				topics.getSuggestedTopics(tid, widget.uid, 0, numTopics, next);
+			} else if (cidMatch) {
+				var cid = cidMatch.length > 1 ? cidMatch[1] : 1;
+				categories.getCategoryTopics({
+					cid: cid,
+					uid: widget.uid,
+					set: 'cid:' + cid + ':tids',
+					reverse: false,
+					start: 0,
+					stop: numTopics
+				}, function(err, data) {
+					next(err, data ? data.topics : []);
+				});
+			} else {
+				topics.getTopicsFromSet('topics:recent', widget.uid, 0, numTopics, function(err, data) {
+					next(err, data ? data.topics : []);
+				});
 			}
-			app.render('widgets/suggestedtopics', {
-				topics: topics,
-				relative_path: nconf.get('relative_path')
-			}, callback);
-		});
-	} else if (cidMatch) {
-		var cid = cidMatch.length > 1 ? cidMatch[1] : 1;
-		categories.getCategoryTopics({
-			cid: cid,
-			uid: widget.uid,
-			set: 'cid:' + cid + ':tids',
-			reverse: false,
-			start: 0,
-			stop: numTopics
-		}, function(err, data) {
-			if (err) {
-				return callback(err);
-			}
-			data.topics = data.topics.filter(function(topic) {
+		},
+		function (topics, next) {
+			topics = topics.filter(function(topic) {
 				return topic && !topic.deleted;
 			});
 			app.render('widgets/suggestedtopics', {
-				topics: data.topics,
+				topics: topics,
 				relative_path: nconf.get('relative_path')
-			}, callback);
-		});
-	} else {
-		Widget.renderRecentTopicsWidget(widget, callback);
-	}
+			}, function (err, html) {
+				widget.html = html;
+				next(err, widget);
+			});
+		}
+	], callback);
 };
 
 Widget.defineWidgets = function(widgets, callback) {
