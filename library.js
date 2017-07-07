@@ -13,6 +13,8 @@ var posts = module.parent.require('./posts');
 var groups = module.parent.require('./groups');
 var translator = module.parent.require('../public/src/modules/translator');
 
+var templates = module.parent.require('templates.js');
+
 var app;
 
 var Widget = module.exports;
@@ -24,7 +26,8 @@ Widget.init = function(params, callback) {
 };
 
 Widget.renderHTMLWidget = function(widget, callback) {
-	widget.html = widget.data ? widget.data.html : '';
+	var html = widget.data ? widget.data.html : '';
+	widget.html = templates.parse(html, widget.templateData);
 	setImmediate(callback, null, widget);
 };
 
