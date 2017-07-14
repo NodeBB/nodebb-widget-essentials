@@ -2,9 +2,9 @@
 	<!-- BEGIN active_users -->
 	<a data-uid="{active_users.uid}" href="{relative_path}/user/{active_users.userslug}">
 		<!-- IF active_users.picture -->
-		<img title="{active_users.username}" src="{active_users.picture}" class="avatar avatar-sm not-responsive" />
+		<img title="{active_users.username}" src="{active_users.picture}" class="avatar avatar-sm avatar-rounded not-responsive" />
 		<!-- ELSE -->
-		<div class="avatar avatar-sm not-responsive" style="background-color: {active_users.icon:bgColor};">{active_users.icon:text}</div>
+		<div title="{active_users.username}" class="avatar avatar-sm avatar-rounded not-responsive" style="background-color: {active_users.icon:bgColor};">{active_users.icon:text}</div>
 		<!-- ENDIF active_users.picture -->
 	</a>
 	<!-- END active_users -->

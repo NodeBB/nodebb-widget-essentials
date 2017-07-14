@@ -77,11 +77,11 @@ Widget.renderActiveUsersWidget = function(widget, callback) {
 			if (widget.data.cid) {
 				cidOrtid = widget.data.cid;
 				categories.getActiveUsers(cidOrtid, next);
-			} else if (widget.area.url.startsWith('topic')) {
+			} else if (widget.templateData.template.topic) {
 				match = widget.area.url.match('topic/([0-9]+)');
 				cidOrtid = (match && match.length > 1) ? match[1] : 1;
 				topics.getUids(cidOrtid, next);
-			} else if (widget.area.url === '') {
+			} else if (widget.area.url === nconf.get('relative_path') + '/') {
 				posts.getRecentPosterUids(0, count - 1, next);
 			} else {
 				match = widget.area.url.match('[0-9]+');
@@ -410,15 +410,9 @@ Widget.defineWidgets = function(widgets, callback) {
 					content: 'admin/text'
 				},
 				{
-					widget: "recentreplies",
-					name: "Recent Replies[deprecated]",
-					description: "List of recent replies in a category.",
-					content: 'admin/categorywidget'
-				},
-				{
 					widget: "activeusers",
 					name: "Active Users",
-					description: "List of active users in a category.",
+					description: "List of active users in a category/topic",
 					content: 'admin/activeusers'
 				},
 				{
