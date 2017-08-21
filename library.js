@@ -75,7 +75,9 @@ Widget.renderRecentViewWidget = function(widget, callback) {
 		},
 		function (data, next) {
 			data.relative_path = nconf.get('relative_path');
-
+			data.loggedIn = !!widget.req.uid;
+			data.config = data.config || {};
+			data.config.relative_path = nconf.get('relative_path');
 			app.render('recent', data, next);
 		},
 		function (html, next) {
