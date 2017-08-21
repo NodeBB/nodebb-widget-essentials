@@ -24,6 +24,9 @@ Widget.init = function(params, callback) {
 };
 
 Widget.renderHTMLWidget = function(widget, callback) {
+	if (!isVisibleInCategory(widget)) {
+		return callback(null, null);
+	}
 	widget.html = widget.data ? widget.data.html : '';
 	setImmediate(callback, null, widget);
 };
@@ -31,6 +34,10 @@ Widget.renderHTMLWidget = function(widget, callback) {
 Widget.renderTextWidget = function(widget, callback) {
 	var parseAsPost = !!widget.data.parseAsPost;
 	var text = widget.data.text;
+
+	if (!isVisibleInCategory(widget)) {
+		return callback(null, null);
+	}
 
 	async.waterfall([
 		function (next) {
@@ -46,6 +53,15 @@ Widget.renderTextWidget = function(widget, callback) {
 		}
 	], callback);
 };
+
+function isVisibleInCategory(widget) {
+	var cids = widget.data.cid || '';
+	cids = cids.split(',');
+	cids = cids.map(function (cid) {
+		return parseInt(cid, 10);
+	}).filter(Boolean);
+	return !(cids.length && widget.templateData.template.category && cids.indexOf(parseInt(widget.templateData.cid, 10)) === -1);
+}
 
 Widget.renderRecentViewWidget = function(widget, callback) {
 	async.waterfall([
