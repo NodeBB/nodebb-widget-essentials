@@ -54,12 +54,17 @@ Widget.renderTextWidget = function(widget, callback) {
 	], callback);
 };
 
-function isVisibleInCategory(widget) {
+function getCidsArray(widget) {
 	var cids = widget.data.cid || '';
 	cids = cids.split(',');
 	cids = cids.map(function (cid) {
 		return parseInt(cid, 10);
 	}).filter(Boolean);
+	return cids;
+}
+
+function isVisibleInCategory(widget) {
+	var cids = getCidsArray(widget);
 	return !(cids.length && widget.templateData.template.category && cids.indexOf(parseInt(widget.templateData.cid, 10)) === -1);
 }
 
@@ -235,23 +240,36 @@ Widget.renderRecentPostsWidget = function(widget, callback) {
 
 Widget.renderRecentTopicsWidget = function(widget, callback) {
 	var numTopics = (widget.data.numTopics || 8) - 1;
-
-	topics.getTopicsFromSet('topics:recent', widget.uid, 0, Math.max(0, numTopics), function(err, data) {
-		if (err) {
-			return callback(err);
-		}
-
-		app.render('widgets/recenttopics', {
-			topics: data.topics,
-			numTopics: numTopics,
-			relative_path: nconf.get('relative_path')
-		}, function(err, html) {
-			translator.translate(html, function(translatedHTML) {
-				widget.html = translatedHTML;
-				callback(err, widget);
+	var cids = getCidsArray(widget);
+	async.waterfall([
+		function (next) {
+			var key;
+			if (cids.length) {
+				if (cids.length === 1) {
+					key = 'cid:' + cids[0] + ':tids';
+				} else {
+					key = cids.map(function (cid) {
+						return 'cid:' + cid + ':tids';
+					});
+				}
+			} else {
+				key = 'topics:recent';
+			}
+			topics.getTopicsFromSet(key, widget.uid, 0, Math.max(0, numTopics), next);
+		},
+		function (data, next) {
+			app.render('widgets/recenttopics', {
+				topics: data.topics,
+				numTopics: numTopics,
+				relative_path: nconf.get('relative_path')
+			}, function(err, html) {
+				translator.translate(html, function(translatedHTML) {
+					widget.html = translatedHTML;
+					next(err, widget);
+				});
 			});
-		});
-	});
+		},
+	], callback);
 };
 
 Widget.renderCategories = function(widget, callback) {
