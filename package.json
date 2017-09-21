@@ -30,6 +30,6 @@
   "_id": "nodebb-widget-essentials@0.0.1",
   "_from": "nodebb-widget-essentials@~0.0.1",
   "nbbpm": {
-    "compatibility": "^1.0.1"
+    "compatibility": "^1.6.0"
   }
 }

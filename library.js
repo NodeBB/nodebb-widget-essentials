@@ -13,6 +13,9 @@ var posts = module.parent.require('./posts');
 var groups = module.parent.require('./groups');
 var translator = module.parent.require('../public/src/modules/translator');
 
+
+var benchpressjs = module.parent.require('benchpressjs');
+
 var app;
 
 var Widget = module.exports;
@@ -27,8 +30,15 @@ Widget.renderHTMLWidget = function(widget, callback) {
 	if (!isVisibleInCategory(widget)) {
 		return callback(null, null);
 	}
-	widget.html = widget.data ? widget.data.html : '';
-	setImmediate(callback, null, widget);
+	var tpl = widget.data ? widget.data.html : '';
+	benchpressjs.compileParse(tpl.toString(), widget.templateData, function(err, output) {
+		if (err) {
+			return callback(err);
+		}
+
+		widget.html = output;
+		callback(null, widget);
+	});
 };
 
 Widget.renderTextWidget = function(widget, callback) {
