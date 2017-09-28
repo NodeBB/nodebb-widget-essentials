@@ -228,8 +228,12 @@ Widget.renderRecentPostsWidget = function(widget, callback) {
 			posts: posts,
 			numPosts: numPosts,
 			cid: cid,
-			relative_path: nconf.get('relative_path')
+			relative_path: nconf.get('relative_path'),
+			config: {
+				relative_path: nconf.get('relative_path'),
+			},
 		};
+
 		app.render('widgets/recentposts', data, function(err, html) {
 			translator.translate(html, function(translatedHTML) {
 				widget.html = translatedHTML;
