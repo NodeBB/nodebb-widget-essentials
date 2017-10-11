@@ -11,7 +11,6 @@ var plugins = module.parent.require('./plugins');
 var topics = module.parent.require('./topics');
 var posts = module.parent.require('./posts');
 var groups = module.parent.require('./groups');
-var translator = module.parent.require('../public/src/modules/translator');
 
 
 var benchpressjs = module.parent.require('benchpressjs');
@@ -91,11 +90,8 @@ Widget.renderRecentViewWidget = function(widget, callback) {
 			app.render('recent', data, next);
 		},
 		function (html, next) {
-			html = html.replace(/<ol[\s\S]*?<br \/>/, '').replace('<br>', '');
-			translator.translate(html, function(translatedHTML) {
-				widget.html = translatedHTML;
-				next(null, widget);
-			});
+			widget.html = html.replace(/<ol[\s\S]*?<br \/>/, '').replace('<br>', '');
+			next(null, widget);
 		}
 	], callback);
 };
@@ -211,47 +207,48 @@ Widget.renderForumStatsWidget = function(widget, callback) {
 			statsClass: widget.data.statsClass
 		};
 		app.render('widgets/forumstats', stats, function(err, html) {
-			translator.translate(html, function(translatedHTML) {
-				widget.html = translatedHTML;
-				callback(err, widget);
-			});
+			if (err) {
+				return callback(err);
+			}
+			widget.html = html;
+			callback(null, widget);
 		});
 	});
 };
 
 Widget.renderRecentPostsWidget = function(widget, callback) {
-	function done(err, posts) {
-		if (err) {
-			return callback(err);
-		}
-		var data = {
-			posts: posts,
-			numPosts: numPosts,
-			cid: cid,
-			relative_path: nconf.get('relative_path'),
-			config: {
-				relative_path: nconf.get('relative_path'),
-			},
-		};
-
-		app.render('widgets/recentposts', data, function(err, html) {
-			translator.translate(html, function(translatedHTML) {
-				widget.html = translatedHTML;
-				callback(err, widget);
-			});
-		});
-	}
 	var cid = widget.data.cid;
 	if (!parseInt(cid, 10)) {
 		var match = widget.area.url.match('category/([0-9]+)');
 		cid = (match && match.length > 1) ? match[1] : null;
 	}
 	var numPosts = widget.data.numPosts || 4;
-	if (cid) {
-		categories.getRecentReplies(cid, widget.uid, numPosts, done);
-	} else {
-		posts.getRecentPosts(widget.uid, 0, Math.max(0, numPosts - 1), 'alltime', done);
-	}
+	async.waterfall([
+		function (next) {
+			if (cid) {
+				categories.getRecentReplies(cid, widget.uid, numPosts, next);
+			} else {
+				posts.getRecentPosts(widget.uid, 0, Math.max(0, numPosts - 1), 'alltime', next);
+			}
+		},
+		function (posts, next) {
+			var data = {
+				posts: posts,
+				numPosts: numPosts,
+				cid: cid,
+				relative_path: nconf.get('relative_path'),
+				config: {
+					relative_path: nconf.get('relative_path'),
+				},
+			};
+
+			app.render('widgets/recentposts', data, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
+		},
+	], callback);
 };
 
 Widget.renderRecentTopicsWidget = function(widget, callback) {
@@ -274,16 +271,22 @@ Widget.renderRecentTopicsWidget = function(widget, callback) {
 			topics.getTopicsFromSet(key, widget.uid, 0, Math.max(0, numTopics), next);
 		},
 		function (data, next) {
+			data.topics.forEach(function (topicData) {
+				if (topicData && !topicData.teaser) {
+					topicData.teaser = {
+						user: topicData.user,
+					};
+				}
+			});
 			app.render('widgets/recenttopics', {
 				topics: data.topics,
 				numTopics: numTopics,
 				relative_path: nconf.get('relative_path')
-			}, function(err, html) {
-				translator.translate(html, function(translatedHTML) {
-					widget.html = translatedHTML;
-					next(err, widget);
-				});
-			});
+			}, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
 		},
 	], callback);
 };
@@ -319,43 +322,44 @@ Widget.renderPopularTags = function(widget, callback) {
 
 Widget.renderPopularTopics = function(widget, callback) {
 	var numTopics = widget.data.numTopics || 8;
-	topics.getPopular(widget.data.duration || 'alltime', widget.uid, numTopics, function(err, topics) {
-		if (err) {
-			return callback(err);
-		}
-
-		app.render('widgets/populartopics', {
-			topics: topics,
-			numTopics: numTopics,
-			relative_path: nconf.get('relative_path')
-		}, function(err, html) {
-			translator.translate(html, function(translatedHTML) {
-				widget.html = translatedHTML;
-				callback(err, widget);
-			});
-		});
-	});
+	async.waterfall([
+		function (next) {
+			topics.getPopular(widget.data.duration || 'alltime', widget.uid, numTopics, next);
+		},
+		function (topics, next) {
+			app.render('widgets/populartopics', {
+				topics: topics,
+				numTopics: numTopics,
+				relative_path: nconf.get('relative_path')
+			}, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
+		},
+	], callback);
 };
 
 Widget.renderMyGroups = function(widget, callback) {
 	var uid = widget.uid;
 	var numGroups = parseInt(widget.data.numGroups, 10) || 9;
-	groups.getUserGroups([uid], function(err, groupsData) {
-		if (err) {
-			return callback(err);
-		}
-		var userGroupData = groupsData.length ? groupsData[0] : [];
-		userGroupData = userGroupData.slice(0, numGroups);
-		app.render('widgets/groups', {
-			groups: userGroupData,
-			relative_path: nconf.get('relative_path')
-		}, function(err, html) {
-			translator.translate(html, function(translatedHTML) {
-				widget.html = translatedHTML;
-				callback(err, widget);
-			});
-		});
-	});
+	async.waterfall([
+		function (next) {
+			groups.getUserGroups([uid], next);
+		},
+		function (groupsData, next) {
+			var userGroupData = groupsData.length ? groupsData[0] : [];
+			userGroupData = userGroupData.slice(0, numGroups);
+			app.render('widgets/groups', {
+				groups: userGroupData,
+				relative_path: nconf.get('relative_path')
+			}, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
+		},
+	], callback);
 };
 
 Widget.renderGroupPosts = function(widget, callback) {
@@ -368,11 +372,9 @@ Widget.renderGroupPosts = function(widget, callback) {
 			app.render('widgets/groupposts', {posts: posts}, next);
 		},
 		function(html, next) {
-			translator.translate(html, function(translatedHTML) {
-				widget.html = translatedHTML;
-				next(null, widget);
-			});
-		}
+			widget.html = html;
+			next(null, widget);
+		},
 	], callback);
 };
 
@@ -391,11 +393,9 @@ Widget.renderNewGroups = function(widget, callback) {
 			app.render('widgets/groups', {groups: groupsData, relative_path: nconf.get('relative_path')}, next);
 		},
 		function (html, next) {
-			translator.translate(html, function(translatedHTML) {
-				widget.html = translatedHTML;
-				next(null, widget);
-			});
-		}
+			widget.html = html;
+			next(null, widget);
+		},
 	], callback);
 };
 
@@ -435,10 +435,11 @@ Widget.renderSuggestedTopics = function(widget, callback) {
 			app.render('widgets/suggestedtopics', {
 				topics: topics,
 				relative_path: nconf.get('relative_path')
-			}, function (err, html) {
-				widget.html = html;
-				next(err, widget);
-			});
+			}, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
 		}
 	], callback);
 };
