@@ -11,31 +11,46 @@
 </div>
 
 <script type="text/javascript">
+	(function() {
+		function handleActiveUsers() {
+			function onNewTopic(topic) {
+				var activeUser = $('.active-users').find('a[data-uid="' + topic.uid + '"]');
 
-$(window).on('action:ajaxify.start', function(ev) {
-	socket.removeListener('event:new_topic', addActiveUser);
-});
+				if (activeUser.length) {
+					return activeUser.prependTo($('.active-users'));
+				}
 
-function addActiveUser(topic) {
-	var activeUser = $('.active-users').find('a[data-uid="' + topic.uid + '"]');
+				app.parseAndTranslate('widgets/activeusers', 'active_users', {
+					relative_path: config.relative_path,
+					active_users: [{
+						uid: topic.uid,
+						username: topic.user.username,
+						userslug: topic.user.userslug,
+						picture: topic.user.picture,
+						'icon:bgColor': topic.user['icon:bgColor'],
+						'icon:text': topic.user['icon:text']
+					}]
+				}, function (html) {
+					html.prependTo($('.active-users'))
+				});
+			}
 
-	if(!activeUser.length) {
-		ajaxify.loadTemplate('activeusers', function(template) {
+			function onAjaxifyEnd() {
+				socket.removeListener('event:new_topic', onNewTopic);
+				if ($('.active-users').length) {
+					socket.on('event:new_topic', onNewTopic);
+				} else {
+					$(window).off('action:ajaxify.end', onAjaxifyEnd);
+				}
+			}
 
-			var newUser = templates.parse(templates.getBlock(template, 'active_users'), {
-				active_users: [{
-					uid: topic.uid,
-					username: topic.user.username,
-					userslug: topic.user.userslug,
-					picture: topic.user.picture
-				}]
-			});
-			$(newUser).prependTo($('.active-users'));
-		});
-	} else {
-		activeUser.prependTo($('.active-users'));
-	}
-}
+			$(window).on('action:ajaxify.end', onAjaxifyEnd);
+		}
 
-socket.on('event:new_topic', addActiveUser);
+		if (window.hasOwnProperty('$')) {
+			handleActiveUsers();
+		} else {
+			window.addEventListener('load', handleActiveUsers);
+		}
+	})();
 </script>

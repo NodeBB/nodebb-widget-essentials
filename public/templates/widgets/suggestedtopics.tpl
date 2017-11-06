@@ -8,7 +8,9 @@
 'use strict';
 /* globals app*/
 
-$(document).ready(function() {
+if (window.hasOwnProperty('$')) {
 	app.createUserTooltips();
-});
+} else {
+	window.addEventListener('load', app.createUserTooltips);
+}
 </script>

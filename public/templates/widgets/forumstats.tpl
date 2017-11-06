@@ -20,9 +20,3 @@
 		</div>
 	</div>
 </div>
-
-<script>
-$(document).ready(function() {
-	utils.makeNumbersHumanReadable($('.forum-stats .stats'));
-});
-</script>

@@ -11,7 +11,7 @@ var plugins = module.parent.require('./plugins');
 var topics = module.parent.require('./topics');
 var posts = module.parent.require('./posts');
 var groups = module.parent.require('./groups');
-
+var utils = module.parent.require('./utils');
 
 var benchpressjs = module.parent.require('benchpressjs');
 
@@ -110,7 +110,7 @@ Widget.renderActiveUsersWidget = function(widget, callback) {
 				match = widget.area.url.match('topic/([0-9]+)');
 				cidOrtid = (match && match.length > 1) ? match[1] : 1;
 				topics.getUids(cidOrtid, next);
-			} else if (widget.area.url === nconf.get('relative_path') + '/') {
+			} else if (widget.area.url === nconf.get('relative_path') + '/' || widget.templateData.template.categories) {
 				posts.getRecentPosterUids(0, count - 1, next);
 			} else {
 				match = widget.area.url.match('[0-9]+');
@@ -200,10 +200,10 @@ Widget.renderForumStatsWidget = function(widget, callback) {
 		}
 
 		var stats = {
-			topics: results.global.topicCount ? results.global.topicCount : 0,
-			posts: results.global.postCount ? results.global.postCount : 0,
-			users: results.global.userCount ? results.global.userCount : 0,
-			online: results.onlineCount + results.guestCount,
+			topics: utils.makeNumberHumanReadable(results.global.topicCount ? results.global.topicCount : 0),
+			posts: utils.makeNumberHumanReadable(results.global.postCount ? results.global.postCount : 0),
+			users: utils.makeNumberHumanReadable(results.global.userCount ? results.global.userCount : 0),
+			online: utils.makeNumberHumanReadable(results.onlineCount + results.guestCount),
 			statsClass: widget.data.statsClass
 		};
 		app.render('widgets/forumstats', stats, function(err, html) {
@@ -237,9 +237,6 @@ Widget.renderRecentPostsWidget = function(widget, callback) {
 				numPosts: numPosts,
 				cid: cid,
 				relative_path: nconf.get('relative_path'),
-				config: {
-					relative_path: nconf.get('relative_path'),
-				},
 			};
 
 			app.render('widgets/recentposts', data, next);
@@ -293,6 +290,9 @@ Widget.renderRecentTopicsWidget = function(widget, callback) {
 
 Widget.renderCategories = function(widget, callback) {
 	categories.getCategoriesByPrivilege('cid:0:children', widget.uid, 'find', function(err, data) {
+		if (err) {
+			return callback(err);
+		}
 		app.render('widgets/categories', {
 			categories: data,
 			relative_path: nconf.get('relative_path')

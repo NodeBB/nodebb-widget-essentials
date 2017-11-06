@@ -4,7 +4,7 @@
 		<!-- IF topics.user.picture -->
 		<img title="{topics.user.username}" class="avatar avatar-sm not-responsive" src="{topics.user.picture}" />
 		<!-- ELSE -->
-		<div class="avatar avatar-sm not-responsive" style="background-color: {topics.user.icon:bgColor};">{topics.user.icon:text}</div>
+		<div title="{topics.user.username}" class="avatar avatar-sm not-responsive" style="background-color: {topics.user.icon:bgColor};">{topics.user.icon:text}</div>
 		<!-- ENDIF topics.user.picture -->
 	</a>
 

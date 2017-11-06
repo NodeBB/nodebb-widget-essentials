@@ -5,11 +5,18 @@
 </div>
 
 <script>
-'use strict';
-/* globals app*/
+	'use strict';
+	/* globals app*/
+	(function() {
+		function onLoad() {
+			app.createUserTooltips();
+			$('.popular_topics').find('span.timeago').timeago();
+		}
 
-$(document).ready(function() {
-	app.createUserTooltips();
-	$('.popular_topics').find('span.timeago').timeago();
-});
+		if (window.hasOwnProperty('$')) {
+			onLoad();
+		} else {
+			window.addEventListener('load', onLoad);
+		}
+	})();
 </script>
