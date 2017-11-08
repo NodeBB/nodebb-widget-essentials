@@ -47,7 +47,7 @@
 			$(window).on('action:ajaxify.end', onAjaxifyEnd);
 		}
 
-		if (window.hasOwnProperty('$')) {
+		if (window.jQuery) {
 			handleActiveUsers();
 		} else {
 			window.addEventListener('load', handleActiveUsers);

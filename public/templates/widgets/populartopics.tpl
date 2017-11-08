@@ -13,7 +13,7 @@
 			$('.popular_topics').find('span.timeago').timeago();
 		}
 
-		if (window.hasOwnProperty('$')) {
+		if (window.jQuery) {
 			onLoad();
 		} else {
 			window.addEventListener('load', onLoad);

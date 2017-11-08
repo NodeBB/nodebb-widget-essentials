@@ -8,7 +8,7 @@
 'use strict';
 /* globals app*/
 
-if (window.hasOwnProperty('$')) {
+if (window.jQuery) {
 	app.createUserTooltips();
 } else {
 	window.addEventListener('load', app.createUserTooltips);

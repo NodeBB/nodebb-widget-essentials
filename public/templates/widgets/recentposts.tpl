@@ -61,7 +61,7 @@
 	}
 
 
-	if (window.hasOwnProperty('$')) {
+	if (window.jQuery) {
 		onLoad();
 	} else {
 		window.addEventListener('load', onLoad);
