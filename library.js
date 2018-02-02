@@ -536,7 +536,7 @@ Widget.defineWidgets = function(widgets, callback) {
 					widget: "suggestedtopics",
 					name: "Suggested Topics",
 					description: "Lists of suggested topics.",
-					content: 'admin/recenttopics'
+					content: 'admin/suggestedtopics'
 				}
 			], function(widget, next) {
 				app.render(widget.content, {}, function(err, html) {
