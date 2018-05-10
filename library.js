@@ -74,7 +74,7 @@ function getCidsArray(widget) {
 
 function isVisibleInCategory(widget) {
 	var cids = getCidsArray(widget);
-	return !(cids.length && widget.templateData.template.category && cids.indexOf(parseInt(widget.templateData.cid, 10)) === -1);
+	return !(cids.length && (widget.templateData.template.category || widget.templateData.template.topic) && cids.indexOf(parseInt(widget.templateData.cid, 10)) === -1);
 }
 
 Widget.renderRecentViewWidget = function(widget, callback) {
