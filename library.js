@@ -324,7 +324,13 @@ Widget.renderPopularTopics = function(widget, callback) {
 	var numTopics = widget.data.numTopics || 8;
 	async.waterfall([
 		function (next) {
-			topics.getPopularTopics(widget.data.duration || 'alltime', widget.uid, 0, numTopics - 1, next);
+			topics.getSortedTopics({
+				uid: widget.uid,
+				start: 0,
+				stop: numTopics - 1,
+				term: widget.data.duration || 'alltime',
+				sort: 'posts',
+			}, next);
 		},
 		function (data, next) {
 			app.render('widgets/populartopics', {
