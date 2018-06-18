@@ -324,11 +324,12 @@ Widget.renderPopularTopics = function(widget, callback) {
 	var numTopics = widget.data.numTopics || 8;
 	async.waterfall([
 		function (next) {
-			topics.getPopular(widget.data.duration || 'alltime', widget.uid, numTopics, next);
+			topics.getPopularTopics(widget.data.duration || 'alltime', widget.uid, 0, numTopics - 1, next);
 		},
-		function (topics, next) {
+		function (data, next) {
+			console.log(data);
 			app.render('widgets/populartopics', {
-				topics: topics,
+				topics: data.topics,
 				numTopics: numTopics,
 				relative_path: nconf.get('relative_path')
 			}, next);
