@@ -327,7 +327,6 @@ Widget.renderPopularTopics = function(widget, callback) {
 			topics.getPopularTopics(widget.data.duration || 'alltime', widget.uid, 0, numTopics - 1, next);
 		},
 		function (data, next) {
-			console.log(data);
 			app.render('widgets/populartopics', {
 				topics: data.topics,
 				numTopics: numTopics,
