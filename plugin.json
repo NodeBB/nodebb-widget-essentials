@@ -48,6 +48,9 @@
 			"hook": "filter:widget.render:populartopics", "method": "renderPopularTopics"
 		},
 		{
+			"hook": "filter:widget.render:toptopics", "method": "renderTopTopics"
+		},
+		{
 			"hook": "filter:widget.render:newgroups", "method": "renderNewGroups"
 		},
 		{

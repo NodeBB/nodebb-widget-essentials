@@ -346,6 +346,32 @@ Widget.renderPopularTopics = function(widget, callback) {
 	], callback);
 };
 
+Widget.renderTopTopics = function(widget, callback) {
+	var numTopics = widget.data.numTopics || 8;
+	async.waterfall([
+		function (next) {
+			topics.getSortedTopics({
+				uid: widget.uid,
+				start: 0,
+				stop: numTopics - 1,
+				term: widget.data.duration || 'alltime',
+				sort: 'votes',
+			}, next);
+		},
+		function (data, next) {
+			app.render('widgets/toptopics', {
+				topics: data.topics,
+				numTopics: numTopics,
+				relative_path: nconf.get('relative_path')
+			}, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
+		},
+	], callback);
+};
+
 Widget.renderMyGroups = function(widget, callback) {
 	var uid = widget.uid;
 	var numGroups = parseInt(widget.data.numGroups, 10) || 9;
@@ -525,6 +551,12 @@ Widget.defineWidgets = function(widgets, callback) {
 					name: "Popular Topics",
 					description: "Lists popular topics on your forum",
 					content: 'admin/populartopics'
+				},
+				{
+					widget: "toptopics",
+					name: "Top Topics",
+					description: "Lists top topics on your forum",
+					content: 'admin/toptopics'
 				},
 				{
 					widget: "mygroups",
