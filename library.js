@@ -431,18 +431,14 @@ Widget.renderNewGroups = function(widget, callback) {
 };
 
 Widget.renderSuggestedTopics = function(widget, callback) {
-
 	var numTopics = Math.max(0, (widget.data.numTopics || 8) - 1);
-	var tidMatch = widget.area.url.match('topic/([0-9]+)');
-	var cidMatch = widget.area.url.match('category/([0-9]+)');
 
 	async.waterfall([
 		function (next) {
-			if (tidMatch) {
-				var tid = tidMatch.length > 1 ? tidMatch[1] : 1;
-				topics.getSuggestedTopics(tid, widget.uid, 0, numTopics, next);
-			} else if (cidMatch) {
-				var cid = cidMatch.length > 1 ? cidMatch[1] : 1;
+			if (widget.templateData.template.topic) {
+				topics.getSuggestedTopics(widget.templateData.tid, widget.uid, 0, numTopics, next);
+			} else if (widget.templateData.template.category) {
+				var cid = widget.templateData.cid;
 				categories.getCategoryTopics({
 					cid: cid,
 					uid: widget.uid,
@@ -460,9 +456,7 @@ Widget.renderSuggestedTopics = function(widget, callback) {
 			}
 		},
 		function (topics, next) {
-			topics = topics.filter(function(topic) {
-				return topic && !topic.deleted;
-			});
+			topics = topics.filter(topic => topic && !topic.deleted);
 			app.render('widgets/suggestedtopics', {
 				topics: topics,
 				config: widget.templateData.config,
