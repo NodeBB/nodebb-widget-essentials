@@ -465,6 +465,7 @@ Widget.renderSuggestedTopics = function(widget, callback) {
 			});
 			app.render('widgets/suggestedtopics', {
 				topics: topics,
+				config: widget.templateData.config,
 				relative_path: nconf.get('relative_path')
 			}, next);
 		},

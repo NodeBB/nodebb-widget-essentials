@@ -1,7 +1,5 @@
-<div class="recent-replies">
-	<ul class="suggested-topics">
-	<!-- IMPORT partials/topics.tpl -->
-	</ul>
+<div class="category">
+	<!-- IMPORT partials/topics_list.tpl -->
 </div>
 
 <script>
