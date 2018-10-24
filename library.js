@@ -1,19 +1,18 @@
 "use strict";
 
-var async = module.parent.require('async');
-var nconf = module.parent.require('nconf');
-var validator = module.parent.require('validator');
+var async = require.main.require('async');
+var nconf = require.main.require('nconf');
+var validator = require.main.require('validator');
+var benchpressjs = require.main.require('benchpressjs');
 
-var db = module.parent.require('./database');
-var categories = module.parent.require('./categories');
-var user = module.parent.require('./user');
-var plugins = module.parent.require('./plugins');
-var topics = module.parent.require('./topics');
-var posts = module.parent.require('./posts');
-var groups = module.parent.require('./groups');
-var utils = module.parent.require('./utils');
-
-var benchpressjs = module.parent.require('benchpressjs');
+var db = require.main.require('./src/database');
+var categories = require.main.require('./src/categories');
+var user = require.main.require('./src/user');
+var plugins = require.main.require('./src/plugins');
+var topics = require.main.require('./src/topics');
+var posts = require.main.require('./src/posts');
+var groups = require.main.require('./src/groups');
+var utils = require.main.require('./src/utils');
 
 var app;
 
@@ -192,7 +191,7 @@ Widget.renderForumStatsWidget = function(widget, callback) {
 			db.sortedSetCount('users:online', now - 300000, '+inf', next);
 		},
 		guestCount: function(next) {
-			module.parent.require('./socket.io/admin/rooms').getTotalGuestCount(next);
+			require.main.require('./src/socket.io/admin/rooms').getTotalGuestCount(next);
 		}
 	}, function(err, results) {
 		if (err) {
