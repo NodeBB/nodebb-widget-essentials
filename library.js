@@ -5,14 +5,16 @@ var nconf = require.main.require('nconf');
 var validator = require.main.require('validator');
 var benchpressjs = require.main.require('benchpressjs');
 
-var db = require.main.require('./src/database');
-var categories = require.main.require('./src/categories');
-var user = require.main.require('./src/user');
-var plugins = require.main.require('./src/plugins');
-var topics = require.main.require('./src/topics');
-var posts = require.main.require('./src/posts');
-var groups = require.main.require('./src/groups');
-var utils = require.main.require('./src/utils');
+var nbbRequire = require('./lib/nbbRequire');
+
+var db = nbbRequire('./src/database');
+var categories = nbbRequire('./src/categories');
+var user = nbbRequire('./src/user');
+var plugins = nbbRequire('./src/plugins');
+var topics = nbbRequire('./src/topics');
+var posts = nbbRequire('./src/posts');
+var groups = nbbRequire('./src/groups');
+var utils = nbbRequire('./src/utils');
 
 var app;
 
