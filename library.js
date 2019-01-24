@@ -13,6 +13,7 @@ var topics = require.main.require('./src/topics');
 var posts = require.main.require('./src/posts');
 var groups = require.main.require('./src/groups');
 var utils = require.main.require('./src/utils');
+var meta = require.main.require('./src/meta');
 
 var app;
 
@@ -188,7 +189,7 @@ Widget.renderForumStatsWidget = function(widget, callback) {
 		},
 		onlineCount: function(next) {
 			var now = Date.now();
-			db.sortedSetCount('users:online', now - 300000, '+inf', next);
+			db.sortedSetCount('users:online', now - (meta.config.onlineCutoff * 60000), '+inf', next);
 		},
 		guestCount: function(next) {
 			require.main.require('./src/socket.io/admin/rooms').getTotalGuestCount(next);
