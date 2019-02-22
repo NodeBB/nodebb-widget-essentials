@@ -80,7 +80,13 @@ function isVisibleInCategory(widget) {
 Widget.renderRecentViewWidget = function(widget, callback) {
 	async.waterfall([
 		function (next) {
-			topics.getLatestTopics(widget.uid, 0, 19, 'month', next);
+			topics.getLatestTopics({
+				uid:
+				widget.uid,
+				start: 0,
+				stop: 19,
+				term: 'month',
+			}, next);
 		},
 		function (data, next) {
 			data.relative_path = nconf.get('relative_path');
