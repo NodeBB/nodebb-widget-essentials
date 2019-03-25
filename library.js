@@ -103,6 +103,29 @@ Widget.renderRecentViewWidget = function(widget, callback) {
 	], callback);
 };
 
+Widget.renderOnlineUsersWidget = function (widget, callback) {
+	var count = Math.max(1, widget.data.numUsers || 24);
+
+	async.waterfall([
+		function (next) {
+			user.getUidsFromSet('users:online', 0, count - 1, next);
+		},
+		function (uids, next) {
+			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
+		},
+		function (userData, next) {
+			app.render('widgets/onlineusers', {
+				online_users: userData,
+				relative_path: nconf.get('relative_path')
+			}, next);
+		},
+		function (html, next) {
+			widget.html = html;
+			next(null, widget);
+		}
+	], callback);
+};
+
 Widget.renderActiveUsersWidget = function(widget, callback) {
 	var count = Math.max(1, widget.data.numUsers || 24);
 	var cids = getCidsArray(widget);
@@ -484,6 +507,12 @@ Widget.defineWidgets = function(widgets, callback) {
 					name: "Text",
 					description: "Text, optionally parsed as a post.",
 					content: 'admin/text'
+				},
+				{
+					widget: "onlineusers",
+					name: "Online Users",
+					description: "List of online users",
+					content: 'admin/onlineusers'
 				},
 				{
 					widget: "activeusers",

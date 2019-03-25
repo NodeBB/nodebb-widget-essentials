@@ -47,7 +47,7 @@
 	height: 16px;
 }
 
-.recent-replies .avatar, .active-users .avatar, .moderators .avatar {
+.recent-replies .avatar, .active-users .avatar, .online-users .avatar, .moderators .avatar {
 	margin-top: 2px;
 }
 
@@ -82,7 +82,7 @@
 	margin-right: 10px;
 }
 
-.latest-users img, .active-users img, .moderators img {
+.latest-users img, .active-users img, .online-users img, .moderators img {
 	vertical-align: top;
 }
 
