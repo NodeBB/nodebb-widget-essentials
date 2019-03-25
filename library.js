@@ -192,6 +192,9 @@ Widget.renderModeratorsWidget = function(widget, callback) {
 			categories.getModerators(cid, next);
 		},
 		function (moderators, next) {
+			if (!moderators.length) {
+				return callback(null, null);
+			}
 			app.render('widgets/moderators', {
 				moderators: moderators,
 				relative_path: nconf.get('relative_path')

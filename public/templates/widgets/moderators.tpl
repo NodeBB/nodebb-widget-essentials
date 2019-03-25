@@ -8,8 +8,4 @@
 		<!-- ENDIF moderators.picture -->
 	</a>
 	<!-- END moderators -->
-
-	<!-- IF !moderators.length -->
-	No moderators for this category.
-	<!-- ENDIF !moderators.length -->
 </div>
