@@ -98,24 +98,16 @@ Widget.renderRecentViewWidget = function(widget, callback) {
 
 Widget.renderActiveUsersWidget = function(widget, callback) {
 	var count = Math.max(1, widget.data.numUsers || 24);
-	var cidOrtid;
-	var match;
+	var cids = getCidsArray(widget);
 
 	async.waterfall([
 		function (next) {
-			if (widget.data.cid) {
-				cidOrtid = widget.data.cid;
-				categories.getActiveUsers(cidOrtid, next);
+			if (cids.length) {
+				categories.getActiveUsers(cids, next);
 			} else if (widget.templateData.template.topic) {
-				match = widget.area.url.match('topic/([0-9]+)');
-				cidOrtid = (match && match.length > 1) ? match[1] : 1;
-				topics.getUids(cidOrtid, next);
-			} else if (widget.area.url === nconf.get('relative_path') + '/' || widget.templateData.template.categories) {
-				posts.getRecentPosterUids(0, count - 1, next);
+				topics.getUids(widget.templateData.tid, next);
 			} else {
-				match = widget.area.url.match('[0-9]+');
-				cidOrtid = match ? match[0] : 1;
-				categories.getActiveUsers(cidOrtid, next);
+				posts.getRecentPosterUids(0, count - 1, next);
 			}
 		},
 		function (uids, next) {
