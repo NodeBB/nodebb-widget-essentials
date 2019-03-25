@@ -4,6 +4,7 @@ var async = require.main.require('async');
 var nconf = require.main.require('nconf');
 var validator = require.main.require('validator');
 var benchpressjs = require.main.require('benchpressjs');
+var _ = require.main.require('lodash');
 
 var db = require.main.require('./src/database');
 var categories = require.main.require('./src/categories');
@@ -437,16 +438,15 @@ Widget.renderSuggestedTopics = function(widget, callback) {
 			if (widget.templateData.template.topic) {
 				topics.getSuggestedTopics(widget.templateData.tid, widget.uid, 0, numTopics, next);
 			} else if (widget.templateData.template.category) {
-				var cid = widget.templateData.cid;
-				categories.getCategoryTopics({
-					cid: cid,
+				topics.getSortedTopics({
+					cid: widget.templateData.cid,
 					uid: widget.uid,
-					set: 'cid:' + cid + ':tids',
-					reverse: false,
 					start: 0,
-					stop: numTopics
-				}, function(err, data) {
-					next(err, data ? data.topics : []);
+					stop: 2 * numTopics,
+					term: 'alltime',
+					sort: 'votes',
+				}, function (err, data) {
+					next(err, data ? _.shuffle(data.topics).slice(0, numTopics + 1) : []);
 				});
 			} else {
 				topics.getTopicsFromSet('topics:recent', widget.uid, 0, numTopics, function(err, data) {
