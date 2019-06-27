@@ -66,11 +66,7 @@ Widget.renderTextWidget = function(widget, callback) {
 
 function getCidsArray(widget) {
 	var cids = widget.data.cid || '';
-	cids = cids.split(',');
-	cids = cids.map(function (cid) {
-		return parseInt(cid, 10);
-	}).filter(Boolean);
-	return cids;
+	return cids.split(',').map(c => parseInt(c, 10)).filter(Boolean);
 }
 
 function isVisibleInCategory(widget) {
@@ -283,9 +279,7 @@ Widget.renderRecentTopicsWidget = function(widget, callback) {
 				if (cids.length === 1) {
 					key = 'cid:' + cids[0] + ':tids';
 				} else {
-					key = cids.map(function (cid) {
-						return 'cid:' + cid + ':tids';
-					});
+					key = cids.map(cid => 'cid:' + cid + ':tids');
 				}
 			} else {
 				key = 'topics:recent';
