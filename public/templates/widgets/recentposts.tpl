@@ -53,8 +53,6 @@
 		}
 
 		function processHtml(html) {
-			app.replaceSelfLinks(html.find('a'));
-
 			html.find('img:not(.not-responsive)').addClass('img-responsive');
 			html.find('span.timeago').timeago();
 		}
