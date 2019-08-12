@@ -52,8 +52,19 @@
 			socket.on('event:new_post', app.widgets.recentPosts.onNewPost);
 		}
 
+		function replaceSelfLinks( selector )
+		{
+			selector = selector || $('a');
+			selector.each(function() {
+				var href = $(this).attr('href');
+				if (href && app.userslug) {
+					$(this).attr('href', href.replace(/\[self\]/g, app.userslug));
+				}
+			});
+		};
+
 		function processHtml(html) {
-			app.replaceSelfLinks(html.find('a'));
+			replaceSelfLinks( html.find('a'));
 
 			html.find('img:not(.not-responsive)').addClass('img-responsive');
 			html.find('span.timeago').timeago();
