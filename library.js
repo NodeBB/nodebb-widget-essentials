@@ -99,27 +99,16 @@ Widget.renderRecentViewWidget = function(widget, callback) {
 	], callback);
 };
 
-Widget.renderOnlineUsersWidget = function (widget, callback) {
-	var count = Math.max(1, widget.data.numUsers || 24);
-
-	async.waterfall([
-		function (next) {
-			user.getUidsFromSet('users:online', 0, count - 1, next);
-		},
-		function (uids, next) {
-			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
-		},
-		function (userData, next) {
-			app.render('widgets/onlineusers', {
-				online_users: userData,
-				relative_path: nconf.get('relative_path')
-			}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		}
-	], callback);
+Widget.renderOnlineUsersWidget = async function (widget) {
+	const count = Math.max(1, widget.data.numUsers || 24);
+	const uids = await user.getUidsFromSet('users:online', 0, count - 1);
+	let userData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status']);
+	userData = userData.filter(user => user.status !== 'offline');
+	widget.html = await app.renderAsync('widgets/onlineusers', {
+		online_users: userData,
+		relative_path: nconf.get('relative_path')
+	});
+	return widget;
 };
 
 Widget.renderActiveUsersWidget = function(widget, callback) {
