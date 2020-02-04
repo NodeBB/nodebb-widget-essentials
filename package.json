@@ -31,5 +31,10 @@
   "_from": "nodebb-widget-essentials@~0.0.1",
   "nbbpm": {
     "compatibility": "^1.12.0"
+  },
+  "devDependencies": {
+    "eslint": "6.7.0",
+    "eslint-config-airbnb-base": "14.0.0",
+    "eslint-plugin-import": "2.18.2"
   }
 }

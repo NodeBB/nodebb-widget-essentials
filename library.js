@@ -1,102 +1,77 @@
-"use strict";
+'use strict';
 
-var async = require.main.require('async');
-var nconf = require.main.require('nconf');
-var validator = require.main.require('validator');
-var benchpressjs = require.main.require('benchpressjs');
-var _ = require.main.require('lodash');
+const nconf = require.main.require('nconf');
+const validator = require.main.require('validator');
+const benchpressjs = require.main.require('benchpressjs');
+const _ = require.main.require('lodash');
 
-var db = require.main.require('./src/database');
-var categories = require.main.require('./src/categories');
-var user = require.main.require('./src/user');
-var plugins = require.main.require('./src/plugins');
-var topics = require.main.require('./src/topics');
-var posts = require.main.require('./src/posts');
-var groups = require.main.require('./src/groups');
-var utils = require.main.require('./src/utils');
-var meta = require.main.require('./src/meta');
+const db = require.main.require('./src/database');
+const categories = require.main.require('./src/categories');
+const user = require.main.require('./src/user');
+const plugins = require.main.require('./src/plugins');
+const topics = require.main.require('./src/topics');
+const posts = require.main.require('./src/posts');
+const groups = require.main.require('./src/groups');
+const utils = require.main.require('./src/utils');
+const meta = require.main.require('./src/meta');
 
-var app;
+let app;
 
-var Widget = module.exports;
+const Widget = module.exports;
 
-Widget.init = function(params, callback) {
+Widget.init = async function (params) {
 	app = params.app;
-
-	callback();
 };
 
-Widget.renderHTMLWidget = function(widget, callback) {
+Widget.renderHTMLWidget = async function (widget) {
 	if (!isVisibleInCategory(widget)) {
-		return callback(null, null);
+		return null;
 	}
-	var tpl = widget.data ? widget.data.html : '';
-	benchpressjs.compileParse(tpl.toString(), widget.templateData, function(err, output) {
-		if (err) {
-			return callback(err);
-		}
-
-		widget.html = output;
-		callback(null, widget);
-	});
+	const tpl = widget.data ? widget.data.html : '';
+	widget.html = await benchpressjs.compileRender(String(tpl), widget.templateData);
+	return widget;
 };
 
-Widget.renderTextWidget = function(widget, callback) {
-	var parseAsPost = !!widget.data.parseAsPost;
-	var text = widget.data.text;
-
+Widget.renderTextWidget = async function (widget) {
 	if (!isVisibleInCategory(widget)) {
-		return callback(null, null);
+		return null;
 	}
+	const parseAsPost = !!widget.data.parseAsPost;
+	const text = String(widget.data.text);
 
-	async.waterfall([
-		function (next) {
-			if (parseAsPost) {
-				plugins.fireHook('filter:parse.raw', text, next);
-			} else {
-				next(null, text.replace(/\r\n/g, "<br />"));
-			}
-		},
-		function (text, next) {
-			widget.html = text;
-			next(null, widget);
-		}
-	], callback);
+	if (parseAsPost) {
+		widget.html = await plugins.fireHook('filter:parse.raw', text);
+	} else {
+		widget.html = text.replace(/\r\n/g, '<br />');
+	}
+	return widget;
 };
 
 function getCidsArray(widget) {
-	var cids = widget.data.cid || '';
+	const cids = widget.data.cid || '';
 	return cids.split(',').map(c => parseInt(c, 10)).filter(Boolean);
 }
 
 function isVisibleInCategory(widget) {
-	var cids = getCidsArray(widget);
-	return !(cids.length && (widget.templateData.template.category || widget.templateData.template.topic) && cids.indexOf(parseInt(widget.templateData.cid, 10)) === -1);
+	const cids = getCidsArray(widget);
+	return !(cids.length && (widget.templateData.template.category || widget.templateData.template.topic) && !cids.includes(parseInt(widget.templateData.cid, 10)));
 }
 
-Widget.renderRecentViewWidget = function(widget, callback) {
-	async.waterfall([
-		function (next) {
-			topics.getLatestTopics({
-				uid:
-				widget.uid,
-				start: 0,
-				stop: 19,
-				term: 'month',
-			}, next);
-		},
-		function (data, next) {
-			data.relative_path = nconf.get('relative_path');
-			data.loggedIn = !!widget.req.uid;
-			data.config = data.config || {};
-			data.config.relative_path = nconf.get('relative_path');
-			app.render('recent', data, next);
-		},
-		function (html, next) {
-			widget.html = html.replace(/<ol[\s\S]*?<br \/>/, '').replace('<br>', '');
-			next(null, widget);
-		}
-	], callback);
+Widget.renderRecentViewWidget = async function (widget) {
+	const data = await topics.getLatestTopics({
+		uid:
+		widget.uid,
+		start: 0,
+		stop: 19,
+		term: 'month',
+	});
+	data.relative_path = nconf.get('relative_path');
+	data.loggedIn = !!widget.req.uid;
+	data.config = data.config || {};
+	data.config.relative_path = nconf.get('relative_path');
+	widget.html = await app.renderAsync('recent', data);
+	widget.html = widget.html.replace(/<ol[\s\S]*?<br \/>/, '').replace('<br>', '');
+	return widget;
 };
 
 Widget.renderOnlineUsersWidget = async function (widget) {
@@ -106,514 +81,378 @@ Widget.renderOnlineUsersWidget = async function (widget) {
 	userData = userData.filter(user => user.status !== 'offline');
 	widget.html = await app.renderAsync('widgets/onlineusers', {
 		online_users: userData,
-		relative_path: nconf.get('relative_path')
+		relative_path: nconf.get('relative_path'),
 	});
 	return widget;
 };
 
-Widget.renderActiveUsersWidget = function(widget, callback) {
-	var count = Math.max(1, widget.data.numUsers || 24);
-	var cids = getCidsArray(widget);
+Widget.renderActiveUsersWidget = async function (widget) {
+	const count = Math.max(1, widget.data.numUsers || 24);
+	const cids = getCidsArray(widget);
+	let uids;
+	if (cids.length) {
+		uids = await categories.getActiveUsers(cids);
+	} else if (widget.templateData.template.topic) {
+		uids = await topics.getUids(widget.templateData.tid);
+	} else {
+		uids = await posts.getRecentPosterUids(0, count - 1);
+	}
+	uids = uids.slice(0, count);
 
-	async.waterfall([
-		function (next) {
-			if (cids.length) {
-				categories.getActiveUsers(cids, next);
-			} else if (widget.templateData.template.topic) {
-				topics.getUids(widget.templateData.tid, next);
-			} else {
-				posts.getRecentPosterUids(0, count - 1, next);
-			}
-		},
-		function (uids, next) {
-			uids = uids.slice(0, count);
-
-			user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture'], next);
-		},
-		function (userData, next) {
-			app.render('widgets/activeusers', {
-				active_users: userData,
-				relative_path: nconf.get('relative_path')
-			}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		}
-	], callback);
+	const userData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
+	widget.html = await app.renderAsync('widgets/activeusers', {
+		active_users: userData,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
 };
 
-Widget.renderLatestUsersWidget = function(widget, callback) {
-	var count = Math.max(1, widget.data.numUsers || 24);
-	async.waterfall([
-		function (next) {
-			user.getUsersFromSet('users:joindate', widget.uid, 0, count - 1, next);
-		},
-		function (users, next) {
-			app.render('widgets/latestusers', {
-				users: users,
-				relative_path: nconf.get('relative_path')
-			}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		}
-	], callback);
+Widget.renderLatestUsersWidget = async function (widget) {
+	const count = Math.max(1, widget.data.numUsers || 24);
+	const users = await user.getUsersFromSet('users:joindate', widget.uid, 0, count - 1);
+	widget.html = await app.renderAsync('widgets/latestusers', {
+		users: users,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
 };
 
-Widget.renderModeratorsWidget = function(widget, callback) {
-	var cid;
+Widget.renderModeratorsWidget = async function (widget) {
+	let cid;
 
 	if (widget.data.cid) {
 		cid = widget.data.cid;
+	} else if (widget.templateData.template.category) {
+		cid = widget.templateData.cid;
+	} else if (widget.templateData.template.topic && widget.templateData.category) {
+		cid = widget.templateData.category.cid;
+	}
+	const moderators = await categories.getModerators(cid);
+	if (!moderators.length) {
+		return null;
+	}
+	widget.html = await app.renderAsync('widgets/moderators', {
+		moderators: moderators,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
+};
+
+Widget.renderForumStatsWidget = async function (widget) {
+	const socketRooms = require.main.require('./src/socket.io/admin/rooms');
+	const [global, onlineCount, guestCount] = await Promise.all([
+		db.getObjectFields('global', ['topicCount', 'postCount', 'userCount']),
+		db.sortedSetCount('users:online', Date.now() - (meta.config.onlineCutoff * 60000), '+inf'),
+		socketRooms.getTotalGuestCount(),
+	]);
+
+	const stats = {
+		topics: utils.makeNumberHumanReadable(global.topicCount ? global.topicCount : 0),
+		posts: utils.makeNumberHumanReadable(global.postCount ? global.postCount : 0),
+		users: utils.makeNumberHumanReadable(global.userCount ? global.userCount : 0),
+		online: utils.makeNumberHumanReadable(onlineCount + guestCount),
+		statsClass: widget.data.statsClass,
+	};
+	widget.html = await app.renderAsync('widgets/forumstats', stats);
+	return widget;
+};
+
+Widget.renderRecentPostsWidget = async function (widget) {
+	let cid;
+
+	if (widget.data.cid) {
+		cid = widget.data.cid;
+	} else if (widget.templateData.template.category) {
+		cid = widget.templateData.cid;
+	} else if (widget.templateData.template.topic && widget.templateData.category) {
+		cid = widget.templateData.category.cid;
+	}
+	const numPosts = widget.data.numPosts || 4;
+	let postsData;
+	if (cid) {
+		postsData = await categories.getRecentReplies(cid, widget.uid, numPosts);
 	} else {
-		var match = widget.area.url.match('[0-9]+');
-		cid = match ? match[0] : 1;
+		postsData = await posts.getRecentPosts(widget.uid, 0, Math.max(0, numPosts - 1), 'alltime');
 	}
-
-	async.waterfall([
-		function (next) {
-			categories.getModerators(cid, next);
-		},
-		function (moderators, next) {
-			if (!moderators.length) {
-				return callback(null, null);
-			}
-			app.render('widgets/moderators', {
-				moderators: moderators,
-				relative_path: nconf.get('relative_path')
-			}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		}
-	], callback);
+	const data = {
+		posts: postsData,
+		numPosts: numPosts,
+		cid: cid,
+		relative_path: nconf.get('relative_path'),
+	};
+	widget.html = await app.renderAsync('widgets/recentposts', data);
+	return widget;
 };
 
-Widget.renderForumStatsWidget = function(widget, callback) {
-	async.parallel({
-		global: function(next) {
-			db.getObjectFields('global', ['topicCount', 'postCount', 'userCount'], next);
-		},
-		onlineCount: function(next) {
-			var now = Date.now();
-			db.sortedSetCount('users:online', now - (meta.config.onlineCutoff * 60000), '+inf', next);
-		},
-		guestCount: function(next) {
-			require.main.require('./src/socket.io/admin/rooms').getTotalGuestCount(next);
-		}
-	}, function(err, results) {
-		if (err) {
-			return callback(err);
-		}
+Widget.renderRecentTopicsWidget = async function (widget) {
+	const numTopics = (widget.data.numTopics || 8) - 1;
+	const cids = getCidsArray(widget);
 
-		var stats = {
-			topics: utils.makeNumberHumanReadable(results.global.topicCount ? results.global.topicCount : 0),
-			posts: utils.makeNumberHumanReadable(results.global.postCount ? results.global.postCount : 0),
-			users: utils.makeNumberHumanReadable(results.global.userCount ? results.global.userCount : 0),
-			online: utils.makeNumberHumanReadable(results.onlineCount + results.guestCount),
-			statsClass: widget.data.statsClass
-		};
-		app.render('widgets/forumstats', stats, function(err, html) {
-			if (err) {
-				return callback(err);
-			}
-			widget.html = html;
-			callback(null, widget);
-		});
-	});
-};
-
-Widget.renderRecentPostsWidget = function(widget, callback) {
-	var cid = widget.data.cid;
-	if (!parseInt(cid, 10)) {
-		var match = widget.area.url.match('category/([0-9]+)');
-		cid = (match && match.length > 1) ? match[1] : null;
+	let key;
+	if (cids.length) {
+		if (cids.length === 1) {
+			key = 'cid:' + cids[0] + ':tids';
+		} else {
+			key = cids.map(cid => 'cid:' + cid + ':tids');
+		}
+	} else {
+		key = 'topics:recent';
 	}
-	var numPosts = widget.data.numPosts || 4;
-	async.waterfall([
-		function (next) {
-			if (cid) {
-				categories.getRecentReplies(cid, widget.uid, numPosts, next);
-			} else {
-				posts.getRecentPosts(widget.uid, 0, Math.max(0, numPosts - 1), 'alltime', next);
-			}
-		},
-		function (posts, next) {
-			var data = {
-				posts: posts,
-				numPosts: numPosts,
-				cid: cid,
-				relative_path: nconf.get('relative_path'),
+	const data = await topics.getTopicsFromSet(key, widget.uid, 0, Math.max(0, numTopics));
+	data.topics.forEach(function (topicData) {
+		if (topicData && !topicData.teaser) {
+			topicData.teaser = {
+				user: topicData.user,
 			};
-
-			app.render('widgets/recentposts', data, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		},
-	], callback);
-};
-
-Widget.renderRecentTopicsWidget = function(widget, callback) {
-	var numTopics = (widget.data.numTopics || 8) - 1;
-	var cids = getCidsArray(widget);
-	async.waterfall([
-		function (next) {
-			var key;
-			if (cids.length) {
-				if (cids.length === 1) {
-					key = 'cid:' + cids[0] + ':tids';
-				} else {
-					key = cids.map(cid => 'cid:' + cid + ':tids');
-				}
-			} else {
-				key = 'topics:recent';
-			}
-			topics.getTopicsFromSet(key, widget.uid, 0, Math.max(0, numTopics), next);
-		},
-		function (data, next) {
-			data.topics.forEach(function (topicData) {
-				if (topicData && !topicData.teaser) {
-					topicData.teaser = {
-						user: topicData.user,
-					};
-				}
-			});
-			app.render('widgets/recenttopics', {
-				topics: data.topics,
-				numTopics: numTopics,
-				relative_path: nconf.get('relative_path')
-			}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		},
-	], callback);
-};
-
-Widget.renderCategories = function(widget, callback) {
-	categories.getCategoriesByPrivilege('cid:0:children', widget.uid, 'find', function(err, data) {
-		if (err) {
-			return callback(err);
 		}
-		app.render('widgets/categories', {
-			categories: data,
-			relative_path: nconf.get('relative_path')
-		}, function (err, html) {
-			widget.html = html;
-			callback(err, widget);
-		});
 	});
-};
-
-Widget.renderPopularTags = function(widget, callback) {
-	var numTags = widget.data.numTags || 8;
-	topics.getTags(0, numTags - 1, function(err, tags) {
-		if (err) {
-			return callback(err);
-		}
-
-		app.render('widgets/populartags', {
-			tags: tags,
-			relative_path: nconf.get('relative_path')
-		}, function (err, html) {
-			widget.html = html;
-			callback(err, widget);
-		});
+	widget.html = await app.renderAsync('widgets/recenttopics', {
+		topics: data.topics,
+		numTopics: numTopics,
+		relative_path: nconf.get('relative_path'),
 	});
+	return widget;
 };
 
-Widget.renderPopularTopics = function(widget, callback) {
-	var numTopics = widget.data.numTopics || 8;
-	async.waterfall([
-		function (next) {
-			topics.getSortedTopics({
-				uid: widget.uid,
-				start: 0,
-				stop: numTopics - 1,
-				term: widget.data.duration || 'alltime',
-				sort: 'posts',
-			}, next);
-		},
-		function (data, next) {
-			app.render('widgets/populartopics', {
-				topics: data.topics,
-				numTopics: numTopics,
-				relative_path: nconf.get('relative_path')
-			}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		},
-	], callback);
+Widget.renderCategories = async function (widget) {
+	const data = await categories.getCategoriesByPrivilege('cid:0:children', widget.uid, 'find');
+	widget.html = await app.renderAsync('widgets/categories', {
+		categories: data,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
 };
 
-Widget.renderTopTopics = function(widget, callback) {
-	var numTopics = widget.data.numTopics || 8;
-	async.waterfall([
-		function (next) {
-			topics.getSortedTopics({
-				uid: widget.uid,
-				start: 0,
-				stop: numTopics - 1,
-				term: widget.data.duration || 'alltime',
-				sort: 'votes',
-			}, next);
-		},
-		function (data, next) {
-			app.render('widgets/toptopics', {
-				topics: data.topics,
-				numTopics: numTopics,
-				relative_path: nconf.get('relative_path')
-			}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		},
-	], callback);
+Widget.renderPopularTags = async function (widget) {
+	const numTags = widget.data.numTags || 8;
+	const tags = await topics.getTags(0, numTags - 1);
+	widget.html = await app.renderAsync('widgets/populartags', {
+		tags: tags,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
 };
 
-Widget.renderMyGroups = function(widget, callback) {
-	var uid = widget.uid;
-	var numGroups = parseInt(widget.data.numGroups, 10) || 9;
-	async.waterfall([
-		function (next) {
-			groups.getUserGroups([uid], next);
-		},
-		function (groupsData, next) {
-			var userGroupData = groupsData.length ? groupsData[0] : [];
-			userGroupData = userGroupData.slice(0, numGroups);
-			app.render('widgets/groups', {
-				groups: userGroupData,
-				relative_path: nconf.get('relative_path')
-			}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		},
-	], callback);
+Widget.renderPopularTopics = async function (widget) {
+	const numTopics = widget.data.numTopics || 8;
+	const data = await topics.getSortedTopics({
+		uid: widget.uid,
+		start: 0,
+		stop: numTopics - 1,
+		term: widget.data.duration || 'alltime',
+		sort: 'posts',
+	});
+	widget.html = await app.renderAsync('widgets/populartopics', {
+		topics: data.topics,
+		numTopics: numTopics,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
 };
 
-Widget.renderGroupPosts = function(widget, callback) {
-	var numPosts = parseInt(widget.data.numPosts, 10) || 4;
-	async.waterfall([
-		function (next) {
-			groups.getLatestMemberPosts(widget.data.groupName, numPosts, widget.uid, next);
-		},
-		function (posts, next) {
-			app.render('widgets/groupposts', {posts: posts}, next);
-		},
-		function(html, next) {
-			widget.html = html;
-			next(null, widget);
-		},
-	], callback);
+Widget.renderTopTopics = async function (widget) {
+	const numTopics = widget.data.numTopics || 8;
+	const data = await topics.getSortedTopics({
+		uid: widget.uid,
+		start: 0,
+		stop: numTopics - 1,
+		term: widget.data.duration || 'alltime',
+		sort: 'votes',
+	});
+	widget.html = await app.renderAsync('widgets/toptopics', {
+		topics: data.topics,
+		numTopics: numTopics,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
 };
 
-Widget.renderNewGroups = function(widget, callback) {
-	var numGroups = parseInt(widget.data.numGroups, 10) || 8;
-	async.waterfall([
-		function(next) {
-			db.getSortedSetRevRange('groups:visible:createtime', 0, numGroups - 1, next);
-		},
-		function(groupNames, next) {
-			groups.getGroupsData(groupNames, next);
-		},
-		function(groupsData, next) {
-			groupsData = groupsData.filter(Boolean);
-
-			app.render('widgets/groups', {groups: groupsData, relative_path: nconf.get('relative_path')}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		},
-	], callback);
+Widget.renderMyGroups = async function (widget) {
+	const uid = widget.uid;
+	const numGroups = parseInt(widget.data.numGroups, 10) || 9;
+	const groupsData = await groups.getUserGroups([uid]);
+	let userGroupData = groupsData.length ? groupsData[0] : [];
+	userGroupData = userGroupData.slice(0, numGroups);
+	widget.html = await app.renderAsync('widgets/groups', {
+		groups: userGroupData,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
 };
 
-Widget.renderSuggestedTopics = function(widget, callback) {
-	var numTopics = Math.max(0, (widget.data.numTopics || 8) - 1);
-
-	async.waterfall([
-		function (next) {
-			if (widget.templateData.template.topic) {
-				topics.getSuggestedTopics(widget.templateData.tid, widget.uid, 0, numTopics, next);
-			} else if (widget.templateData.template.category) {
-				topics.getSortedTopics({
-					cid: widget.templateData.cid,
-					uid: widget.uid,
-					start: 0,
-					stop: 2 * numTopics,
-					term: 'alltime',
-					sort: 'votes',
-				}, function (err, data) {
-					next(err, data ? _.shuffle(data.topics).slice(0, numTopics + 1) : []);
-				});
-			} else {
-				topics.getTopicsFromSet('topics:recent', widget.uid, 0, numTopics, function(err, data) {
-					next(err, data ? data.topics : []);
-				});
-			}
-		},
-		function (topics, next) {
-			topics = topics.filter(topic => topic && !topic.deleted);
-			app.render('widgets/suggestedtopics', {
-				topics: topics,
-				config: widget.templateData.config,
-				relative_path: nconf.get('relative_path')
-			}, next);
-		},
-		function (html, next) {
-			widget.html = html;
-			next(null, widget);
-		}
-	], callback);
+Widget.renderGroupPosts = async function (widget) {
+	const numPosts = parseInt(widget.data.numPosts, 10) || 4;
+	const postsData = await groups.getLatestMemberPosts(widget.data.groupName, numPosts, widget.uid);
+	widget.html = await app.renderAsync('widgets/groupposts', { posts: postsData });
+	return widget;
 };
 
-Widget.defineWidgets = function(widgets, callback) {
-	async.waterfall([
-		function(next) {
-			async.map([
-				{
-					widget: "html",
-					name: "HTML",
-					description: "Any text, html, or embedded script.",
-					content: 'admin/html'
-				},
-				{
-					widget: "text",
-					name: "Text",
-					description: "Text, optionally parsed as a post.",
-					content: 'admin/text'
-				},
-				{
-					widget: "onlineusers",
-					name: "Online Users",
-					description: "List of online users",
-					content: 'admin/onlineusers'
-				},
-				{
-					widget: "activeusers",
-					name: "Active Users",
-					description: "List of active users in a category/topic",
-					content: 'admin/activeusers'
-				},
-				{
-					widget: "latestusers",
-					name: "Latest Users",
-					description: "List of latest registered users.",
-					content: 'admin/latestusers'
-				},
-				{
-					widget: "moderators",
-					name: "Moderators",
-					description: "List of moderators in a category.",
-					content: 'admin/categorywidget'
-				},
-				{
-					widget: "forumstats",
-					name: "Forum Stats",
-					description: "Lists user, topics, and post count.",
-					content: 'admin/forumstats'
-				},
-				{
-					widget: "recentposts",
-					name: "Recent Posts",
-					description: "Lists the latest posts on your forum.",
-					content: 'admin/recentposts'
-				},
-				{
-					widget: "recenttopics",
-					name: "Recent Topics",
-					description: "Lists the latest topics on your forum.",
-					content: 'admin/recenttopics'
-				},
-				{
-					widget: "recentview",
-					name: "Recent View",
-					description: "Renders the /recent page",
-					content: 'admin/defaultwidget'
-				},
-				{
-					widget: "categories",
-					name: "Categories",
-					description: "Lists the categories on your forum",
-					content: 'admin/categorieswidget'
-				},
-				{
-					widget: "populartags",
-					name: "Popular Tags",
-					description: "Lists popular tags on your forum",
-					content: 'admin/populartags'
-				},
-				{
-					widget: "populartopics",
-					name: "Popular Topics",
-					description: "Lists popular topics on your forum",
-					content: 'admin/populartopics'
-				},
-				{
-					widget: "toptopics",
-					name: "Top Topics",
-					description: "Lists top topics on your forum",
-					content: 'admin/toptopics'
-				},
-				{
-					widget: "mygroups",
-					name: "My Groups",
-					description: "List of groups that you are in",
-					content: 'admin/mygroups'
-				},
-				{
-					widget: "newgroups",
-					name: "New Groups",
-					description: "List of newest groups",
-					content: 'admin/mygroups'
-				},
-				{
-					widget: "suggestedtopics",
-					name: "Suggested Topics",
-					description: "Lists of suggested topics.",
-					content: 'admin/suggestedtopics'
-				}
-			], function(widget, next) {
-				app.render(widget.content, {}, function(err, html) {
-					widget.content = html;
-					next(err, widget);
-				});
-			}, function(err, _widgets) {
-				widgets = widgets.concat(_widgets);
-				next(err);
-			});
+Widget.renderNewGroups = async function (widget) {
+	const numGroups = parseInt(widget.data.numGroups, 10) || 8;
+	const groupNames = await db.getSortedSetRevRange('groups:visible:createtime', 0, numGroups - 1);
+	const groupsData = await groups.getGroupsData(groupNames);
+	widget.html = await app.renderAsync('widgets/groups', {
+		groups: groupsData.filter(Boolean),
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
+};
+
+Widget.renderSuggestedTopics = async function (widget) {
+	const numTopics = Math.max(0, (widget.data.numTopics || 8) - 1);
+
+	let topicData;
+	if (widget.templateData.template.topic) {
+		topicData = await topics.getSuggestedTopics(widget.templateData.tid, widget.uid, 0, numTopics);
+	} else if (widget.templateData.template.category) {
+		const data = await topics.getSortedTopics({
+			cid: widget.templateData.cid,
+			uid: widget.uid,
+			start: 0,
+			stop: 2 * numTopics,
+			term: 'alltime',
+			sort: 'votes',
+		});
+		topicData = data ? _.shuffle(data.topics).slice(0, numTopics + 1) : [];
+	} else {
+		const data = await topics.getTopicsFromSet('topics:recent', widget.uid, 0, numTopics);
+		topicData = data ? data.topics : [];
+	}
+
+	topicData = topicData.filter(topic => topic && !topic.deleted);
+	widget.html = await app.renderAsync('widgets/suggestedtopics', {
+		topics: topicData,
+		config: widget.templateData.config,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
+};
+
+Widget.defineWidgets = async function (widgets) {
+	const widgetData = [
+		{
+			widget: 'html',
+			name: 'HTML',
+			description: 'Any text, html, or embedded script.',
+			content: 'admin/html',
 		},
-		function(next) {
-			db.getSortedSetRevRange('groups:visible:createtime', 0, - 1, next);
+		{
+			widget: 'text',
+			name: 'Text',
+			description: 'Text, optionally parsed as a post.',
+			content: 'admin/text',
 		},
-		function(groupNames, next) {
-			groups.getGroupsData(groupNames, next);
+		{
+			widget: 'onlineusers',
+			name: 'Online Users',
+			description: 'List of online users',
+			content: 'admin/onlineusers',
 		},
-		function(groupsData, next) {
-			groupsData = groupsData.filter(Boolean);
-			groupsData.forEach(function(group) {
-				group.name = validator.escape(String(group.name));
-			});
-			app.render('admin/groupposts', {groups: groupsData}, function(err, html) {
-				widgets.push({
-					widget: "groupposts",
-					name: "Group Posts",
-					description: "Posts made my members of a group",
-					content: html
-				});
-				next(err, widgets);
-			});
-		}
-	], callback);
+		{
+			widget: 'activeusers',
+			name: 'Active Users',
+			description: 'List of active users in a category/topic',
+			content: 'admin/activeusers',
+		},
+		{
+			widget: 'latestusers',
+			name: 'Latest Users',
+			description: 'List of latest registered users.',
+			content: 'admin/latestusers',
+		},
+		{
+			widget: 'moderators',
+			name: 'Moderators',
+			description: 'List of moderators in a category.',
+			content: 'admin/categorywidget',
+		},
+		{
+			widget: 'forumstats',
+			name: 'Forum Stats',
+			description: 'Lists user, topics, and post count.',
+			content: 'admin/forumstats',
+		},
+		{
+			widget: 'recentposts',
+			name: 'Recent Posts',
+			description: 'Lists the latest posts on your forum.',
+			content: 'admin/recentposts',
+		},
+		{
+			widget: 'recenttopics',
+			name: 'Recent Topics',
+			description: 'Lists the latest topics on your forum.',
+			content: 'admin/recenttopics',
+		},
+		{
+			widget: 'recentview',
+			name: 'Recent View',
+			description: 'Renders the /recent page',
+			content: 'admin/defaultwidget',
+		},
+		{
+			widget: 'categories',
+			name: 'Categories',
+			description: 'Lists the categories on your forum',
+			content: 'admin/categorieswidget',
+		},
+		{
+			widget: 'populartags',
+			name: 'Popular Tags',
+			description: 'Lists popular tags on your forum',
+			content: 'admin/populartags',
+		},
+		{
+			widget: 'populartopics',
+			name: 'Popular Topics',
+			description: 'Lists popular topics on your forum',
+			content: 'admin/populartopics',
+		},
+		{
+			widget: 'toptopics',
+			name: 'Top Topics',
+			description: 'Lists top topics on your forum',
+			content: 'admin/toptopics',
+		},
+		{
+			widget: 'mygroups',
+			name: 'My Groups',
+			description: 'List of groups that you are in',
+			content: 'admin/mygroups',
+		},
+		{
+			widget: 'newgroups',
+			name: 'New Groups',
+			description: 'List of newest groups',
+			content: 'admin/mygroups',
+		},
+		{
+			widget: 'suggestedtopics',
+			name: 'Suggested Topics',
+			description: 'Lists of suggested topics.',
+			content: 'admin/suggestedtopics',
+		},
+	];
+
+	await Promise.all(widgetData.map(async function (widget) {
+		widget.content = await app.renderAsync(widget.content, {});
+	}));
+
+	widgets = widgets.concat(widgetData);
+	const groupNames = await db.getSortedSetRevRange('groups:visible:createtime', 0, -1);
+	let groupsData = await groups.getGroupsData(groupNames);
+	groupsData = groupsData.filter(Boolean);
+	groupsData.forEach(function (group) {
+		group.name = validator.escape(String(group.name));
+	});
+
+	const html = await app.renderAsync('admin/groupposts', { groups: groupsData });
+	widgets.push({
+		widget: 'groupposts',
+		name: 'Group Posts',
+		description: 'Posts made my members of a group',
+		content: html,
+	});
+
+	return widgets;
 };
