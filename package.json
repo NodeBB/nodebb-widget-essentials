@@ -1,6 +1,6 @@
 {
   "name": "nodebb-widget-essentials",
-  "version": "4.0.18",
+  "version": "4.1.0",
   "description": "NodeBB Essential Widgets",
   "main": "library.js",
   "scripts": {
