@@ -91,14 +91,14 @@
 	line-height: 24px;
 }
 
-[widget-area="sidebar"] .category .content {
+[data-widget-area="sidebar"] .category .content {
 	width: 100%!important;
 }
 
-[widget-area="sidebar"] .category .stats {
+[data-widget-area="sidebar"] .category .stats {
 	display: none;
 }
 
-[widget-area="sidebar"] .category .teaser {
+[data-widget-area="sidebar"] .category .teaser {
 	display: none;
 }
