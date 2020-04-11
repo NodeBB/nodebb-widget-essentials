@@ -1,3 +1,3 @@
 <div class="category">
-	<!-- IMPORT partials/topics_list.tpl -->
+	<!-- IMPORT partials/topics-list.tpl -->
 </div>
