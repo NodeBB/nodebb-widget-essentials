@@ -215,9 +215,10 @@ Widget.renderRecentTopicsWidget = async function (widget) {
 };
 
 Widget.renderCategories = async function (widget) {
-	const data = await categories.getCategoriesByPrivilege('cid:0:children', widget.uid, 'find');
+	const categoryData = await categories.getCategoriesByPrivilege('categories:cid', widget.uid, 'find');
+	const tree = categories.getTree(categoryData, 0);
 	widget.html = await app.renderAsync('widgets/categories', {
-		categories: data,
+		categories: tree,
 		relative_path: nconf.get('relative_path'),
 	});
 	return widget;
