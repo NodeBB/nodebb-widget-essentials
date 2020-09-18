@@ -307,7 +307,7 @@ Widget.renderSuggestedTopics = async function (widget) {
 		topicData = await topics.getSuggestedTopics(widget.templateData.tid, widget.uid, 0, numTopics);
 	} else if (widget.templateData.template.category) {
 		const data = await topics.getSortedTopics({
-			cid: widget.templateData.cid,
+			cids: widget.templateData.cid,
 			uid: widget.uid,
 			start: 0,
 			stop: 2 * numTopics,
