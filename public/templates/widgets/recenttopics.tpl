@@ -6,13 +6,10 @@
 
 <script>
 'use strict';
-/* globals app, socket, translator, templates, utils*/
+/* globals app, socket*/
 (function() {
 	function onLoad() {
 		var	topics = $('#recent_topics');
-
-		app.createUserTooltips();
-		processHtml(topics);
 
 		var recentTopicsWidget = app.widgets.recentTopics;
 
@@ -21,7 +18,6 @@
 		if (!recentTopicsWidget) {
 			recentTopicsWidget = {};
 			recentTopicsWidget.onNewTopic = function(topic) {
-
 				var recentTopics = $('#recent_topics');
 				if (!recentTopics.length) {
 					return;
@@ -46,14 +42,16 @@
 		}
 
 		function processHtml(html) {
-			html.find('span.timeago').timeago();
+			if ($.timeago) {
+				html.find('span.timeago').timeago();
+			}
 		}
 	}
 
 	if (window.jQuery) {
 		onLoad();
 	} else {
-		window.addEventListener('load', onLoad);
+		window.addEventListener('DOMContentLoaded', onLoad);
 	}
 })();
 </script>

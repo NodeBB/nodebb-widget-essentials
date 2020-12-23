@@ -32,6 +32,7 @@
 					}]
 				}, function (html) {
 					html.prependTo($('.active-users'))
+					app.createUserTooltips();
 				});
 			}
 
@@ -50,7 +51,7 @@
 		if (window.jQuery) {
 			handleActiveUsers();
 		} else {
-			window.addEventListener('load', handleActiveUsers);
+			window.addEventListener('DOMContentLoaded', handleActiveUsers);
 		}
 	})();
 </script>

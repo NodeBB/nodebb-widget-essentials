@@ -6,13 +6,10 @@
 
 <script>
 'use strict';
-/* globals app, socket, translator, templates*/
+/* globals app, socket*/
 (function() {
 	function onLoad() {
 		var replies = $('#recent_posts');
-
-		app.createUserTooltips();
-		processHtml(replies);
 
 		var recentPostsWidget = app.widgets.recentPosts;
 		var numPosts = parseInt(replies.attr('data-numposts'), 10) || 4;
@@ -20,7 +17,6 @@
 		if (!recentPostsWidget) {
 			recentPostsWidget = {};
 			recentPostsWidget.onNewPost = function(data) {
-
 				var cid = replies.attr('data-cid');
 				var recentPosts = $('#recent_posts');
 				if (!recentPosts.length) {
@@ -54,15 +50,16 @@
 
 		function processHtml(html) {
 			html.find('img:not(.not-responsive)').addClass('img-responsive');
-			html.find('span.timeago').timeago();
+			if ($.timeago) {
+				html.find('span.timeago').timeago();
+			}
 		}
 	}
-
 
 	if (window.jQuery) {
 		onLoad();
 	} else {
-		window.addEventListener('load', onLoad);
+		window.addEventListener('DOMContentLoaded', onLoad);
 	}
 })();
 </script>
