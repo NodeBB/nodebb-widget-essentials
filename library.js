@@ -14,6 +14,7 @@ const posts = require.main.require('./src/posts');
 const groups = require.main.require('./src/groups');
 const utils = require.main.require('./src/utils');
 const meta = require.main.require('./src/meta');
+const privileges = require.main.require('./src/privileges');
 
 let app;
 
@@ -58,17 +59,22 @@ function isVisibleInCategory(widget) {
 }
 
 Widget.renderRecentViewWidget = async function (widget) {
-	const data = await topics.getLatestTopics({
-		uid:
-		widget.uid,
-		start: 0,
-		stop: 19,
-		term: 'month',
-	});
+	const [data, allowedCids] = await Promise.all([
+		topics.getLatestTopics({
+			uid:
+			widget.uid,
+			start: 0,
+			stop: 19,
+			term: 'month',
+		}),
+		categories.getCidsByPrivilege('categories:cid', widget.uid, 'topics:create'),
+	]);
+
 	data.relative_path = nconf.get('relative_path');
 	data.loggedIn = !!widget.req.uid;
 	data.config = data.config || {};
 	data.config.relative_path = nconf.get('relative_path');
+	data.canPost = allowedCids.length > 0;
 	widget.html = await app.renderAsync('recent', data);
 	widget.html = widget.html.replace(/<ol[\s\S]*?<br \/>/, '').replace('<br>', '');
 	return widget;
