@@ -14,7 +14,6 @@ const posts = require.main.require('./src/posts');
 const groups = require.main.require('./src/groups');
 const utils = require.main.require('./src/utils');
 const meta = require.main.require('./src/meta');
-const privileges = require.main.require('./src/privileges');
 
 let app;
 
@@ -41,7 +40,7 @@ Widget.renderTextWidget = async function (widget) {
 	const text = String(widget.data.text);
 
 	if (parseAsPost) {
-		widget.html = await plugins.fireHook('filter:parse.raw', text);
+		widget.html = await plugins.hooks.fire('filter:parse.raw', text);
 	} else {
 		widget.html = text.replace(/\r\n/g, '<br />');
 	}
