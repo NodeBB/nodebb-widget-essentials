@@ -313,20 +313,26 @@ Widget.renderNewGroups = async function (widget) {
 
 Widget.renderSuggestedTopics = async function (widget) {
 	const numTopics = Math.max(0, (widget.data.numTopics || 8) - 1);
-
-	let topicData;
-	if (widget.templateData.template.topic) {
-		topicData = await topics.getSuggestedTopics(widget.templateData.tid, widget.uid, 0, numTopics);
-	} else if (widget.templateData.template.category) {
+	async function getCategoryTopics(term, sort) {
 		const data = await topics.getSortedTopics({
 			cids: widget.templateData.cid,
 			uid: widget.uid,
 			start: 0,
 			stop: 2 * numTopics,
-			term: 'alltime',
-			sort: 'votes',
+			term: term,
+			sort: sort,
 		});
-		topicData = data ? _.shuffle(data.topics).slice(0, numTopics + 1) : [];
+		return data.topics;
+	}
+	let topicData;
+	if (widget.templateData.template.topic) {
+		topicData = await topics.getSuggestedTopics(widget.templateData.tid, widget.uid, 0, numTopics);
+	} else if (widget.templateData.template.category) {
+		topicData = await getCategoryTopics('month', 'votes');
+		if (!topicData.length) {
+			topicData = await getCategoryTopics('alltime', 'recent');
+		}
+		topicData = _.shuffle(topicData).slice(0, numTopics + 1);
 	} else {
 		const data = await topics.getTopicsFromSet('topics:recent', widget.uid, 0, numTopics);
 		topicData = data ? data.topics : [];
