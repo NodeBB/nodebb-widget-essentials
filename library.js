@@ -54,7 +54,11 @@ function getCidsArray(widget) {
 
 function isVisibleInCategory(widget) {
 	const cids = getCidsArray(widget);
-	return !(cids.length && (widget.templateData.template.category || widget.templateData.template.topic) && !cids.includes(parseInt(widget.templateData.cid, 10)));
+	return !(
+		cids.length &&
+		(widget.templateData.template.category || widget.templateData.template.topic) &&
+		!cids.includes(parseInt(widget.templateData.cid, 10))
+	);
 }
 
 Widget.renderRecentViewWidget = async function (widget) {
@@ -196,15 +200,15 @@ Widget.renderRecentTopicsWidget = async function (widget) {
 	let key;
 	if (cids.length) {
 		if (cids.length === 1) {
-			key = 'cid:' + cids[0] + ':tids';
+			key = `cid:${cids[0]}:tids`;
 		} else {
-			key = cids.map(cid => 'cid:' + cid + ':tids');
+			key = cids.map(cid => `cid:${cid}:tids`);
 		}
 	} else {
 		key = 'topics:recent';
 	}
 	const data = await topics.getTopicsFromSet(key, widget.uid, 0, Math.max(0, numTopics));
-	data.topics.forEach(function (topicData) {
+	data.topics.forEach((topicData) => {
 		if (topicData && !topicData.teaser) {
 			topicData.teaser = {
 				user: topicData.user,
@@ -281,7 +285,7 @@ Widget.renderTopTopics = async function (widget) {
 };
 
 Widget.renderMyGroups = async function (widget) {
-	const uid = widget.uid;
+	const { uid } = widget;
 	const numGroups = parseInt(widget.data.numGroups, 10) || 9;
 	const groupsData = await groups.getUserGroups([uid]);
 	let userGroupData = groupsData.length ? groupsData[0] : [];
@@ -453,7 +457,7 @@ Widget.defineWidgets = async function (widgets) {
 		},
 	];
 
-	await Promise.all(widgetData.map(async function (widget) {
+	await Promise.all(widgetData.map(async (widget) => {
 		widget.content = await app.renderAsync(widget.content, {});
 	}));
 
@@ -461,7 +465,7 @@ Widget.defineWidgets = async function (widgets) {
 	const groupNames = await db.getSortedSetRevRange('groups:visible:createtime', 0, -1);
 	let groupsData = await groups.getGroupsData(groupNames);
 	groupsData = groupsData.filter(Boolean);
-	groupsData.forEach(function (group) {
+	groupsData.forEach((group) => {
 		group.name = validator.escape(String(group.name));
 	});
 
