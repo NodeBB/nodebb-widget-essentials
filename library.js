@@ -14,6 +14,7 @@ const posts = require.main.require('./src/posts');
 const groups = require.main.require('./src/groups');
 const utils = require.main.require('./src/utils');
 const meta = require.main.require('./src/meta');
+const privileges = require.main.require('./src/privileges');
 
 let app;
 
@@ -44,6 +45,37 @@ Widget.renderTextWidget = async function (widget) {
 	} else {
 		widget.html = text.replace(/\r\n/g, '<br />');
 	}
+	return widget;
+};
+
+Widget.renderSearchWidget = async function (widget) {
+	if (widget.templateData.template.search) {
+		return null;
+	}
+	const userPrivileges = await privileges.global.get(widget.uid);
+
+	const inOptions = [
+		{ value: 'titles', label: '[[search:titles]]' },
+		{ value: 'titleposts', label: '[[search:titles-posts]]' },
+		{ value: 'posts', label: '[[global:posts]]' },
+		{ value: 'categories', label: '[[global:header.categories]]' },
+	];
+	if (userPrivileges['search:users']) {
+		inOptions.push({ value: 'users', label: '[[global:users]]' });
+	}
+	if (userPrivileges['search:tags']) {
+		inOptions.push({ value: 'tags', label: '[[tags:tags]]' });
+	}
+	inOptions.forEach((option) => {
+		option.selected = option.value === widget.data.defaultIn;
+	});
+
+	widget.html = await app.renderAsync('widgets/search', {
+		inOptions: inOptions,
+		showInControl: widget.data.showInControl === 'on',
+		enableQuickSearch: widget.data.enableQuickSearch === 'on',
+		relative_path: nconf.get('relative_path'),
+	});
 	return widget;
 };
 
@@ -364,6 +396,12 @@ Widget.defineWidgets = async function (widgets) {
 			name: 'Text',
 			description: 'Text, optionally parsed as a post.',
 			content: 'admin/text',
+		},
+		{
+			widget: 'search',
+			name: 'Search',
+			description: 'A search widget',
+			content: 'admin/search',
 		},
 		{
 			widget: 'onlineusers',

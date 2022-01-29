@@ -18,6 +18,9 @@
 			"hook": "filter:widget.render:html", "method": "renderHTMLWidget"
 		},
 		{
+			"hook": "filter:widget.render:search", "method": "renderSearchWidget"
+		},
+		{
 			"hook": "filter:widget.render:onlineusers", "method": "renderOnlineUsersWidget"
 		},
 		{
