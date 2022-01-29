@@ -6,8 +6,8 @@
 
 <label for="defaultIn">Default In</label>
 <select class="form-control" id="defaultIn" name="defaultIn">
-	<option value="titlesposts">[[search:titles-posts]]</option>
 	<option value="titles">[[search:titles]]</option>
+	<option value="titlesposts">[[search:titles-posts]]</option>
 	<option value="posts">[[global:posts]]</option>
 	<option value="categories">[[global:header.categories]]</option>
 	<option value="users">[[global:users]]</option>
