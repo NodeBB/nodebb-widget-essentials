@@ -37,12 +37,11 @@
 .recent-replies ul li p {
 	display: block;
 
-	font-size: 14px;
 	word-break: break-word;
 }
 
 .recent-replies ul li span {
-	font-size: 12px;
+	font-size: 1.25rem;
 	overflow: hidden;
 	height: 16px;
 }
