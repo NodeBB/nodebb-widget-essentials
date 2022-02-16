@@ -4,3 +4,9 @@
 	<small>Set the category IDs you want to display this widget on (separated by commas)</small>
 </label>
 <input type="text" class="form-control" name="cid" placeholder="0" />
+
+<label>
+	Topic:<br />
+	<small>Set the topic IDs you want to display this widget on (separated by commas)</small>
+</label>
+<input type="text" class="form-control" name="tid" placeholder="0" />

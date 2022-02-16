@@ -25,7 +25,7 @@ Widget.init = async function (params) {
 };
 
 Widget.renderHTMLWidget = async function (widget) {
-	if (!isVisibleInCategory(widget)) {
+	if (!isVisibleInCategory(widget) || !isVisibleInTopic(widget)) {
 		return null;
 	}
 	const tpl = widget.data ? widget.data.html : '';
@@ -79,17 +79,26 @@ Widget.renderSearchWidget = async function (widget) {
 	return widget;
 };
 
-function getCidsArray(widget) {
-	const cids = widget.data.cid || '';
-	return cids.split(',').map(c => parseInt(c, 10)).filter(Boolean);
+function getValuesArray(widget, field) {
+	const values = widget.data[field] || '';
+	return values.split(',').map(c => parseInt(c, 10)).filter(Boolean);
 }
 
 function isVisibleInCategory(widget) {
-	const cids = getCidsArray(widget);
+	const cids = getValuesArray(widget, 'cid');
 	return !(
 		cids.length &&
 		(widget.templateData.template.category || widget.templateData.template.topic) &&
 		!cids.includes(parseInt(widget.templateData.cid, 10))
+	);
+}
+
+function isVisibleInTopic(widget) {
+	const tids = getValuesArray(widget, 'tid');
+	return !(
+		tids.length &&
+		widget.templateData.template.topic &&
+		!tids.includes(parseInt(widget.templateData.tid, 10))
 	);
 }
 
