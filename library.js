@@ -138,7 +138,7 @@ Widget.renderOnlineUsersWidget = async function (widget) {
 
 Widget.renderActiveUsersWidget = async function (widget) {
 	const count = Math.max(1, widget.data.numUsers || 24);
-	const cids = getCidsArray(widget);
+	const cids = getValuesArray(widget, 'cid');
 	let uids;
 	if (cids.length) {
 		uids = await categories.getActiveUsers(cids);
@@ -236,7 +236,7 @@ Widget.renderRecentPostsWidget = async function (widget) {
 
 Widget.renderRecentTopicsWidget = async function (widget) {
 	const numTopics = (widget.data.numTopics || 8) - 1;
-	const cids = getCidsArray(widget);
+	const cids = getValuesArray(widget, 'cid');
 
 	let key;
 	if (cids.length) {
