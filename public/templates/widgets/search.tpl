@@ -28,27 +28,26 @@
 </div>
 <script>
 (function() {
-	function prepareSearch() {
-		const enableQuickSearch = {enableQuickSearch};
-		if (enableQuickSearch) {
-			require(['search'], function (search) {
-				const searchWidget =  $('.search-widget');
-				function enableQuickSearch () {
-					search.enableQuickSearch({
-						searchElements: {
-							inputEl: searchWidget.find('input[name="term"]'),
-							resultEl: searchWidget.find('.quick-search-container'),
-						},
-						searchOptions: {
-							in: searchWidget.find('select[name="in"]').val(),
-						},
-					});
-				}
-				enableQuickSearch();
-				searchWidget.find('select[name="in"]').on('change', function () {
-					enableQuickSearch();
-					searchWidget.find('input[name="term"]').trigger('refresh');
+	async function prepareSearch() {
+		const isQuickSearchEnabled = {enableQuickSearch};
+		if (isQuickSearchEnabled) {
+			const search = await app.require('search');
+			const searchWidget =  $('.search-widget');
+			function enableQuickSearch () {
+				search.enableQuickSearch({
+					searchElements: {
+						inputEl: searchWidget.find('input[name="term"]'),
+						resultEl: searchWidget.find('.quick-search-container'),
+					},
+					searchOptions: {
+						in: searchWidget.find('select[name="in"]').val(),
+					},
 				});
+			}
+			enableQuickSearch();
+			searchWidget.find('select[name="in"]').on('change', function () {
+				enableQuickSearch();
+				searchWidget.find('input[name="term"]').trigger('refresh');
 			});
 		}
 	}
