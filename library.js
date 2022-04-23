@@ -56,7 +56,7 @@ Widget.renderSearchWidget = async function (widget) {
 
 	const inOptions = [
 		{ value: 'titles', label: '[[search:titles]]' },
-		{ value: 'titleposts', label: '[[search:titles-posts]]' },
+		{ value: 'titlesposts', label: '[[search:titles-posts]]' },
 		{ value: 'posts', label: '[[global:posts]]' },
 		{ value: 'categories', label: '[[global:header.categories]]' },
 	];
