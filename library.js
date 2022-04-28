@@ -358,6 +358,7 @@ Widget.renderNewGroups = async function (widget) {
 
 Widget.renderSuggestedTopics = async function (widget) {
 	const numTopics = Math.max(0, (widget.data.numTopics || 8) - 1);
+	const cutoff = Math.max(0, parseInt(widget.data.cutoff, 10) || 0);
 	async function getCategoryTopics(term, sort) {
 		const data = await topics.getSortedTopics({
 			cids: widget.templateData.cid,
@@ -371,19 +372,20 @@ Widget.renderSuggestedTopics = async function (widget) {
 	}
 	let topicData;
 	if (widget.templateData.template.topic) {
-		topicData = await topics.getSuggestedTopics(widget.templateData.tid, widget.uid, 0, numTopics);
+		topicData = await topics.getSuggestedTopics(widget.templateData.tid, widget.uid, 0, numTopics, cutoff);
 	} else if (widget.templateData.template.category) {
 		topicData = await getCategoryTopics('month', 'votes');
 		if (!topicData.length) {
 			topicData = await getCategoryTopics('alltime', 'recent');
 		}
 		topicData = _.shuffle(topicData).slice(0, numTopics + 1);
+		topicData = topicData.filter(topic => topic && !topic.deleted);
 	} else {
 		const data = await topics.getTopicsFromSet('topics:recent', widget.uid, 0, numTopics);
 		topicData = data ? data.topics : [];
+		topicData = topicData.filter(topic => topic && !topic.deleted);
 	}
 
-	topicData = topicData.filter(topic => topic && !topic.deleted);
 	widget.html = await app.renderAsync('widgets/suggestedtopics', {
 		topics: topicData,
 		config: widget.templateData.config,
