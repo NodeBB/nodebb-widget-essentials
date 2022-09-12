@@ -30,7 +30,6 @@
 						.prependTo(recentTopics)
 						.fadeIn();
 
-					app.createUserTooltips();
 					if (recentTopics.children().length > numTopics) {
 						recentTopics.children().last().remove();
 					}

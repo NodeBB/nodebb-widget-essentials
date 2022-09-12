@@ -37,7 +37,6 @@
 						.prependTo(recentPosts)
 						.fadeIn();
 
-					app.createUserTooltips();
 					if (recentPosts.children().length > numPosts) {
 						recentPosts.children().last().remove();
 					}

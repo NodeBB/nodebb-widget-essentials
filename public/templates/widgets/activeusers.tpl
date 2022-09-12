@@ -32,7 +32,6 @@
 					}]
 				}, function (html) {
 					html.prependTo($('.active-users'))
-					app.createUserTooltips();
 				});
 			}
 
