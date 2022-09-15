@@ -1,5 +1,5 @@
 <div class="recent-replies">
 	<ul>
-	<!-- IMPORT partials/posts.tpl -->
+	<!-- IMPORT widgets/partials/posts.tpl -->
 	</ul>
 </div>
