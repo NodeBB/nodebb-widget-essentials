@@ -22,12 +22,6 @@
 	margin-bottom: 0;
 }
 
-.recent-replies ul li .avatar {
-	display: block;
-	float: left;
-	margin-right:8px;
-}
-
 .recent-replies ul li > div {
 	max-height: 250px;
 	overflow:hidden;
@@ -36,25 +30,14 @@
 
 .recent-replies ul li p {
 	display: block;
-
 	word-break: break-word;
-}
-
-.recent-replies ul li span {
-	font-size: 1.25rem;
-	overflow: hidden;
-	height: 16px;
-}
-
-.recent-replies .avatar, .active-users .avatar, .online-users .avatar, .moderators .avatar {
-	margin-top: 2px;
 }
 
 .forum-stats .stats-card {
 	text-align: center;
 }
 
-.forum-stats .stats-card h2 {
+.forum-stats .stats-card h4 {
 	line-height: 25px;
 }
 
@@ -83,11 +66,6 @@
 
 .latest-users img, .active-users img, .online-users img, .moderators img {
 	vertical-align: top;
-}
-
-.widget-posts .avatar, .widget-topics .avatar {
-	font-size: 20px;
-	line-height: 24px;
 }
 
 [data-widget-area="sidebar"] .category .content {

@@ -1,6 +1,6 @@
 <div class="recent-replies">
 	<ul id="recent_posts" data-numposts="{numPosts}" data-cid="{cid}">
-	<!-- IMPORT partials/posts.tpl -->
+	<!-- IMPORT widgets/partials/posts.tpl -->
 	</ul>
 </div>
 

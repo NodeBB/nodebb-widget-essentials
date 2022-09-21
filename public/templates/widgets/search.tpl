@@ -1,27 +1,22 @@
 <div class="search-widget">
 	<form action="{relative_path}/search" method="GET">
 		<div class="row">
-			<div class="col-xs-6 {{{ if showInControl }}}col-md-10{{{ else }}} col-md-12 {{{ end }}}">
+			<div class="col-12">
 				<div class="input-group">
 					<input type="text" class="form-control" name="term" placeholder="Search"/>
-					<div class="input-group-btn">
-						<button class="btn btn-primary" type="submit">
-							<i class="fa fa-search"></i>
-						</button>
-					</div>
+					<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
+					{{{ if showInControl }}}
+					<select name="in" class="form-select">
+						{{{ each inOptions }}}
+						<option value="{./value}" {{{ if ./selected }}} selected {{{ end }}}>{./label}</option>
+						{{{ end }}}
+					</select>
+					{{{ end }}}
 				</div>
 				<div class="quick-search-container hidden" style="right: auto; z-index: 1001;">
 					<div class="text-center loading-indicator"><i class="fa fa-spinner fa-spin"></i></div>
 					<div class="quick-search-results-container"></div>
 				</div>
-			</div>
-
-			<div class="{{{ if showInControl}}}col-xs-2 col-md-2 {{{ else }}} hidden {{{ end }}}">
-				<select name="in" class="form-control">
-					{{{ each inOptions }}}
-					<option value="{./value}" {{{ if ./selected }}} selected {{{ end }}}>{./label}</option>
-					{{{ end }}}
-				</select>
 			</div>
 		</div>
 	</form>

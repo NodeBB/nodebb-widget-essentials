@@ -177,6 +177,7 @@ Widget.renderModeratorsWidget = async function (widget) {
 	} else if (widget.templateData.template.topic && widget.templateData.category) {
 		cid = widget.templateData.category.cid;
 	}
+
 	const moderators = await categories.getModerators(cid);
 	if (!moderators.length) {
 		return null;
@@ -400,109 +401,109 @@ Widget.defineWidgets = async function (widgets) {
 			widget: 'html',
 			name: 'HTML',
 			description: 'Any text, html, or embedded script.',
-			content: 'admin/html',
+			content: 'admin/partials/widgets/html',
 		},
 		{
 			widget: 'text',
 			name: 'Text',
 			description: 'Text, optionally parsed as a post.',
-			content: 'admin/text',
+			content: 'admin/partials/widgets/text',
 		},
 		{
 			widget: 'search',
 			name: 'Search',
 			description: 'A search widget',
-			content: 'admin/search',
+			content: 'admin/partials/widgets/search',
 		},
 		{
 			widget: 'onlineusers',
 			name: 'Online Users',
 			description: 'List of online users',
-			content: 'admin/onlineusers',
+			content: 'admin/partials/widgets/onlineusers',
 		},
 		{
 			widget: 'activeusers',
 			name: 'Active Users',
 			description: 'List of active users in a category/topic',
-			content: 'admin/activeusers',
+			content: 'admin/partials/widgets/activeusers',
 		},
 		{
 			widget: 'latestusers',
 			name: 'Latest Users',
 			description: 'List of latest registered users.',
-			content: 'admin/latestusers',
+			content: 'admin/partials/widgets/latestusers',
 		},
 		{
 			widget: 'moderators',
 			name: 'Moderators',
 			description: 'List of moderators in a category.',
-			content: 'admin/categorywidget',
+			content: 'admin/partials/widgets/moderators',
 		},
 		{
 			widget: 'forumstats',
 			name: 'Forum Stats',
 			description: 'Lists user, topics, and post count.',
-			content: 'admin/forumstats',
+			content: 'admin/partials/widgets/forumstats',
 		},
 		{
 			widget: 'recentposts',
 			name: 'Recent Posts',
 			description: 'Lists the latest posts on your forum.',
-			content: 'admin/recentposts',
+			content: 'admin/partials/widgets/recentposts',
 		},
 		{
 			widget: 'recenttopics',
 			name: 'Recent Topics',
 			description: 'Lists the latest topics on your forum.',
-			content: 'admin/recenttopics',
+			content: 'admin/partials/widgets/recenttopics',
 		},
 		{
 			widget: 'recentview',
 			name: 'Recent View',
 			description: 'Renders the /recent page',
-			content: 'admin/defaultwidget',
+			content: 'admin/partials/widgets/defaultwidget',
 		},
 		{
 			widget: 'categories',
 			name: 'Categories',
 			description: 'Lists the categories on your forum',
-			content: 'admin/categorieswidget',
+			content: 'admin/partials/widgets/categories',
 		},
 		{
 			widget: 'populartags',
 			name: 'Popular Tags',
 			description: 'Lists popular tags on your forum',
-			content: 'admin/populartags',
+			content: 'admin/partials/widgets/populartags',
 		},
 		{
 			widget: 'populartopics',
 			name: 'Popular Topics',
 			description: 'Lists popular topics on your forum',
-			content: 'admin/populartopics',
+			content: 'admin/partials/widgets/populartopics',
 		},
 		{
 			widget: 'toptopics',
 			name: 'Top Topics',
 			description: 'Lists top topics on your forum',
-			content: 'admin/toptopics',
+			content: 'admin/partials/widgets/toptopics',
 		},
 		{
 			widget: 'mygroups',
 			name: 'My Groups',
 			description: 'List of groups that you are in',
-			content: 'admin/mygroups',
+			content: 'admin/partials/widgets/mygroups',
 		},
 		{
 			widget: 'newgroups',
 			name: 'New Groups',
 			description: 'List of newest groups',
-			content: 'admin/mygroups',
+			content: 'admin/partials/widgets/mygroups',
 		},
 		{
 			widget: 'suggestedtopics',
 			name: 'Suggested Topics',
 			description: 'Lists of suggested topics.',
-			content: 'admin/suggestedtopics',
+			content: 'admin/partials/widgets/suggestedtopics',
 		},
 	];
 
@@ -518,7 +519,7 @@ Widget.defineWidgets = async function (widgets) {
 		group.name = validator.escape(String(group.name));
 	});
 
-	const html = await app.renderAsync('admin/groupposts', { groups: groupsData });
+	const html = await app.renderAsync('admin/partials/widgets/groupposts', { groups: groupsData });
 	widgets.push({
 		widget: 'groupposts',
 		name: 'Group Posts',
