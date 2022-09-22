@@ -48,7 +48,7 @@
 		}
 
 		function processHtml(html) {
-			html.find('img:not(.not-responsive)').addClass('img-responsive');
+			html.find('img:not(.not-responsive)').addClass('img-fluid');
 			if ($.timeago) {
 				html.find('span.timeago').timeago();
 			}
