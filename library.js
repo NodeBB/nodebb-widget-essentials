@@ -242,9 +242,9 @@ Widget.renderRecentTopicsWidget = async function (widget) {
 	let key;
 	if (cids.length) {
 		if (cids.length === 1) {
-			key = `cid:${cids[0]}:tids`;
+			key = `cid:${cids[0]}:tids:lastposttime`;
 		} else {
-			key = cids.map(cid => `cid:${cid}:tids`);
+			key = cids.map(cid => `cid:${cid}:tids:lastposttime`);
 		}
 	} else {
 		key = 'topics:recent';
