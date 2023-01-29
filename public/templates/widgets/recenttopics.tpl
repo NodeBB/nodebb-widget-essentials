@@ -1,5 +1,5 @@
-<div class="recent-replies">
-	<ul id="recent_topics" data-numtopics="{numTopics}">
+<div class="overflow-hidden">
+	<ul id="recent_topics" class="list-unstyled d-flex flex-column gap-3" data-numtopics="{numTopics}">
 	<!-- IMPORT widgets/partials/topics_teaser.tpl -->
 	</ul>
 </div>

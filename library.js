@@ -283,6 +283,15 @@ Widget.renderPopularTags = async function (widget) {
 	} else {
 		tags = await topics.getTags(0, numTags - 1);
 	}
+	let maxCount = 1;
+	tags.forEach((t) => {
+		if (t.score > maxCount) {
+			maxCount = t.score;
+		}
+	});
+	tags.forEach((t) => {
+		t.widthPercent = ((t.score / maxCount) * 100).toFixed(2);
+	});
 
 	widget.html = await app.renderAsync('widgets/populartags', {
 		tags: tags,

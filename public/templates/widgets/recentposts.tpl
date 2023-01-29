@@ -1,5 +1,5 @@
-<div class="recent-replies">
-	<ul id="recent_posts" data-numposts="{numPosts}" data-cid="{cid}">
+<div class="overflow-hidden">
+	<ul id="recent_posts" class="list-unstyled d-flex flex-column" data-numposts="{numPosts}" data-cid="{cid}">
 	<!-- IMPORT widgets/partials/posts.tpl -->
 	</ul>
 </div>

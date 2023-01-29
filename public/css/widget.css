@@ -1,81 +1,13 @@
-.recent-replies {
-	overflow-y: hidden;
-	overflow-x: hidden;
-}
 
-.recent-replies ul {
-	width: 100%;
-	height: 50px;
-	line-height: 16px;
-	margin-left: 1px;
-	padding: 5px 5px 5px 0px;
-	list-style-type: none;
-}
-
-.recent-replies ul li {
-	clear: both;
-	line-height: 17px;
-	margin-bottom: 20px;
-}
-
-.recent-replies ul li:last-child {
-	margin-bottom: 0;
-}
-
-.recent-replies ul li > div {
-	max-height: 250px;
-	overflow:hidden;
-	position:relative;
-}
-
-.recent-replies ul li p {
-	display: block;
-	word-break: break-word;
-}
-
-.forum-stats .stats-card {
-	text-align: center;
-}
-
-.forum-stats .stats-card h4 {
-	line-height: 25px;
-}
-
-.categories-list {
-	list-style: none;
-	padding-left: 0px;
-}
-
-
-.popular-tags {
-	font-size: 20px;
-}
-
-.popular-tags > span {
-	margin-bottom: 10px;
-}
-
-.groups-list-item {
-	margin-bottom: 10px;
-}
-
-.groups-list-item img {
-	width: 50px;
-	margin-right: 10px;
-}
-
-.latest-users img, .active-users img, .online-users img, .moderators img {
-	vertical-align: top;
-}
-
+/* below rules hide stats/teaser for suggested topics widget when it is placed in a sidebar */
 [data-widget-area="sidebar"] .category .content {
 	width: 100%!important;
 }
 
 [data-widget-area="sidebar"] .category .stats {
-	display: none;
+	display: none!important;
 }
 
 [data-widget-area="sidebar"] .category .teaser {
-	display: none;
+	display: none!important;
 }

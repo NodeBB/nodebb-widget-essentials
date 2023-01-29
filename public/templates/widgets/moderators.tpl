@@ -1,7 +1,5 @@
-<div class="moderators">
+<div class="d-flex flex-wrap gap-1 mb-2">
 	{{{ each moderators }}}
-	<a data-uid="{moderators.uid}" href="{relative_path}/user/{moderators.userslug}">
-		{buildAvatar(moderators, "24px", true, "not-responsive")}
-	</a>
+	<a class="text-decoration-none" data-uid="{./uid}" href="{relative_path}/user/{./userslug}">{buildAvatar(moderators, "24px", true, "avatar-tooltip not-responsive")}</a>
 	{{{ end }}}
 </div>

@@ -1,27 +1,29 @@
-<div class="row forum-stats">
-	<div class="row">
-		<div class="col-md-3 col-3">
-			<div class="stats-card {statsClass}">
-				<h4><span class="stats" title="{online}">{online}</span></h4>
-				<p>[[global:online]]</p>
+<div class="d-flex forum-stats flex-wrap mb-3 gap-4">
+	<div class="d-flex flex-1 gap-4">
+		<div class="flex-1">
+			<div class="stats-card text-center {statsClass}">
+				<h4 class="stats" title="{online}">{online}</h4>
+				<span>[[global:online]]</span>
 			</div>
 		</div>
-		<div class="col-md-3 col-3">
-			<div class="stats-card {statsClass}">
-				<h4><span class="stats" title="{users}">{users}</span></h4>
-				<p>[[global:users]]</p>
+		<div class="flex-1">
+			<div class="stats-card text-center {statsClass}">
+				<h4 class="stats" title="{users}">{users}</h4>
+				<span>[[global:users]]</span>
 			</div>
 		</div>
-		<div class="col-md-3 col-3">
-			<div class="stats-card {statsClass}">
-				<h4><span class="stats" title="{topics}">{topics}</span></h4>
-				<p>[[global:topics]]</p>
+	</div>
+	<div class="d-flex flex-1 gap-4">
+		<div class="flex-1">
+			<div class="stats-card text-center {statsClass}">
+				<h4 class="stats" title="{topics}">{topics}</h4>
+				<span>[[global:topics]]</span>
 			</div>
 		</div>
-		<div class="col-md-3 col-3">
-			<div class="stats-card {statsClass}">
-				<h4><span class="stats" title="{posts}">{posts}</span></h4>
-				<p>[[global:posts]]</p>
+		<div class="flex-1">
+			<div class="stats-card text-center {statsClass}">
+				<h4 class="stats" title="{posts}">{posts}</h4>
+				<span>[[global:posts]]</span>
 			</div>
 		</div>
 	</div>

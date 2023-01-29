@@ -1,8 +1,6 @@
-<div class="active-users">
+<div data-component="widget/active-users" class="d-flex flex-wrap gap-1 mb-3">
 	{{{ each active_users }}}
-	<a data-uid="{active_users.uid}" href="{relative_path}/user/{active_users.userslug}">
-		{buildAvatar(active_users, "24px", true, "not-responsive")}
-	</a>
+	<a class="text-decoration-none" data-uid="{./uid}" href="{relative_path}/user/{./userslug}">{buildAvatar(active_users, "24px", true, "avatar-tooltip not-responsive")}</a>
 	{{{ end }}}
 </div>
 
@@ -10,30 +8,25 @@
 	(function() {
 		function handleActiveUsers() {
 			function onNewTopic(topic) {
-				var activeUser = $('.active-users').find('a[data-uid="' + topic.uid + '"]');
+				const activeUsersEl = $('[data-component="widget/active-users"]');
+				const activeUser = activeUsersEl.find('a[data-uid="' + topic.uid + '"]');
 
 				if (activeUser.length) {
-					return activeUser.prependTo($('.active-users'));
+					return activeUser.prependTo(activeUsersEl);
 				}
 
 				app.parseAndTranslate('widgets/activeusers', 'active_users', {
 					relative_path: config.relative_path,
-					active_users: [{
-						uid: topic.uid,
-						username: topic.user.username,
-						userslug: topic.user.userslug,
-						picture: topic.user.picture,
-						'icon:bgColor': topic.user['icon:bgColor'],
-						'icon:text': topic.user['icon:text']
-					}]
+					active_users: [topic.user],
 				}, function (html) {
-					html.prependTo($('.active-users'))
+					html.prependTo(activeUsersEl);
 				});
 			}
 
 			function onAjaxifyEnd() {
+				const activeUsersEl = $('[data-component="widget/active-users"]');
 				socket.removeListener('event:new_topic', onNewTopic);
-				if ($('.active-users').length) {
+				if (activeUsersEl.length) {
 					socket.on('event:new_topic', onNewTopic);
 				} else {
 					$(window).off('action:ajaxify.end', onAjaxifyEnd);

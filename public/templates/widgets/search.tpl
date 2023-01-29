@@ -13,9 +13,11 @@
 					</select>
 					{{{ end }}}
 				</div>
-				<div class="quick-search-container hidden" style="right: auto; z-index: 1001;">
-					<div class="text-center loading-indicator"><i class="fa fa-spinner fa-spin"></i></div>
-					<div class="quick-search-results-container"></div>
+				<div class="position-relative">
+					<div class="quick-search-container dropdown-menu d-block hidden" style="right: auto; z-index: 1001;">
+						<div class="text-center loading-indicator"><i class="fa fa-spinner fa-spin"></i></div>
+						<div class="quick-search-results-container"></div>
+					</div>
 				</div>
 			</div>
 		</div>

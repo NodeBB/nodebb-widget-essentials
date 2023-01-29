@@ -1,15 +1,18 @@
 {{{ each posts }}}
-<li data-pid="{posts.pid}" class="clearfix widget-posts">
-	<a class="float-start me-2" href="{{{ if posts.user.userslug }}}{relative_path}/user/{posts.user.userslug}{{{ else }}}#{{{ end }}}">
-		{buildAvatar(posts.user, "24px", true, "not-responsive")}
-	</a>
-	<div class="p-1">
-		{posts.content}
-		<p class="fade-out"></p>
+<li data-pid="{./pid}" class="widget-posts d-flex flex-column gap-1">
+	<div class="d-flex gap-1">
+		<a class="text-decoration-none" href="{{{ if ./user.userslug }}}{relative_path}/user/{./user.userslug}{{{ else }}}#{{{ end }}}">
+			{buildAvatar(./user, "24px", true, "avatar-tooltip not-responsive")}
+		</a>
+		<div class="line-clamp-6">
+			{posts.content}
+		</div>
 	</div>
-	<span class="float-end post-preview-footer fs-6">
+	<div class="text-end text-xs post-preview-footer fs-6">
 		<span class="timeago" title="{posts.timestampISO}"></span> &bull;
 		<a href="{relative_path}/post/{posts.pid}">[[global:read_more]]</a>
-	</span>
+	</div>
+	<hr/>
 </li>
+
 {{{ end }}}
