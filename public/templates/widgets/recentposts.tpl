@@ -55,10 +55,10 @@
 		}
 	}
 
-	if (window.jQuery) {
-		onLoad();
+	if (document.readyState === 'loading') {
+		document.addEventListener('DOMContentLoaded', onLoad);
 	} else {
-		window.addEventListener('DOMContentLoaded', onLoad);
+		onLoad();
 	}
 })();
 </script>

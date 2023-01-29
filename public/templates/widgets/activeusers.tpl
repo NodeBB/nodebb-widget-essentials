@@ -36,10 +36,10 @@
 			$(window).on('action:ajaxify.end', onAjaxifyEnd);
 		}
 
-		if (window.jQuery) {
-			handleActiveUsers();
+		if (document.readyState === 'loading') {
+			document.addEventListener('DOMContentLoaded', handleActiveUsers);
 		} else {
-			window.addEventListener('DOMContentLoaded', handleActiveUsers);
+			handleActiveUsers();
 		}
 	})();
 </script>
