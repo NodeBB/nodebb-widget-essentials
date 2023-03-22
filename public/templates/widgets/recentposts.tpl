@@ -27,7 +27,7 @@
 					return;
 				}
 
-				app.parseAndTranslate('partials/posts', {
+				app.parseAndTranslate('widgets/partials/posts', {
 					relative_path: config.relative_path,
 					posts: data.posts
 				}, function(html) {

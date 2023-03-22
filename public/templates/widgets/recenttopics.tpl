@@ -23,7 +23,7 @@
 					return;
 				}
 
-				app.parseAndTranslate('partials/topics', { topics: [topic] }, function(html) {
+				app.parseAndTranslate('widgets/partials/topics', { topics: [topic] }, function(html) {
 					processHtml(html);
 
 					html.hide()
