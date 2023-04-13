@@ -67,6 +67,9 @@
 		},
 		{
 			"hook": "filter:widget.render:suggestedtopics", "method": "renderSuggestedTopics"
+		},
+		{
+			"hook": "filter:widget.render:userpost", "method": "renderUserPost"
 		}
 	],
 	"templates": "./public/templates",

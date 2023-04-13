@@ -394,6 +394,38 @@ Widget.renderSuggestedTopics = async function (widget) {
 	return widget;
 };
 
+Widget.renderUserPost = async function (widget) {
+	const stop = Math.max(0, (widget.data.numPosts || 1) - 1);
+	const type = widget.data.postType || 'last';
+	let { uid } = widget;
+	if (widget.templateData.template['account/profile']) {
+		uid = widget.templateData.uid;
+	} else if (widget.data.uid) {
+		uid = widget.data.uid;
+	}
+	let pids = [];
+	const cids = await categories.getCidsByPrivilege('categories:cid', widget.uid, 'topics:read');
+	const sets = cids.map(c => `cid:${c}:uid:${uid}:pids`);
+	if (type === 'last') {
+		pids = await db.getSortedSetRevRange(sets, 0, stop);
+	} else if (type === 'first') {
+		pids = await db.getSortedSetRange(sets, 0, stop);
+	} else if (type === 'best') {
+		pids = await db.getSortedSetRevRange(
+			cids.map(c => `cid:${c}:uid:${uid}:pids:votes`),
+			0,
+			stop
+		);
+	}
+	const postObjs = await posts.getPostSummaryByPids(pids, widget.uid, { stripTags: false });
+	widget.html = await app.renderAsync('widgets/userpost', {
+		posts: postObjs,
+		config: widget.templateData.config,
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
+};
+
 Widget.defineWidgets = async function (widgets) {
 	const widgetData = [
 		{
@@ -503,6 +535,12 @@ Widget.defineWidgets = async function (widgets) {
 			name: 'Suggested Topics',
 			description: 'Lists of suggested topics.',
 			content: 'admin/suggestedtopics',
+		},
+		{
+			widget: 'userpost',
+			name: 'User Post',
+			description: 'Display a users first/last/best post on their profile or by user id.',
+			content: 'admin/partials/widgets/userpost',
 		},
 	];
 
