@@ -5,14 +5,13 @@
 			{buildAvatar(./user, "24px", true, "avatar-tooltip not-responsive")}
 		</a>
 		<div class="line-clamp-6">
-			{posts.content}
+			{./content}
 		</div>
 	</div>
 	<div class="text-end text-xs post-preview-footer fs-6">
-		<span class="timeago" title="{posts.timestampISO}"></span> &bull;
-		<a href="{relative_path}/post/{posts.pid}">[[global:read_more]]</a>
+		<span class="timeago" title="{./timestampISO}"></span> &bull;
+		<a href="{relative_path}/post/{./pid}">[[global:read_more]]</a>
 	</div>
 	<hr/>
 </li>
-
 {{{ end }}}
