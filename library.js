@@ -428,6 +428,9 @@ Widget.renderUserPost = async function (widget) {
 		);
 	}
 	const postObjs = await posts.getPostSummaryByPids(pids, widget.uid, { stripTags: false });
+	if (!postObjs.length) {
+		return null;
+	}
 	widget.html = await app.renderAsync('widgets/userpost', {
 		posts: postObjs,
 		config: widget.templateData.config,
