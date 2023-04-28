@@ -405,7 +405,7 @@ Widget.renderSuggestedTopics = async function (widget) {
 };
 
 Widget.renderUserPost = async function (widget) {
-	const stop = Math.max(0, (widget.data.numPosts || 1) - 1);
+	const numPosts = Math.max(1, (widget.data.numPosts || 1));
 	const type = widget.data.postType || 'last';
 	let { uid } = widget;
 	if (widget.templateData.template['account/profile']) {
@@ -416,15 +416,18 @@ Widget.renderUserPost = async function (widget) {
 	let pids = [];
 	const cids = await categories.getCidsByPrivilege('categories:cid', widget.uid, 'topics:read');
 	const sets = cids.map(c => `cid:${c}:uid:${uid}:pids`);
+	const now = Date.now();
 	if (type === 'last') {
-		pids = await db.getSortedSetRevRange(sets, 0, stop);
+		pids = await db.getSortedSetRevRangeByScore(sets, 0, numPosts, now, '-inf');
 	} else if (type === 'first') {
-		pids = await db.getSortedSetRange(sets, 0, stop);
+		pids = await db.getSortedSetRange(sets, 0, numPosts, now, '-inf');
 	} else if (type === 'best') {
 		pids = await db.getSortedSetRevRange(
 			cids.map(c => `cid:${c}:uid:${uid}:pids:votes`),
 			0,
-			stop
+			numPosts,
+			now,
+			'-inf'
 		);
 	}
 	const postObjs = await posts.getPostSummaryByPids(pids, widget.uid, { stripTags: false });
