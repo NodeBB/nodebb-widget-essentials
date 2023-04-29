@@ -6,7 +6,7 @@
 
 			<div data-width="{./widthPercent}" class="popular-tags-bar position-absolute bg-info opacity-50" style="transition: width 750ms ease-out; left:0; top:0; width: 0%; height:100%; z-index: -1;"></div>
 
-			<a style="background-color: transparent!important;" class="text-decoration-none text-bg-info" href="{{{ if template.category }}}?tag={./valueEncoded}{{{ else }}}{relative_path}/tags/{./valueEncoded}{{{ end }}}"><span class="text-nowrap tag-class-{tags.class}">{./valueEscaped}</span></a>
+			<a style="background-color: transparent!important;" class="d-inline-block w-100 text-decoration-none text-bg-info" href="{{{ if template.category }}}?tag={./valueEncoded}{{{ else }}}{relative_path}/tags/{./valueEncoded}{{{ end }}}"><span class="text-nowrap tag-class-{tags.class}">{./valueEscaped}</span></a>
 		</div>
 
 		<div class="text-center fw-bold p-1 text-end w-25 tag-topic-count border rounded">{./score}</div>
