@@ -10,7 +10,7 @@
 	</div>
 	<div class="text-end text-xs post-preview-footer fs-6">
 		<span class="timeago" title="{./timestampISO}"></span> &bull;
-		<a href="{relative_path}/post/{./pid}">[[global:read_more]]</a>
+		<a href="{relative_path}/post/{./pid}">[[global:read-more]]</a>
 	</div>
 	<hr/>
 </li>
