@@ -281,7 +281,9 @@ Widget.renderPopularTags = async function (widget) {
 	if (widget.templateData.template.category) {
 		tags = await topics.getCategoryTagsData(widget.templateData.cid, 0, numTags - 1);
 	} else {
-		tags = await topics.getTags(0, numTags - 1);
+		let cids = await categories.getCidsByPrivilege('categories:cid', widget.uid, 'topics:read');
+		cids = cids.filter(cid => cid !== -1);
+		tags = await topics.getCategoryTagsData(cids, 0, numTags - 1);
 	}
 	let maxCount = 1;
 	tags.forEach((t) => {
