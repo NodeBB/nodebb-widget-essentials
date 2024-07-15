@@ -237,17 +237,18 @@ Widget.renderRecentPostsWidget = async function (widget) {
 
 Widget.renderRecentTopicsWidget = async function (widget) {
 	const numTopics = (widget.data.numTopics || 8) - 1;
-	const cids = getValuesArray(widget, 'cid');
+	let cids = getValuesArray(widget, 'cid');
 
 	let key;
+	if (!cids.length) {
+		cids = await categories.getCidsByPrivilege('categories:cid', widget.uid, 'topics:read');
+	}
 	if (cids.length) {
 		if (cids.length === 1) {
 			key = `cid:${cids[0]}:tids:lastposttime`;
 		} else {
 			key = cids.map(cid => `cid:${cid}:tids:lastposttime`);
 		}
-	} else {
-		key = 'topics:recent';
 	}
 	const data = await topics.getTopicsFromSet(key, widget.uid, 0, Math.max(0, numTopics));
 	data.topics.forEach((topicData) => {
