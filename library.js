@@ -167,6 +167,17 @@ Widget.renderLatestUsersWidget = async function (widget) {
 	return widget;
 };
 
+Widget.renderTopPostersWidget = async function (widget) {
+	const count = Math.max(1, widget.data.numUsers || 24);
+	const users = await user.getUsersFromSet('users:postcount', widget.uid, 0, count - 1);
+	widget.html = await app.renderAsync('widgets/topposters', {
+		users: users,
+		sidebar: widget.location === 'sidebar',
+		relative_path: nconf.get('relative_path'),
+	});
+	return widget;
+};
+
 Widget.renderModeratorsWidget = async function (widget) {
 	let cid;
 
@@ -482,6 +493,12 @@ Widget.defineWidgets = async function (widgets) {
 			name: 'Latest Users',
 			description: 'List of latest registered users.',
 			content: 'admin/partials/widgets/latestusers',
+		},
+		{
+			widget: 'topposters',
+			name: 'Top Posters',
+			description: 'List of users with the most posts.',
+			content: 'admin/partials/widgets/topposters',
 		},
 		{
 			widget: 'moderators',

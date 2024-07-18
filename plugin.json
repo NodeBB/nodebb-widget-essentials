@@ -30,6 +30,9 @@
 			"hook": "filter:widget.render:latestusers", "method": "renderLatestUsersWidget"
 		},
 		{
+			"hook": "filter:widget.render:topposters", "method": "renderTopPostersWidget"
+		},
+		{
 			"hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget"
 		},
 		{
