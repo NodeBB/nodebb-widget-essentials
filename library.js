@@ -456,6 +456,36 @@ Widget.renderUserPost = async function (widget) {
 	return widget;
 };
 
+Widget.renderChatRoom = async function (widget) {
+	const roomId = (widget.data.roomId || 0);
+	if (!roomId) {
+		return null;
+	}
+
+	const { uid } = widget;
+	const chatsAPI = require.main.require('./src/api/chats');
+	try {
+		const roomData = await chatsAPI.get({ uid: uid }, { uid, roomId });
+		if (!roomData) {
+			return null;
+		}
+		widget.html = await app.renderAsync('widgets/chat', {
+			roomId: roomId,
+			isWidget: true,
+			...roomData,
+			config: widget.templateData.config,
+			relative_path: nconf.get('relative_path'),
+		});
+	} catch (err) {
+		if (err.message === '[[error:no-privileges]]') {
+			return null;
+		}
+		throw err;
+	}
+
+	return widget;
+};
+
 Widget.defineWidgets = async function (widgets) {
 	const widgetData = [
 		{
@@ -577,6 +607,12 @@ Widget.defineWidgets = async function (widgets) {
 			name: 'User Post',
 			description: 'Display a users first/last/best post on their profile or by user id.',
 			content: 'admin/partials/widgets/userpost',
+		},
+		{
+			widget: 'chat',
+			name: 'Chat Room',
+			description: 'Display a chat room as a widget',
+			content: 'admin/partials/widgets/chat',
 		},
 	];
 

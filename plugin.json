@@ -73,6 +73,9 @@
 		},
 		{
 			"hook": "filter:widget.render:userpost", "method": "renderUserPost"
+		},
+		{
+			"hook": "filter:widget.render:chat", "method": "renderChatRoom"
 		}
 	],
 	"templates": "./public/templates",
