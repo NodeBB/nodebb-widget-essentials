@@ -1,7 +1,22 @@
-<div id="chat-modal-{roomId}" data-roomid="{roomId}">
-	<div class="" component="chat/message/window">
+<div component="chat/widget" id="chat-modal-{roomId}" data-roomid="{roomId}">
+	<div component="chat/message/window">
 		<div class="d-flex gap-4 justify-content-between mb-1">
-			<div class="fs-6 flex-grow-1 fw-semibold tracking-tight text-truncate text-nowrap" component="chat/room/name" data-icon="{icon}">{{{ if ./roomName }}}<i class="fa {icon} text-muted"></i> {roomName}{{{ else }}}{./chatWithMessage}{{{ end}}}</div>
+			<div class="dropdown">
+				<button class="btn-ghost-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+					{{{ if ./roomName }}}<i class="fa {icon} text-muted"></i> {roomName}{{{ end}}}
+				</button>
+				<ul class="dropdown-menu p-1">
+					{{{ each publicRooms }}}
+					<li>
+						<a class="dropdown-item rounded-1 d-flex align-items-center gap-2" href="#" role="menuitem" data-roomid="{./roomId}">
+							<span class="flex-grow-1"><i class="fa {./icon} text-muted"></i> {./roomName}</span>
+							<i class="flex-shrink-0 fa fa-fw text-secondary {{{ if ./selected }}} fa-check{{{ end }}}"></i>
+						</a>
+					</li>
+					{{{ end }}}
+				</ul>
+			</div>
+
 			<div class="d-flex gap-1 align-items-center">
 				<a href="{config.relative_path}/chats/{roomId}" class="btn-ghost-sm d-none d-md-flex" title="[[modules:chat.maximize]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
 					<i class="fa fa-fw fa-expand text-muted"></i>
@@ -31,17 +46,49 @@
 </div>
 <script type="text/javascript">
 	(function() {
-		const roomId = {roomId};
 		function loadChatWidget() {
-			async function onAjaxifyEnd() {
-				const roomWidget = $(`#chat-modal-{roomId}`);
+			async function switchToChat(roomId, roomWidget) {
+				const api = await app.require('api');
+				const roomData = await api.get('/api/user/' + app.user.userslug + '/chats/' + roomId);
+				console.log(roomData);
+				roomData.publicRooms.forEach((room) => {
+					if (room && parseInt(room.roomId, 10) === parseInt(roomId, 10)) {
+						room.selected = true;
+					}
+				});
+				const html = await app.parseAndTranslate('widgets/chat', roomData);
+				roomWidget.replaceWith(html);
+				const newWidget = $('[component="chat/widget"][data-roomid="' + roomId + '"]');
+				initChatWidget(roomId, newWidget);
+			}
 
+			async function onAjaxifyEnd() {
+				const roomWidgets = $(`[component="chat/widget"]`);
+				if (!roomWidgets.length) {
+					$(window).off('action:ajaxify.end', onAjaxifyEnd);
+				}
+				roomWidgets.each((index, roomWidget) => {
+					const $roomWidget = $(roomWidget);
+					const roomId = $roomWidget.attr('data-roomid');
+					initChatWidget(roomId, $roomWidget);
+				});
+			}
+
+			async function initChatWidget(roomId, roomWidget) {
 				if (roomWidget.length) {
 					const chat = await app.require('chat');
 					chat.initWidget(roomId, roomWidget);
-				} else {
-					$(window).off('action:ajaxify.end', onAjaxifyEnd);
-					socket.emit('modules.chats.leave', roomId);
+
+					roomWidget.on('click', '.dropdown-item[data-roomid]', function () {
+						const newRoomId = $(this).attr('data-roomid');
+						if (parseInt(newRoomId, 10) !== parseInt(roomId, 10)) {
+							socket.emit('modules.chats.leave', roomId);
+							switchToChat(newRoomId, roomWidget);
+						}
+					});
+					$(window).one('action:ajaxify.end', function () {
+						socket.emit('modules.chats.leave', roomId);
+					});
 				}
 			}
 

@@ -464,15 +464,27 @@ Widget.renderChatRoom = async function (widget) {
 
 	const { uid } = widget;
 	const chatsAPI = require.main.require('./src/api/chats');
+	const messaging = require.main.require('./src/messaging');
 	try {
-		const roomData = await chatsAPI.get({ uid: uid }, { uid, roomId });
+		const [roomData, publicRooms] = await Promise.all([
+			chatsAPI.get({ uid: uid }, { uid, roomId }),
+			messaging.getPublicRooms(uid, uid),
+		]);
+
 		if (!roomData) {
 			return null;
 		}
+		publicRooms.forEach((room) => {
+			if (room && parseInt(room.roomId, 10) === parseInt(roomId, 10)) {
+				room.selected = true;
+			}
+		});
+
 		widget.html = await app.renderAsync('widgets/chat', {
 			roomId: roomId,
 			isWidget: true,
 			...roomData,
+			publicRooms,
 			config: widget.templateData.config,
 			relative_path: nconf.get('relative_path'),
 		});
