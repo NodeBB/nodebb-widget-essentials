@@ -50,7 +50,6 @@
 			async function switchToChat(roomId, roomWidget) {
 				const api = await app.require('api');
 				const roomData = await api.get('/api/user/' + app.user.userslug + '/chats/' + roomId);
-				console.log(roomData);
 				roomData.publicRooms.forEach((room) => {
 					if (room && parseInt(room.roomId, 10) === parseInt(roomId, 10)) {
 						room.selected = true;
