@@ -258,6 +258,7 @@ Widget.renderRecentTopicsWidget = async function (widget) {
 	let key;
 	if (!cids.length) {
 		cids = await categories.getCidsByPrivilege('categories:cid', widget.uid, 'topics:read');
+		cids = cids.filter(cid => cid !== -1);
 	}
 	if (cids.length) {
 		if (cids.length === 1) {
