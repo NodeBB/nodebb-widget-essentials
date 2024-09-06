@@ -232,9 +232,14 @@ Widget.renderRecentPostsWidget = async function (widget) {
 	const numPosts = widget.data.numPosts || 4;
 	let postsData;
 	if (cid) {
-		postsData = await categories.getRecentReplies(cid, widget.uid, numPosts);
+		postsData = await categories.getRecentReplies(cid, widget.uid, 0, Math.max(0, numPosts - 1));
 	} else {
-		postsData = await posts.getRecentPosts(widget.uid, 0, Math.max(0, numPosts - 1), 'alltime');
+		let cids = await categories.getCidsByPrivilege('categories:cid', widget.uid, 'topics:read');
+		cids = cids.filter(cid => cid !== -1);
+		const pids = await db.getSortedSetRevRange(
+			cids.map(cid => `cid:${cid}:pids`), 0, Math.max(0, numPosts - 1),
+		);
+		postsData = await posts.getPostSummaryByPids(pids, widget.uid, { stripTags: true });
 	}
 	const data = {
 		posts: postsData,
