@@ -284,7 +284,8 @@ Widget.renderRecentTopicsWidget = async function (widget) {
 };
 
 Widget.renderCategories = async function (widget) {
-	const categoryData = await categories.getCategoriesByPrivilege('categories:cid', widget.uid, 'find');
+	let categoryData = await categories.getCategoriesByPrivilege('categories:cid', widget.uid, 'find');
+	categoryData = categoryData.filter(c => c && c.cid !== -1);
 	const tree = categories.getTree(categoryData, 0);
 	widget.html = await app.renderAsync('widgets/categories', {
 		categories: tree,
