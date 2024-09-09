@@ -426,9 +426,11 @@ Widget.renderSuggestedTopics = async function (widget) {
 		topicData = topicData.filter(topic => topic && !topic.deleted);
 	}
 
+	const sidebarLocations = ['left', 'right', 'sidebar'];
 	widget.html = await app.renderAsync('widgets/suggestedtopics', {
 		topics: topicData,
 		config: widget.templateData.config,
+		sidebar: sidebarLocations.includes(widget.location),
 		relative_path: nconf.get('relative_path'),
 	});
 	return widget;
