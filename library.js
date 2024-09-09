@@ -280,6 +280,7 @@ Widget.renderRecentTopicsWidget = async function (widget) {
 		if (topicData && !topicData.teaser) {
 			topicData.teaser = {
 				user: topicData.user,
+				timestampISO: topicData.timestampISO,
 			};
 		}
 	});
