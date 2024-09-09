@@ -3,13 +3,13 @@
 		<div class="flex-1">
 			<div class="stats-card text-center {statsClass}">
 				<h4 class="stats" title="{online}">{online}</h4>
-				<span>[[global:online]]</span>
+				<span class="text-secondary">[[global:online]]</span>
 			</div>
 		</div>
 		<div class="flex-1">
 			<div class="stats-card text-center {statsClass}">
 				<h4 class="stats" title="{users}">{users}</h4>
-				<span>[[global:users]]</span>
+				<span class="text-secondary">[[global:users]]</span>
 			</div>
 		</div>
 	</div>
@@ -17,13 +17,13 @@
 		<div class="flex-1">
 			<div class="stats-card text-center {statsClass}">
 				<h4 class="stats" title="{topics}">{topics}</h4>
-				<span>[[global:topics]]</span>
+				<span class="text-secondary">[[global:topics]]</span>
 			</div>
 		</div>
 		<div class="flex-1">
 			<div class="stats-card text-center {statsClass}">
 				<h4 class="stats" title="{posts}">{posts}</h4>
-				<span>[[global:posts]]</span>
+				<span class="text-secondary">[[global:posts]]</span>
 			</div>
 		</div>
 	</div>

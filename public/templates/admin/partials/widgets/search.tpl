@@ -11,8 +11,8 @@
 <div class="mb-3">
 	<label class=form-label" for="defaultIn">Default In</label>
 	<select class="form-select" id="defaultIn" name="defaultIn">
-		<option value="titles">[[search:titles]]</option>
-		<option value="titlesposts">[[search:titles-posts]]</option>
+		<option value="titles">[[search:in-titles]]</option>
+		<option value="titlesposts">[[search:in-titles-posts]]</option>
 		<option value="posts">[[global:posts]]</option>
 		<option value="categories">[[global:header.categories]]</option>
 		<option value="users">[[global:users]]</option>

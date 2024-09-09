@@ -55,8 +55,8 @@ Widget.renderSearchWidget = async function (widget) {
 	const userPrivileges = await privileges.global.get(widget.uid);
 
 	const inOptions = [
-		{ value: 'titles', label: '[[search:titles]]' },
-		{ value: 'titlesposts', label: '[[search:titles-posts]]' },
+		{ value: 'titles', label: '[[search:in-titles]]' },
+		{ value: 'titlesposts', label: '[[search:in-titles-posts]]' },
 		{ value: 'posts', label: '[[global:posts]]' },
 		{ value: 'categories', label: '[[global:header.categories]]' },
 	];
@@ -127,7 +127,7 @@ Widget.renderRecentViewWidget = async function (widget) {
 Widget.renderOnlineUsersWidget = async function (widget) {
 	const count = Math.max(1, widget.data.numUsers || 24);
 	const uids = await user.getUidsFromSet('users:online', 0, count - 1);
-	let userData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status']);
+	let userData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
 	userData = userData.filter(user => user.status !== 'offline');
 	widget.html = await app.renderAsync('widgets/onlineusers', {
 		online_users: userData,
@@ -149,7 +149,14 @@ Widget.renderActiveUsersWidget = async function (widget) {
 	}
 	uids = uids.slice(0, count);
 
-	const userData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture']);
+	const userData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'lastposttime']);
+	userData.sort((a, b) => b.lastposttime - a.lastposttime);
+	userData.forEach((u) => {
+		if (u) {
+			u.lastposttimeISO = utils.toISOString(u.lastposttime);
+		}
+	});
+
 	widget.html = await app.renderAsync('widgets/activeusers', {
 		active_users: userData,
 		relative_path: nconf.get('relative_path'),
@@ -170,9 +177,10 @@ Widget.renderLatestUsersWidget = async function (widget) {
 Widget.renderTopPostersWidget = async function (widget) {
 	const count = Math.max(1, widget.data.numUsers || 24);
 	const users = await user.getUsersFromSet('users:postcount', widget.uid, 0, count - 1);
+	const sidebarLocations = ['left', 'right', 'sidebar'];
 	widget.html = await app.renderAsync('widgets/topposters', {
 		users: users,
-		sidebar: widget.location === 'sidebar',
+		sidebar: sidebarLocations.includes(widget.location),
 		relative_path: nconf.get('relative_path'),
 	});
 	return widget;
