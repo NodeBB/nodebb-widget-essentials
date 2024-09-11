@@ -2,7 +2,7 @@
 	<div component="chat/message/window">
 		<div class="d-flex gap-4 justify-content-between mb-1">
 			<div class="dropdown">
-				<button class="btn-ghost-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+				<button class="btn btn-ghost btn-sm dropdown-toggle d-flex gap-2 align-items-center" type="button" data-bs-toggle="dropdown" aria-expanded="false">
 					{{{ if ./roomName }}}<i class="fa {icon} text-muted"></i> {roomName}{{{ end}}}
 				</button>
 				<ul class="dropdown-menu p-1">
@@ -18,7 +18,7 @@
 			</div>
 
 			<div class="d-flex gap-1 align-items-center">
-				<a href="{config.relative_path}/chats/{roomId}" class="btn-ghost-sm d-none d-md-flex" title="[[modules:chat.maximize]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
+				<a href="{config.relative_path}/chats/{roomId}" class="btn btn-ghost btn-sm d-none d-md-flex p-1" title="[[modules:chat.maximize]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
 					<i class="fa fa-fw fa-expand text-muted"></i>
 				</a>
 			</div>
