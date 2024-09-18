@@ -20,6 +20,8 @@ let app;
 
 const Widget = module.exports;
 
+const sidebarLocations = ['left', 'right', 'sidebar'];
+
 Widget.init = async function (params) {
 	app = params.app;
 };
@@ -131,6 +133,7 @@ Widget.renderOnlineUsersWidget = async function (widget) {
 	userData = userData.filter(user => user.status !== 'offline');
 	widget.html = await app.renderAsync('widgets/onlineusers', {
 		online_users: userData,
+		sidebar: sidebarLocations.includes(widget.location),
 		relative_path: nconf.get('relative_path'),
 	});
 	return widget;
@@ -159,6 +162,7 @@ Widget.renderActiveUsersWidget = async function (widget) {
 
 	widget.html = await app.renderAsync('widgets/activeusers', {
 		active_users: userData,
+		sidebar: sidebarLocations.includes(widget.location),
 		relative_path: nconf.get('relative_path'),
 	});
 	return widget;
@@ -169,6 +173,7 @@ Widget.renderLatestUsersWidget = async function (widget) {
 	const users = await user.getUsersFromSet('users:joindate', widget.uid, 0, count - 1);
 	widget.html = await app.renderAsync('widgets/latestusers', {
 		users: users,
+		sidebar: sidebarLocations.includes(widget.location),
 		relative_path: nconf.get('relative_path'),
 	});
 	return widget;
@@ -177,7 +182,7 @@ Widget.renderLatestUsersWidget = async function (widget) {
 Widget.renderTopPostersWidget = async function (widget) {
 	const count = Math.max(1, widget.data.numUsers || 24);
 	const users = await user.getUsersFromSet('users:postcount', widget.uid, 0, count - 1);
-	const sidebarLocations = ['left', 'right', 'sidebar'];
+
 	widget.html = await app.renderAsync('widgets/topposters', {
 		users: users,
 		sidebar: sidebarLocations.includes(widget.location),
