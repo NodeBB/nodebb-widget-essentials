@@ -4,14 +4,14 @@
 		<a class="topic-title fw-semibold fs-6 text-reset text-break d-block" href="{relative_path}/topic/{./slug}">{./title}</a>
 
 		<div class="d-flex gap-2 align-items-center text-sm">
-			<a class="text-decoration-none" href="{{{ if ./teaser.user.userslug }}}{relative_path}/user/{./teaser.user.userslug}{{{ else }}}#{{{ end }}}">
-				{buildAvatar(./teaser.user, "24px", true, "avatar-tooltip not-responsive")}
+			<a class="text-decoration-none avatar-tooltip" title="{./user.displayname}" href="{{{ if ./teaser.user.userslug }}}{relative_path}/user/{./teaser.user.userslug}{{{ else }}}#{{{ end }}}">
+				{buildAvatar(./teaser.user, "24px", true)}
 			</a>
 
 			<div class="post-author d-flex align-items-center gap-1">
-				<a class="lh-1 fw-semibold" href="{config.relative_path}/user/{./teaser.user.userslug}">{./teaser.user.displayname}</a>
+				<a class="lh-1 fw-semibold text-nowrap" href="{config.relative_path}/user/{./teaser.user.userslug}">{./teaser.user.displayname}</a>
 			</div>
-			<span class="timeago text-muted lh-1" title="{./teaser.timestampISO}"></span>
+			<span class="timeago text-muted lh-1 text-nowrap" title="{./teaser.timestampISO}"></span>
 		</div>
 
 		<div class="d-flex justify-content-between">
