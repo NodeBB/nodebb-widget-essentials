@@ -5,78 +5,30 @@
 	"url": "https://github.com/psychobunny/nodebb-widget-essentials",
 	"library": "./library.js",
 	"hooks": [
-		{
-			"hook": "static:app.load", "method": "init"
-		},
-		{
-			"hook": "filter:widgets.getWidgets", "method": "defineWidgets"
-		},
-		{
-			"hook": "filter:widget.render:text", "method": "renderTextWidget"
-		},
-		{
-			"hook": "filter:widget.render:html", "method": "renderHTMLWidget"
-		},
-		{
-			"hook": "filter:widget.render:search", "method": "renderSearchWidget"
-		},
-		{
-			"hook": "filter:widget.render:onlineusers", "method": "renderOnlineUsersWidget"
-		},
-		{
-			"hook": "filter:widget.render:activeusers", "method": "renderActiveUsersWidget"
-		},
-		{
-			"hook": "filter:widget.render:latestusers", "method": "renderLatestUsersWidget"
-		},
-		{
-			"hook": "filter:widget.render:topposters", "method": "renderTopPostersWidget"
-		},
-		{
-			"hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget"
-		},
-		{
-			"hook": "filter:widget.render:forumstats", "method": "renderForumStatsWidget"
-		},
-		{
-			"hook": "filter:widget.render:recentposts", "method": "renderRecentPostsWidget"
-		},
-		{
-			"hook": "filter:widget.render:recenttopics", "method": "renderRecentTopicsWidget"
-		},
-		{
-			"hook": "filter:widget.render:recentview", "method": "renderRecentViewWidget"
-		},
-		{
-			"hook": "filter:widget.render:categories", "method": "renderCategories"
-		},
-		{
-			"hook": "filter:widget.render:populartags", "method": "renderPopularTags"
-		},
-		{
-			"hook": "filter:widget.render:populartopics", "method": "renderPopularTopics"
-		},
-		{
-			"hook": "filter:widget.render:toptopics", "method": "renderTopTopics"
-		},
-		{
-			"hook": "filter:widget.render:newgroups", "method": "renderNewGroups"
-		},
-		{
-			"hook": "filter:widget.render:mygroups", "method": "renderMyGroups"
-		},
-		{
-			"hook": "filter:widget.render:groupposts", "method": "renderGroupPosts"
-		},
-		{
-			"hook": "filter:widget.render:suggestedtopics", "method": "renderSuggestedTopics"
-		},
-		{
-			"hook": "filter:widget.render:userpost", "method": "renderUserPost"
-		},
-		{
-			"hook": "filter:widget.render:chat", "method": "renderChatRoom"
-		}
+		{ "hook": "static:app.load", "method": "init" },
+		{ "hook": "filter:widgets.getWidgets", "method": "defineWidgets" },
+		{ "hook": "filter:widget.render:text", "method": "renderTextWidget" },
+		{ "hook": "filter:widget.render:html", "method": "renderHTMLWidget" },
+		{ "hook": "filter:widget.render:search", "method": "renderSearchWidget"},
+		{ "hook": "filter:widget.render:onlineusers", "method": "renderOnlineUsersWidget" },
+		{ "hook": "filter:widget.render:activeusers", "method": "renderActiveUsersWidget" },
+		{ "hook": "filter:widget.render:latestusers", "method": "renderLatestUsersWidget" },
+		{ "hook": "filter:widget.render:topposters", "method": "renderTopPostersWidget"	},
+		{ "hook": "filter:widget.render:moderators", "method": "renderModeratorsWidget" },
+		{ "hook": "filter:widget.render:forumstats", "method": "renderForumStatsWidget" },
+		{ "hook": "filter:widget.render:recentposts", "method": "renderRecentPostsWidget" },
+		{ "hook": "filter:widget.render:recenttopics", "method": "renderRecentTopicsWidget" },
+		{ "hook": "filter:widget.render:recentview", "method": "renderRecentViewWidget" },
+		{ "hook": "filter:widget.render:categories", "method": "renderCategories" },
+		{ "hook": "filter:widget.render:populartags", "method": "renderPopularTags" },
+		{ "hook": "filter:widget.render:populartopics", "method": "renderPopularTopics" },
+		{ "hook": "filter:widget.render:toptopics", "method": "renderTopTopics" },
+		{ "hook": "filter:widget.render:newgroups", "method": "renderNewGroups" },
+		{ "hook": "filter:widget.render:mygroups", "method": "renderMyGroups" },
+		{ "hook": "filter:widget.render:groupposts", "method": "renderGroupPosts" },
+		{ "hook": "filter:widget.render:suggestedtopics", "method": "renderSuggestedTopics" },
+		{ "hook": "filter:widget.render:userpost", "method": "renderUserPost" },
+		{ "hook": "filter:widget.render:chat", "method": "renderChatRoom" }
 	],
 	"templates": "./public/templates",
 	"css": [

@@ -310,6 +310,7 @@ Widget.renderCategories = async function (widget) {
 
 Widget.renderPopularTags = async function (widget) {
 	const numTags = widget.data.numTags || 8;
+	const display = widget.data.display || 'buttons';
 	let tags = [];
 	if (widget.templateData.template.category) {
 		tags = await topics.getCategoryTagsData(widget.templateData.cid, 0, numTags - 1);
@@ -330,6 +331,7 @@ Widget.renderPopularTags = async function (widget) {
 
 	widget.html = await app.renderAsync('widgets/populartags', {
 		tags: tags,
+		display,
 		template: widget.templateData.template,
 		relative_path: nconf.get('relative_path'),
 	});
