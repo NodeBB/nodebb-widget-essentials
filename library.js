@@ -131,6 +131,7 @@ Widget.renderOnlineUsersWidget = async function (widget) {
 	const uids = await user.getUidsFromSet('users:online', 0, count - 1);
 	let userData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
 	userData = userData.filter(user => user.status !== 'offline');
+	userData.sort((a, b) => b.lastonline - a.lastonline);
 	widget.html = await app.renderAsync('widgets/onlineusers', {
 		online_users: userData,
 		sidebar: sidebarLocations.includes(widget.location),
