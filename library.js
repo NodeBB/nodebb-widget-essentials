@@ -294,6 +294,7 @@ Widget.renderRecentTopicsWidget = async function (widget) {
 		topics: data.topics,
 		numTopics: numTopics,
 		relative_path: nconf.get('relative_path'),
+		sidebar: sidebarLocations.includes(widget.location),
 	});
 	return widget;
 };
@@ -352,6 +353,7 @@ Widget.renderPopularTopics = async function (widget) {
 		topics: data.topics,
 		numTopics: numTopics,
 		relative_path: nconf.get('relative_path'),
+		sidebar: sidebarLocations.includes(widget.location),
 	});
 	return widget;
 };
@@ -369,6 +371,7 @@ Widget.renderTopTopics = async function (widget) {
 		topics: data.topics,
 		numTopics: numTopics,
 		relative_path: nconf.get('relative_path'),
+		sidebar: sidebarLocations.includes(widget.location),
 	});
 	return widget;
 };
@@ -434,7 +437,7 @@ Widget.renderSuggestedTopics = async function (widget) {
 		topicData = topicData.filter(topic => topic && !topic.deleted);
 	}
 
-	const sidebarLocations = ['left', 'right', 'sidebar'];
+
 	widget.html = await app.renderAsync('widgets/suggestedtopics', {
 		topics: topicData,
 		config: widget.templateData.config,
