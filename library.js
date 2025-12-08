@@ -51,7 +51,7 @@ Widget.renderTextWidget = async function (widget) {
 };
 
 Widget.renderSearchWidget = async function (widget) {
-	if (widget.templateData.template.search) {
+	if (widget.templateData.template.search && widget.location !== 'brand-header') {
 		return null;
 	}
 	const userPrivileges = await privileges.global.get(widget.uid);
