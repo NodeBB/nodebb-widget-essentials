@@ -1,5 +1,3 @@
-<div class="overflow-hidden">
-	<ul class="list-unstyled d-flex flex-column">
+<div>
 	<!-- IMPORT widgets/partials/posts.tpl -->
-	</ul>
 </div>

@@ -1,5 +1,5 @@
-{{{ each categories}}}
-<ul class="categories-list list-unstyled">
+<ul class="categories-list list-unstyled trim-last-divider">
+{{{ each categories }}}
 	<li component="categories/category" data-cid="{./cid}" data-parent-cid="{../parentCid}" class="category-{./cid}">
 		<div class="content d-flex gap-2">
 			<div>
@@ -34,8 +34,8 @@
 		</div>
 		<hr />
 	</li>
-</ul>
 {{{ end }}}
+</ul>
 
 
 

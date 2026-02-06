@@ -1,7 +1,5 @@
-<div class="overflow-hidden">
-	<ul id="recent_posts" class="list-unstyled d-flex flex-column" data-numposts="{numPosts}" data-cid="{cid}">
+<div component="recent/posts/widget" data-uuid="{uuid}">
 	<!-- IMPORT widgets/partials/posts.tpl -->
-	</ul>
 </div>
 
 <script>
@@ -9,16 +7,15 @@
 /* globals app, socket*/
 (function() {
 	function onLoad() {
-		var replies = $('#recent_posts');
-
+		// var replies = $('[component="recent/posts/widget"][data-uuid="{uuid}"] ul.widget-posts-list');
 		var recentPostsWidget = app.widgets.recentPosts;
-		var numPosts = parseInt(replies.attr('data-numposts'), 10) || 4;
 
 		if (!recentPostsWidget) {
 			recentPostsWidget = {};
 			recentPostsWidget.onNewPost = function(data) {
-				var cid = replies.attr('data-cid');
-				var recentPosts = $('#recent_posts');
+				var recentPosts = $('[component="recent/posts/widget"][data-uuid="{uuid}"] ul.widget-posts-list');
+				var cid = recentPosts.attr('data-cid');
+				var numPosts = parseInt(recentPosts.attr('data-numposts'), 10) || 4;
 				if (!recentPosts.length) {
 					return;
 				}
@@ -27,9 +24,9 @@
 					return;
 				}
 
-				app.parseAndTranslate('widgets/partials/posts', {
+				app.parseAndTranslate('widgets/partials/posts', 'posts', {
 					relative_path: config.relative_path,
-					posts: data.posts
+					posts: data.posts,
 				}, function(html) {
 					processHtml(html);
 

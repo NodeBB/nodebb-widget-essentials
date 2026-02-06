@@ -1,7 +1,5 @@
 <div>
-	<ul id="recent_topics" class="list-unstyled d-flex flex-column" data-numtopics="{numTopics}">
 	<!-- IMPORT widgets/partials/topics.tpl -->
-	</ul>
 </div>
 
 <script>

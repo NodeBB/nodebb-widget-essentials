@@ -256,6 +256,7 @@ Widget.renderRecentPostsWidget = async function (widget) {
 		postsData = await posts.getPostSummaryByPids(pids, widget.uid, { stripTags: true });
 	}
 	const data = {
+		uuid: utils.generateUUID(),
 		posts: postsData,
 		numPosts: numPosts,
 		cid: cid,
@@ -343,6 +344,7 @@ Widget.renderPopularTags = async function (widget) {
 Widget.renderPopularTopics = async function (widget) {
 	const numTopics = widget.data.numTopics || 8;
 	const data = await topics.getSortedTopics({
+		cids: widget.templateData.template.category && widget.templateData.cid,
 		uid: widget.uid,
 		start: 0,
 		stop: numTopics - 1,
@@ -361,6 +363,7 @@ Widget.renderPopularTopics = async function (widget) {
 Widget.renderTopTopics = async function (widget) {
 	const numTopics = widget.data.numTopics || 8;
 	const data = await topics.getSortedTopics({
+		cids: widget.templateData.template.category && widget.templateData.cid,
 		uid: widget.uid,
 		start: 0,
 		stop: numTopics - 1,
