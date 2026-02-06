@@ -7,18 +7,17 @@
 /* globals app, socket*/
 (function() {
 	function onLoad() {
-		// var replies = $('[component="recent/posts/widget"][data-uuid="{uuid}"] ul.widget-posts-list');
 		var recentPostsWidget = app.widgets.recentPosts;
 
 		if (!recentPostsWidget) {
 			recentPostsWidget = {};
 			recentPostsWidget.onNewPost = function(data) {
 				var recentPosts = $('[component="recent/posts/widget"][data-uuid="{uuid}"] ul.widget-posts-list');
-				var cid = recentPosts.attr('data-cid');
-				var numPosts = parseInt(recentPosts.attr('data-numposts'), 10) || 4;
 				if (!recentPosts.length) {
 					return;
 				}
+				var cid = recentPosts.attr('data-cid');
+				var numPosts = parseInt(recentPosts.attr('data-numposts'), 10) || 4;
 
 				if (cid && parseInt(cid, 10) !== parseInt(data.posts[0].topic.cid, 10)) {
 					return;
