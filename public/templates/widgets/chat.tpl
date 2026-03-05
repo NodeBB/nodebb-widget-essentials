@@ -85,8 +85,10 @@
 							switchToChat(newRoomId, roomWidget);
 						}
 					});
-					$(window).one('action:ajaxify.end', function () {
+					$(window).one('action:ajaxify.end', async function () {
 						socket.emit('modules.chats.leave', roomId);
+						const chats = await app.require('forum/chats');
+						chats.destroyAutoComplete(roomId);
 					});
 				}
 			}
