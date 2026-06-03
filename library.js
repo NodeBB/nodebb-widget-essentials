@@ -1,20 +1,20 @@
 'use strict';
 
-const nconf = require.main.require('nconf');
-const validator = require.main.require('validator');
-const benchpressjs = require.main.require('benchpressjs');
-const _ = require.main.require('lodash');
+const nconf = nodebb.require('nconf');
+const validator = nodebb.require('validator');
+const benchpressjs = nodebb.require('benchpressjs');
+const _ = nodebb.require('lodash');
 
-const db = require.main.require('./src/database');
-const categories = require.main.require('./src/categories');
-const user = require.main.require('./src/user');
-const plugins = require.main.require('./src/plugins');
-const topics = require.main.require('./src/topics');
-const posts = require.main.require('./src/posts');
-const groups = require.main.require('./src/groups');
-const utils = require.main.require('./src/utils');
-const meta = require.main.require('./src/meta');
-const privileges = require.main.require('./src/privileges');
+const db = nodebb.require('./src/database');
+const categories = nodebb.require('./src/categories');
+const user = nodebb.require('./src/user');
+const plugins = nodebb.require('./src/plugins');
+const topics = nodebb.require('./src/topics');
+const posts = nodebb.require('./src/posts');
+const groups = nodebb.require('./src/groups');
+const utils = nodebb.require('./src/utils');
+const meta = nodebb.require('./src/meta');
+const privileges = nodebb.require('./src/privileges');
 
 let app;
 
@@ -215,7 +215,7 @@ Widget.renderModeratorsWidget = async function (widget) {
 };
 
 Widget.renderForumStatsWidget = async function (widget) {
-	const socketRooms = require.main.require('./src/socket.io/admin/rooms');
+	const socketRooms = nodebb.require('./src/socket.io/admin/rooms');
 	const [global, onlineCount, guestCount] = await Promise.all([
 		db.getObjectFields('global', ['topicCount', 'postCount', 'userCount']),
 		db.sortedSetCount('users:online', Date.now() - (meta.config.onlineCutoff * 60000), '+inf'),
@@ -314,7 +314,7 @@ Widget.renderCategories = async function (widget) {
 Widget.renderPopularTags = async function (widget) {
 	const numTags = widget.data.numTags || 8;
 	const display = widget.data.display || 'buttons';
-	let tags = [];
+	let tags;
 	if (widget.templateData.template.category) {
 		tags = await topics.getCategoryTagsData(widget.templateData.cid, 0, numTags - 1);
 	} else {
@@ -495,8 +495,8 @@ Widget.renderChatRoom = async function (widget) {
 	}
 
 	const { uid } = widget;
-	const chatsAPI = require.main.require('./src/api/chats');
-	const messaging = require.main.require('./src/messaging');
+	const chatsAPI = nodebb.require('./src/api/chats');
+	const messaging = nodebb.require('./src/messaging');
 	try {
 		const [roomData, publicRooms] = await Promise.all([
 			chatsAPI.get({ uid: uid }, { uid, roomId }),
