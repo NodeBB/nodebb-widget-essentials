@@ -8,7 +8,7 @@
 					{{{ if showInControl }}}
 					<select name="in" class="form-select">
 						{{{ each inOptions }}}
-						<option value="{./value}" {{{ if ./selected }}} selected {{{ end }}}>{./label}</option>
+						<option value="{./value}" {{{ if ./selected }}} selected {{{ end }}}>{tx(./label)}</option>
 						{{{ end }}}
 					</select>
 					{{{ end }}}

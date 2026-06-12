@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = nodebb.require('nconf');
-const validator = nodebb.require('validator');
 const benchpressjs = nodebb.require('benchpressjs');
 const _ = nodebb.require('lodash');
 
@@ -31,7 +30,10 @@ Widget.renderHTMLWidget = async function (widget) {
 		return null;
 	}
 	const tpl = widget.data ? widget.data.html : '';
-	widget.html = await benchpressjs.compileRender(String(tpl), widget.templateData);
+	widget.html = await benchpressjs.compileRender(String(tpl), {
+		_i18n: widget.res.locals._i18n,
+		...widget.templateData,
+	});
 	return widget;
 };
 
@@ -73,6 +75,7 @@ Widget.renderSearchWidget = async function (widget) {
 	});
 
 	widget.html = await app.renderAsync('widgets/search', {
+		_i18n: widget.res.locals._i18n,
 		inOptions: inOptions,
 		showInControl: widget.data.showInControl === 'on',
 		enableQuickSearch: widget.data.enableQuickSearch === 'on',
@@ -116,6 +119,7 @@ Widget.renderRecentViewWidget = async function (widget) {
 		categories.getCidsByPrivilege('categories:cid', widget.uid, 'topics:create'),
 	]);
 
+	data._i18n = widget.res.locals._i18n;
 	data.relative_path = nconf.get('relative_path');
 	data.loggedIn = !!widget.req.uid;
 	data.config = data.config || {};
@@ -305,6 +309,7 @@ Widget.renderCategories = async function (widget) {
 	categoryData = categoryData.filter(c => c && c.cid !== -1);
 	const tree = categories.getTree(categoryData, 0);
 	widget.html = await app.renderAsync('widgets/categories', {
+		_i18n: widget.res.locals._i18n,
 		categories: tree,
 		relative_path: nconf.get('relative_path'),
 	});
@@ -442,6 +447,7 @@ Widget.renderSuggestedTopics = async function (widget) {
 
 
 	widget.html = await app.renderAsync('widgets/suggestedtopics', {
+		_i18n: widget.res.locals._i18n,
 		topics: topicData,
 		config: widget.templateData.config,
 		sidebar: sidebarLocations.includes(widget.location),
@@ -513,6 +519,7 @@ Widget.renderChatRoom = async function (widget) {
 		});
 
 		widget.html = await app.renderAsync('widgets/chat', {
+			_i18n: widget.res.locals._i18n,
 			roomId: roomId,
 			isWidget: true,
 			...roomData,
@@ -668,9 +675,6 @@ Widget.defineWidgets = async function (widgets) {
 	const groupNames = await db.getSortedSetRevRange('groups:visible:createtime', 0, -1);
 	let groupsData = await groups.getGroupsData(groupNames);
 	groupsData = groupsData.filter(Boolean);
-	groupsData.forEach((group) => {
-		group.name = validator.escape(String(group.name));
-	});
 
 	const html = await app.renderAsync('admin/partials/widgets/groupposts', { groups: groupsData });
 	widgets.push({

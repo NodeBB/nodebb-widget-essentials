@@ -7,7 +7,7 @@
 
 			<div data-width="{./widthPercent}" class="popular-tags-bar position-absolute bg-info opacity-50 start-0 top-0" style="transition: width 750ms ease-out; width: 0%; height:100%; z-index: 0;"></div>
 
-			<a style="background-color: transparent!important; z-index: 1;" class="d-inline-block w-100 text-decoration-none text-bg-info position-relative text-truncate align-middle" href="{{{ if template.category }}}?tag={./valueEncoded}{{{ else }}}{relative_path}/tags/{./valueEncoded}{{{ end }}}"><span class="text-nowrap tag-class-{tags.class}">{./valueEscaped}</span></a>
+			<a style="background-color: transparent!important; z-index: 1;" class="d-inline-block w-100 text-decoration-none text-bg-info position-relative text-truncate align-middle" href="{{{ if template.category }}}?tag={./valueEncoded}{{{ else }}}{relative_path}/tags/{./valueEncoded}{{{ end }}}"><span class="text-nowrap tag-class-{tags.class}">{./value}</span></a>
 		</div>
 
 		<div class="text-center fw-bold p-1 text-end w-25 tag-topic-count border rounded">{./score}</div>
@@ -19,7 +19,7 @@
 	{{{ each tags }}}
 	<div>
 		<a href="{config.relative_path}/tags/{./valueEncoded}" data-tag="{./valueEscaped}" class="btn btn-ghost ff-base d-flex flex-column gap-1 align-items-start justify-content-start text-truncate p-2">
-			<div class="fw-semibold text-nowrap tag-item w-100 text-start text-truncate">{./valueEscaped}</div>
+			<div class="fw-semibold text-nowrap tag-item w-100 text-start text-truncate">{./value}</div>
 			<div class="text-xs text-muted text-nowrap tag-topic-count">[[global:x-topics, {txEscape(formattedNumber(./score))}]]</div>
 		</a>
 	</div>
