@@ -3,7 +3,7 @@
 	<li class="widget-topics d-flex gap-2 flex-column">
 		<div class="d-flex gap-3 justify-content-between">
 
-			<a class="topic-title fw-semibold fs-6 text-reset text-break d-block" href="{relative_path}/topic/{./slug}">{{generateTopicTitle(@value)}}</a>
+			<a class="topic-title fw-semibold fs-6 text-reset text-break d-block" href="{relative_path}/topic/{./slug}">{./title}</a>
 			{{{ if ./thumbs.length }}}
 			<a class="topic-thumbs text-decoration-none flex-shrink-0 d-inline-block" href="{config.relative_path}/topic/{./slug}{{{ if ./bookmark }}}/{./bookmark}{{{ end }}}" aria-label="[[topic:thumb-image]]">
 				<img class="topic-thumb rounded-1 bg-light" style="width: auto; max-width: 5.33rem; height: 3.3rem; object-fit: contain;" src="{./thumbs.0.url}" alt=""/>
