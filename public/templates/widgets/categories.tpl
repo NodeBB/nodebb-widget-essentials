@@ -1,7 +1,7 @@
 <ul class="categories-list list-unstyled trim-last-divider">
 {{{ each categories }}}
 	<li component="categories/category" data-cid="{./cid}" data-parent-cid="{../parentCid}" class="category-{./cid}">
-		<div class="content d-flex gap-2">
+		<div class="content d-flex gap-2 text-break">
 			<div>
 				{{buildCategoryIcon(@value, "24px", "rounded-1")}}
 			</div>
