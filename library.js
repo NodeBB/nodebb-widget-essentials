@@ -1,7 +1,6 @@
 'use strict';
 
 const nconf = nodebb.require('nconf');
-const validator = nodebb.require('validator');
 const benchpressjs = nodebb.require('benchpressjs');
 const _ = nodebb.require('lodash');
 
@@ -26,12 +25,22 @@ Widget.init = async function (params) {
 	app = params.app;
 };
 
+async function renderWidget(widget, template, options) {
+	return await app.renderAsync(template, {
+		_i18n: widget?.res?.locals?._i18n,
+		...options,
+	});
+}
+
 Widget.renderHTMLWidget = async function (widget) {
 	if (!isVisibleInCategory(widget) || !isVisibleInTopic(widget)) {
 		return null;
 	}
 	const tpl = widget.data ? widget.data.html : '';
-	widget.html = await benchpressjs.compileRender(String(tpl), widget.templateData);
+	widget.html = await benchpressjs.compileRender(String(tpl), {
+		_i18n: widget.res.locals._i18n,
+		...widget.templateData,
+	});
 	return widget;
 };
 
@@ -72,7 +81,7 @@ Widget.renderSearchWidget = async function (widget) {
 		option.selected = option.value === widget.data.defaultIn;
 	});
 
-	widget.html = await app.renderAsync('widgets/search', {
+	widget.html = await renderWidget(widget, 'widgets/search', {
 		inOptions: inOptions,
 		showInControl: widget.data.showInControl === 'on',
 		enableQuickSearch: widget.data.enableQuickSearch === 'on',
@@ -121,7 +130,7 @@ Widget.renderRecentViewWidget = async function (widget) {
 	data.config = data.config || {};
 	data.config.relative_path = nconf.get('relative_path');
 	data.canPost = allowedCids.length > 0;
-	widget.html = await app.renderAsync('recent', data);
+	widget.html = await renderWidget(widget, 'recent', data);
 	widget.html = widget.html.replace(/<ol[\s\S]*?<br \/>/, '').replace('<br>', '');
 	return widget;
 };
@@ -132,7 +141,7 @@ Widget.renderOnlineUsersWidget = async function (widget) {
 	let userData = await user.getUsersFields(uids, ['uid', 'username', 'userslug', 'picture', 'status', 'lastonline']);
 	userData = userData.filter(user => user.status !== 'offline');
 	userData.sort((a, b) => b.lastonline - a.lastonline);
-	widget.html = await app.renderAsync('widgets/onlineusers', {
+	widget.html = await renderWidget(widget,'widgets/onlineusers', {
 		online_users: userData,
 		sidebar: sidebarLocations.includes(widget.location),
 		relative_path: nconf.get('relative_path'),
@@ -161,7 +170,7 @@ Widget.renderActiveUsersWidget = async function (widget) {
 		}
 	});
 
-	widget.html = await app.renderAsync('widgets/activeusers', {
+	widget.html = await renderWidget(widget, 'widgets/activeusers', {
 		active_users: userData,
 		sidebar: sidebarLocations.includes(widget.location),
 		relative_path: nconf.get('relative_path'),
@@ -172,7 +181,7 @@ Widget.renderActiveUsersWidget = async function (widget) {
 Widget.renderLatestUsersWidget = async function (widget) {
 	const count = Math.max(1, widget.data.numUsers || 24);
 	const users = await user.getUsersFromSet('users:joindate', widget.uid, 0, count - 1);
-	widget.html = await app.renderAsync('widgets/latestusers', {
+	widget.html = await renderWidget(widget, 'widgets/latestusers', {
 		users: users,
 		sidebar: sidebarLocations.includes(widget.location),
 		relative_path: nconf.get('relative_path'),
@@ -184,7 +193,7 @@ Widget.renderTopPostersWidget = async function (widget) {
 	const count = Math.max(1, widget.data.numUsers || 24);
 	const users = await user.getUsersFromSet('users:postcount', widget.uid, 0, count - 1);
 
-	widget.html = await app.renderAsync('widgets/topposters', {
+	widget.html = await renderWidget(widget, 'widgets/topposters', {
 		users: users,
 		sidebar: sidebarLocations.includes(widget.location),
 		relative_path: nconf.get('relative_path'),
@@ -207,7 +216,7 @@ Widget.renderModeratorsWidget = async function (widget) {
 	if (!moderators.length) {
 		return null;
 	}
-	widget.html = await app.renderAsync('widgets/moderators', {
+	widget.html = await renderWidget(widget, 'widgets/moderators', {
 		moderators: moderators,
 		relative_path: nconf.get('relative_path'),
 	});
@@ -229,7 +238,7 @@ Widget.renderForumStatsWidget = async function (widget) {
 		online: utils.makeNumberHumanReadable(onlineCount + guestCount),
 		statsClass: widget.data.statsClass,
 	};
-	widget.html = await app.renderAsync('widgets/forumstats', stats);
+	widget.html = await renderWidget(widget, 'widgets/forumstats', stats);
 	return widget;
 };
 
@@ -255,14 +264,14 @@ Widget.renderRecentPostsWidget = async function (widget) {
 		);
 		postsData = await posts.getPostSummaryByPids(pids, widget.uid, { stripTags: true });
 	}
-	const data = {
+
+	widget.html = await renderWidget(widget, 'widgets/recentposts', {
 		uuid: utils.generateUUID(),
 		posts: postsData,
 		numPosts: numPosts,
 		cid: cid,
 		relative_path: nconf.get('relative_path'),
-	};
-	widget.html = await app.renderAsync('widgets/recentposts', data);
+	});
 	return widget;
 };
 
@@ -291,7 +300,7 @@ Widget.renderRecentTopicsWidget = async function (widget) {
 			};
 		}
 	});
-	widget.html = await app.renderAsync('widgets/recenttopics', {
+	widget.html = await renderWidget(widget, 'widgets/recenttopics', {
 		topics: data.topics,
 		numTopics: numTopics,
 		relative_path: nconf.get('relative_path'),
@@ -304,7 +313,7 @@ Widget.renderCategories = async function (widget) {
 	let categoryData = await categories.getCategoriesByPrivilege('categories:cid', widget.uid, 'find');
 	categoryData = categoryData.filter(c => c && c.cid !== -1);
 	const tree = categories.getTree(categoryData, 0);
-	widget.html = await app.renderAsync('widgets/categories', {
+	widget.html = await renderWidget(widget, 'widgets/categories', {
 		categories: tree,
 		relative_path: nconf.get('relative_path'),
 	});
@@ -332,7 +341,7 @@ Widget.renderPopularTags = async function (widget) {
 		t.widthPercent = ((t.score / maxCount) * 100).toFixed(2);
 	});
 
-	widget.html = await app.renderAsync('widgets/populartags', {
+	widget.html = await renderWidget(widget, 'widgets/populartags', {
 		tags: tags,
 		display,
 		template: widget.templateData.template,
@@ -351,7 +360,7 @@ Widget.renderPopularTopics = async function (widget) {
 		term: widget.data.duration || 'alltime',
 		sort: 'posts',
 	});
-	widget.html = await app.renderAsync('widgets/populartopics', {
+	widget.html = await renderWidget(widget, 'widgets/populartopics', {
 		topics: data.topics,
 		numTopics: numTopics,
 		relative_path: nconf.get('relative_path'),
@@ -370,7 +379,7 @@ Widget.renderTopTopics = async function (widget) {
 		term: widget.data.duration || 'alltime',
 		sort: 'votes',
 	});
-	widget.html = await app.renderAsync('widgets/toptopics', {
+	widget.html = await renderWidget(widget, 'widgets/toptopics', {
 		topics: data.topics,
 		numTopics: numTopics,
 		relative_path: nconf.get('relative_path'),
@@ -385,7 +394,7 @@ Widget.renderMyGroups = async function (widget) {
 	const groupsData = await groups.getUserGroups([uid]);
 	let userGroupData = groupsData.length ? groupsData[0] : [];
 	userGroupData = userGroupData.slice(0, numGroups);
-	widget.html = await app.renderAsync('widgets/groups', {
+	widget.html = await renderWidget(widget, 'widgets/groups', {
 		groups: userGroupData,
 		relative_path: nconf.get('relative_path'),
 	});
@@ -395,7 +404,7 @@ Widget.renderMyGroups = async function (widget) {
 Widget.renderGroupPosts = async function (widget) {
 	const numPosts = parseInt(widget.data.numPosts, 10) || 4;
 	const postsData = await groups.getLatestMemberPosts(widget.data.groupName, numPosts, widget.uid);
-	widget.html = await app.renderAsync('widgets/groupposts', { posts: postsData });
+	widget.html = await renderWidget(widget, 'widgets/groupposts', { posts: postsData });
 	return widget;
 };
 
@@ -403,7 +412,7 @@ Widget.renderNewGroups = async function (widget) {
 	const numGroups = parseInt(widget.data.numGroups, 10) || 8;
 	const groupNames = await db.getSortedSetRevRange('groups:visible:createtime', 0, numGroups - 1);
 	const groupsData = await groups.getGroupsData(groupNames);
-	widget.html = await app.renderAsync('widgets/groups', {
+	widget.html = await renderWidget(widget, 'widgets/groups', {
 		groups: groupsData.filter(Boolean),
 		relative_path: nconf.get('relative_path'),
 	});
@@ -441,7 +450,7 @@ Widget.renderSuggestedTopics = async function (widget) {
 	}
 
 
-	widget.html = await app.renderAsync('widgets/suggestedtopics', {
+	widget.html = await renderWidget(widget, 'widgets/suggestedtopics', {
 		topics: topicData,
 		config: widget.templateData.config,
 		sidebar: sidebarLocations.includes(widget.location),
@@ -480,7 +489,7 @@ Widget.renderUserPost = async function (widget) {
 	if (!postObjs.length) {
 		return null;
 	}
-	widget.html = await app.renderAsync('widgets/userpost', {
+	widget.html = await renderWidget(widget, 'widgets/userpost', {
 		posts: postObjs,
 		config: widget.templateData.config,
 		relative_path: nconf.get('relative_path'),
@@ -512,7 +521,7 @@ Widget.renderChatRoom = async function (widget) {
 			}
 		});
 
-		widget.html = await app.renderAsync('widgets/chat', {
+		widget.html = await renderWidget(widget, 'widgets/chat', {
 			roomId: roomId,
 			isWidget: true,
 			...roomData,
@@ -668,9 +677,6 @@ Widget.defineWidgets = async function (widgets) {
 	const groupNames = await db.getSortedSetRevRange('groups:visible:createtime', 0, -1);
 	let groupsData = await groups.getGroupsData(groupNames);
 	groupsData = groupsData.filter(Boolean);
-	groupsData.forEach((group) => {
-		group.name = validator.escape(String(group.name));
-	});
 
 	const html = await app.renderAsync('admin/partials/widgets/groupposts', { groups: groupsData });
 	widgets.push({
