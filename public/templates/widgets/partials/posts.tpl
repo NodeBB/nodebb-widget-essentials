@@ -16,7 +16,7 @@
 		</div>
 
 		<div class="text-end text-xs post-preview-footer">
-			<a href="{relative_path}/post/{encodeURIComponent(./pid)}">[[global:read-more]]</a>
+			<a href="{relative_path}/post/{encodeURIComponent(./pid)}">{{tx("global:read-more")}}</a>
 		</div>
 
 		<hr/>

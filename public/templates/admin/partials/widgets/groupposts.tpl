@@ -5,8 +5,8 @@
 <div class="mb-3">
 	<label class="form-label">Select Group</label>
 	<select name="groupName" class="form-select">
-		<!-- BEGIN groups -->
-		<option value="{groups.name}">{groups.name}</option>
-		<!-- END groups -->
+		{{{ each groups }}}
+		<option value="{./name}">{./name}</option>
+		{{{ end }}}
 	</select>
 </div>

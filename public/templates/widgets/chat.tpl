@@ -18,7 +18,7 @@
 			</div>
 
 			<div class="d-flex gap-1 align-items-center">
-				<a href="{config.relative_path}/chats/{roomId}" class="btn btn-ghost btn-sm d-none d-md-flex p-1" title="[[modules:chat.maximize]]" data-bs-toggle="tooltip" data-bs-placement="bottom">
+				<a href="{config.relative_path}/chats/{roomId}" class="btn btn-ghost btn-sm d-none d-md-flex p-1" title="{{tx("modules:chat.maximize")}}" data-bs-toggle="tooltip" data-bs-placement="bottom">
 					<i class="fa fa-fw fa-expand text-muted"></i>
 				</a>
 			</div>
@@ -34,14 +34,14 @@
 					<ul component="chat/message/search/results" class="chat-content p-0 m-0 list-unstyled overflow-auto flex-grow-1 hidden">
 						<div component="chat/message/search/no-results" class="text-center p-4 d-flex flex-column">
 							<div class="p-4"><i class="fa-solid fa-wind fs-2 text-muted"></i></div>
-							<div class="text-xs fw-semibold text-muted">[[search:no-matches]]</div>
+							<div class="text-xs fw-semibold text-muted">{{tx("search:no-matches")}}</div>
 						</div>
 					</ul>
 					<!-- IMPORT partials/chats/composer.tpl -->
 				</div>
 			</div>
 		</div>
-		<div class="imagedrop"><div>[[topic:composer.drag-and-drop-images]]</div></div>
+		<div class="imagedrop"><div>{{tx("topic:composer.drag-and-drop-images")}}</div></div>
 	</div>
 </div>
 <script type="text/javascript">

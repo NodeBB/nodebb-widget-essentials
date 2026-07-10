@@ -4,7 +4,6 @@
 			<div class="col-12">
 				<div class="input-group">
 					<input type="text" class="form-control" name="term" placeholder="Search"/>
-					<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
 					{{{ if showInControl }}}
 					<select name="in" class="form-select">
 						{{{ each inOptions }}}
@@ -12,6 +11,7 @@
 						{{{ end }}}
 					</select>
 					{{{ end }}}
+					<button class="btn btn-primary" type="submit"><i class="fa fa-search"></i></button>
 				</div>
 				<div class="position-relative">
 					<div class="quick-search-container dropdown-menu p-2 d-block hidden" style="right: auto; z-index: 1001;">
