@@ -14,21 +14,19 @@
 					<div class="description text-muted text-xs w-100">{{./descriptionParsed}}</div>
 					{{{ end }}}
 				</div>
-				{{{ if !config.hideSubCategories }}}
 				{{{ if ./children.length }}}
 				<div class="category-children row row-cols-1 g-2 w-100">
 					{{{ each ./children }}}
 					{{{ if !./isSection }}}
 					<span class="category-children-item small">
-						<div class="d-flex align-items-center gap-1">
-							<i class="fa fa-fw fa-caret-right text-primary"></i>
-							<a href="{{{ if ./link }}}{./link}{{{ else }}}{config.relative_path}/category/{./slug}{{{ end }}}" class="text-reset fw-semibold">{tx(./name)}</a>
+						<div class="d-flex gap-1 text-break">
+							<i class="fa fa-fw fa-caret-right text-primary" style="line-height: var(--bs-body-line-height);"></i>
+							<a href="{{{ if ./link }}}{./link}{{{ else }}}{relative_path}/category/{./slug}{{{ end }}}" class="text-reset fw-semibold flex-1">{tx(./name)}</a>
 						</div>
 					</span>
 					{{{ end }}}
 					{{{ end }}}
 				</div>
-				{{{ end }}}
 				{{{ end }}}
 			</div>
 		</div>

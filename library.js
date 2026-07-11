@@ -404,7 +404,10 @@ Widget.renderMyGroups = async function (widget) {
 Widget.renderGroupPosts = async function (widget) {
 	const numPosts = parseInt(widget.data.numPosts, 10) || 4;
 	const postsData = await groups.getLatestMemberPosts(widget.data.groupName, numPosts, widget.uid);
-	widget.html = await renderWidget(widget, 'widgets/groupposts', { posts: postsData });
+	widget.html = await renderWidget(widget, 'widgets/groupposts', {
+		posts: postsData,
+		relative_path: nconf.get('relative_path'),
+	});
 	return widget;
 };
 

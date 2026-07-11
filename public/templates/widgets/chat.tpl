@@ -18,7 +18,7 @@
 			</div>
 
 			<div class="d-flex gap-1 align-items-center">
-				<a href="{config.relative_path}/chats/{roomId}" class="btn btn-ghost btn-sm d-none d-md-flex p-1" title="{{tx("modules:chat.maximize")}}" data-bs-toggle="tooltip" data-bs-placement="bottom">
+				<a href="{relative_path}/chats/{roomId}" class="btn btn-ghost btn-sm d-none d-md-flex p-1" title="{{tx("modules:chat.maximize")}}" data-bs-toggle="tooltip" data-bs-placement="bottom">
 					<i class="fa fa-fw fa-expand text-muted"></i>
 				</a>
 			</div>

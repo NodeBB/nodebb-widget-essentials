@@ -5,7 +5,7 @@
 
 			<a class="topic-title fw-semibold fs-6 text-reset text-break d-block" href="{relative_path}/topic/{./slug}">{./title}</a>
 			{{{ if ./thumbs.length }}}
-			<a class="topic-thumbs text-decoration-none flex-shrink-0 d-inline-block" href="{config.relative_path}/topic/{./slug}{{{ if ./bookmark }}}/{./bookmark}{{{ end }}}" aria-label="{{tx("topic:thumb-image")}}">
+			<a class="topic-thumbs text-decoration-none flex-shrink-0 d-inline-block" href="{relative_path}/topic/{./slug}{{{ if ./bookmark }}}/{./bookmark}{{{ end }}}" aria-label="{{tx("topic:thumb-image")}}">
 				<img class="topic-thumb rounded-1 bg-light" style="width: auto; max-width: 5.33rem; height: 3.3rem; object-fit: contain;" src="{./thumbs.0.url}" alt=""/>
 			</a>
 			{{{ end }}}
@@ -18,7 +18,7 @@
 				</a>
 
 				<div class="post-author d-flex align-items-center gap-1">
-					<a class="lh-1 fw-semibold text-nowrap" href="{config.relative_path}/user/{./teaser.user.userslug}">{./teaser.user.displayname}</a>
+					<a class="lh-1 fw-semibold text-nowrap" href="{relative_path}/user/{./teaser.user.userslug}">{./teaser.user.displayname}</a>
 				</div>
 				<span class="timeago text-muted lh-1 text-nowrap" title="{./teaser.timestampISO}"></span>
 			</div>
