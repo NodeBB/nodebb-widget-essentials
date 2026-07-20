@@ -28,7 +28,8 @@
 		{ "hook": "filter:widget.render:groupposts", "method": "renderGroupPosts" },
 		{ "hook": "filter:widget.render:suggestedtopics", "method": "renderSuggestedTopics" },
 		{ "hook": "filter:widget.render:userpost", "method": "renderUserPost" },
-		{ "hook": "filter:widget.render:chat", "method": "renderChatRoom" }
+		{ "hook": "filter:widget.render:chat", "method": "renderChatRoom" },
+		{ "hook": "filter:widget.render:darkmode", "method": "renderDarkMode" }
 	],
 	"templates": "./public/templates",
 	"css": [

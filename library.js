@@ -542,6 +542,12 @@ Widget.renderChatRoom = async function (widget) {
 	return widget;
 };
 
+Widget.renderDarkMode = async function (widget) {
+	widget.html = await renderWidget(widget, 'widgets/dark-mode', {
+	});
+	return widget;
+};
+
 Widget.defineWidgets = async function (widgets) {
 	const widgetData = [
 		{
@@ -669,6 +675,12 @@ Widget.defineWidgets = async function (widgets) {
 			name: 'Chat Room',
 			description: 'Display a chat room as a widget',
 			content: 'admin/partials/widgets/chat',
+		},
+		{
+			widget: 'darkmode',
+			name: 'Dark Mode Switch',
+			description: 'A dark mode switch for your forum',
+			content: 'admin/partials/widgets/darkmode',
 		},
 	];
 
