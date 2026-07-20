@@ -11,20 +11,9 @@
 		</label>
 	</div>
 <style>
-.slider {
-  background-color: #ffffff;
-  transition: .4s;
-}
-
-.moon-sun i {
-  transition: opacity .15s ease;
-}
-
-.slider.hide-moon .fa-moon,
-.slider.hide-sun .fa-sun {
-  opacity: 0;
-}
-
+.slider { background-color: #ffffff;  transition: .4s; }
+.moon-sun i {  transition: opacity .15s ease; }
+.slider.hide-moon .fa-moon, .slider.hide-sun .fa-sun { opacity: 0; }
 .slider:before {
   background-color: #1b73f9;
   bottom: 3px;
@@ -35,13 +24,11 @@
   position: absolute;
   transition: .4s;
   border-radius: 50px;
-  z-index: 1
+  z-index: 1;
 }
-
 input:checked + .slider { background-color: #262729; }
 input:checked + .slider:before { transform: translateX(28px); }
 </style>
-
 <script>
 const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
 const slider = document.querySelector('.theme-switch .slider');
@@ -62,12 +49,6 @@ if (currentTheme) {
 
 syncThemeIcons(toggleSwitch.checked ? 'dark' : 'light');
 
-function switchTheme(e) {
-	const theme = e.target.checked ? 'dark' : 'light';
-	document.documentElement.setAttribute('data-bs-theme', theme);
-	localStorage.setItem('theme', theme);
-}
-
 slider.addEventListener('transitionend', function (e) {
 	if (e.propertyName !== 'background-color') {
 		return;
@@ -76,7 +57,9 @@ slider.addEventListener('transitionend', function (e) {
 });
 
 toggleSwitch.addEventListener('change', (e) => {
-	switchTheme(e);
+	const theme = e.target.checked ? 'dark' : 'light';
+	document.documentElement.setAttribute('data-bs-theme', theme);
+	localStorage.setItem('theme', theme);
 	slider.classList.remove('hide-moon', 'hide-sun');
 }, false);
 </script>
