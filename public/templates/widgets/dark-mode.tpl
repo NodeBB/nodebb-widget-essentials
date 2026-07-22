@@ -30,35 +30,37 @@
 .theme-switch input:checked + .slider:before { transform: translateX(28px); }
 </style>
 <script>
-const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
-const slider = document.querySelector('.theme-switch .slider');
-const currentTheme = localStorage.getItem('theme');
+(function() {
+	const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
+	const slider = document.querySelector('.theme-switch .slider');
+	const currentTheme = localStorage.getItem('theme');
 
-function syncThemeIcons(theme) {
-  slider.classList.toggle('hide-moon', theme === 'light');
-  slider.classList.toggle('hide-sun', theme === 'dark');
-}
-
-if (currentTheme) {
-	document.documentElement.setAttribute('data-bs-theme', currentTheme);
-	if (currentTheme === 'dark') {
-		toggleSwitch.checked = true;
+	function syncThemeIcons(theme) {
+		slider.classList.toggle('hide-moon', theme === 'light');
+		slider.classList.toggle('hide-sun', theme === 'dark');
 	}
-}
 
-syncThemeIcons(toggleSwitch.checked ? 'dark' : 'light');
-
-slider.addEventListener('transitionend', function (e) {
-	if (e.propertyName === 'background-color') {
-		syncThemeIcons(toggleSwitch.checked ? 'dark' : 'light');
+	if (currentTheme) {
+		document.documentElement.setAttribute('data-bs-theme', currentTheme);
+		if (currentTheme === 'dark') {
+			toggleSwitch.checked = true;
+		}
 	}
-});
 
-toggleSwitch.addEventListener('change', (e) => {
-	const theme = e.target.checked ? 'dark' : 'light';
-	document.documentElement.setAttribute('data-bs-theme', theme);
-	localStorage.setItem('theme', theme);
-	slider.classList.remove('hide-moon', 'hide-sun');
-}, false);
+	syncThemeIcons(toggleSwitch.checked ? 'dark' : 'light');
+
+	slider.addEventListener('transitionend', function (e) {
+		if (e.propertyName === 'background-color') {
+			syncThemeIcons(toggleSwitch.checked ? 'dark' : 'light');
+		}
+	});
+
+	toggleSwitch.addEventListener('change', (e) => {
+		const theme = e.target.checked ? 'dark' : 'light';
+		document.documentElement.setAttribute('data-bs-theme', theme);
+		localStorage.setItem('theme', theme);
+		slider.classList.remove('hide-moon', 'hide-sun');
+	}, false);
+})();
 </script>
 </nav>
