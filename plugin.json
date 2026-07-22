@@ -4,6 +4,7 @@
 	"description": "Several basic widgets bundled together in one package including 'HTML', 'Markdown'",
 	"url": "https://github.com/psychobunny/nodebb-widget-essentials",
 	"library": "./library.js",
+	"templates": "./public/templates",
 	"hooks": [
 		{ "hook": "static:app.load", "method": "init" },
 		{ "hook": "filter:widgets.getWidgets", "method": "defineWidgets" },
@@ -30,9 +31,5 @@
 		{ "hook": "filter:widget.render:userpost", "method": "renderUserPost" },
 		{ "hook": "filter:widget.render:chat", "method": "renderChatRoom" },
 		{ "hook": "filter:widget.render:darkmode", "method": "renderDarkMode" }
-	],
-	"templates": "./public/templates",
-	"css": [
-		"public/css/widget.css"
 	]
 }
