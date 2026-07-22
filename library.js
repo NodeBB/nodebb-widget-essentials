@@ -116,8 +116,7 @@ function isVisibleInTopic(widget) {
 Widget.renderRecentViewWidget = async function (widget) {
 	const [data, allowedCids] = await Promise.all([
 		topics.getLatestTopics({
-			uid:
-			widget.uid,
+			uid: widget.uid,
 			start: 0,
 			stop: 19,
 			term: 'month',
