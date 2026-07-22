@@ -11,10 +11,10 @@
 		</label>
 	</div>
 <style>
-.slider { background-color: #ffffff;  transition: .4s; }
-.moon-sun i {  transition: opacity .15s ease; }
-.slider.hide-moon .fa-moon, .slider.hide-sun .fa-sun { opacity: 0; }
-.slider:before {
+.theme-switch .slider { background-color: var(--bs-body-bg); transition: .4s; }
+.theme-switch .moon-sun i {  transition: opacity .15s ease; }
+.theme-switch .slider.hide-moon .fa-moon, .theme-switch .slider.hide-sun .fa-sun { opacity: 0; }
+.theme-switch .slider:before {
   background-color: #1b73f9;
   bottom: 3px;
   content: "";
@@ -26,8 +26,8 @@
   border-radius: 50px;
   z-index: 1;
 }
-input:checked + .slider { background-color: #262729; }
-input:checked + .slider:before { transform: translateX(28px); }
+.theme-switch input:checked + .slider { background-color: var(--bs-body-bg); }
+.theme-switch input:checked + .slider:before { transform: translateX(28px); }
 </style>
 <script>
 const toggleSwitch = document.querySelector('.theme-switch input[type="checkbox"]');
@@ -41,7 +41,6 @@ function syncThemeIcons(theme) {
 
 if (currentTheme) {
 	document.documentElement.setAttribute('data-bs-theme', currentTheme);
-
 	if (currentTheme === 'dark') {
 		toggleSwitch.checked = true;
 	}
@@ -50,10 +49,9 @@ if (currentTheme) {
 syncThemeIcons(toggleSwitch.checked ? 'dark' : 'light');
 
 slider.addEventListener('transitionend', function (e) {
-	if (e.propertyName !== 'background-color') {
-		return;
+	if (e.propertyName === 'background-color') {
+		syncThemeIcons(toggleSwitch.checked ? 'dark' : 'light');
 	}
-	syncThemeIcons(toggleSwitch.checked ? 'dark' : 'light');
 });
 
 toggleSwitch.addEventListener('change', (e) => {
