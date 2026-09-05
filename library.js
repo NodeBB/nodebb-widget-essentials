@@ -261,9 +261,10 @@ Widget.renderRecentPostsWidget = async function (widget) {
 	} else {
 		let cids = await categories.getCidsByPrivilege('categories:cid', widget.uid, 'topics:read');
 		cids = cids.filter(cid => cid !== -1);
-		const pids = await db.getSortedSetRevRange(
+		let pids = await db.getSortedSetRevRange(
 			cids.map(cid => `cid:${cid}:pids`), 0, Math.max(0, numPosts - 1),
 		);
+		pids = await privileges.posts.filter('topics:read', pids, widget.uid);
 		postsData = await posts.getPostSummaryByPids(pids, widget.uid, { stripTags: true });
 	}
 
@@ -499,6 +500,7 @@ Widget.renderUserPost = async function (widget) {
 			'-inf'
 		);
 	}
+	pids = await privileges.posts.filter('topics:read', pids, widget.uid);
 	const postObjs = await posts.getPostSummaryByPids(pids, widget.uid, { stripTags: false });
 	if (!postObjs.length) {
 		return null;
